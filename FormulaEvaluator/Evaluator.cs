@@ -1,6 +1,7 @@
 ﻿namespace FormulaEvaluator
 {
-    public class Class1
+//testing 
+    public class Evaluator
     {
 
     }
