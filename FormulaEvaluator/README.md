@@ -27,5 +27,5 @@ List any peers (or other people) in the class (or outside for that matter) that 
 # References:
 
     1. C# Access String - https://www.w3schools.com/cs/cs_strings_access.php
-    2. Title of page - URL
+    2. C# String to int - https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/how-to-convert-a-string-to-a-number
     3. Title of page - URL

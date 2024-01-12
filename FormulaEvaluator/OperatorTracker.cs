@@ -2,46 +2,32 @@
 {
     public class OperatorTracker
     {
-        private Stack<int> frontBrace = new Stack<int>();
-        private Stack<int> backBrace = new Stack<int>();
         private Stack<int> Operator1st = new Stack<int>();
         private Stack<int> Operator2nd = new Stack<int>();
 
-        public OperatorTracker() { }  
+        public OperatorTracker() { }
 
-        public OperatorTracker(String[] expression)
+        public OperatorTracker(List<String> expression, int start, int end)
         {
-            frontBrace = new Stack<int>();
-            backBrace = new Stack<int>();
+
             Operator1st = new Stack<int>();
             Operator2nd = new Stack<int>();
-            
 
-            int index = 0;
-            foreach (String token in expression)
+
+
+            for (int i = start + 1; i < end; i++)
             {
-                if (token == "(") { frontBrace.Push(index); }
-                else if (token == ")") { backBrace.Push(index); }
-                else if(token == "*"|| token == "/"){ Operator1st.Push(index); }
-                else if(token == "+"|| token =="-"){ Operator2nd.Push(index); }
-                index++;
+                String token = expression[i];
+                if (token == "*" || token == "/") { Operator1st.Push(i); }
+                else if (token == "+" || token == "-") { Operator2nd.Push(i); }
             }
-            backBrace = new Stack<int>(backBrace);
         }
 
-        public int GetFrontBrace()
-        {
-            return frontBrace.Pop();
-        }
+        public int GetOp1st() { return Operator1st.Pop(); }
+        public int GetOp2nd() { return Operator2nd.Pop(); }
 
-        public int GetBackBrace()
-        {
-            return backBrace.Pop();
-        }
-
-        public int PeekFrontBrace(){ return frontBrace.Peek(); }
-        public int PeekBackBrace(){  return backBrace.Peek(); }
-
-        public bool noBrace() { return frontBrace.Count == 0;}
+        public bool Empty() { return Op1Empty() && Op2Empty(); }
+        public bool Op1Empty() { return Operator1st.Count == 0; }
+        public bool Op2Empty() { return Operator2nd.Count == 0; }
     }
 }

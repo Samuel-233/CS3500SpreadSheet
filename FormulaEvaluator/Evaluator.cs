@@ -24,32 +24,76 @@ namespace FormulaEvaluator
     public class Evaluator
     {
         static Dictionary<String, int> variables = new Dictionary<string, int>();
-        static OperatorTracker? @operator = null;
+        static BraceTracker? brace = null;
 
         public static int Evaluate(String expression,
                                    Lookup variableEvaluator)
         {
-            // TODO...
-            string[] tokens =
-            Regex.Split(expression, "(\\()|(\\))|(-)|(\\+)|(\\*)|(/)");
-
-            @operator = new OperatorTracker(tokens);
-            return EvaluateRec(tokens, 0, tokens.Length-1,LookUp);
-
-        }
-
-        static public int EvaluateRec(String[] tokens, int start, int end,
-                                   Lookup variableEvaluator)
-        {
-            //If there are brace in expression, deal with it first.
-            if (!(@operator == null || @operator.noBrace())){
-                EvaluateRec(tokens,@operator.GetFrontBrace(),@operator.GetBackBrace(),LookUp);
-            }
             
-            //Then deal with the Operator that has higher priority
-            if()
+            List<String> tokens = checkTokenValid(
+            Regex.Split(expression, "(\\()|(\\))|(-)|(\\+)|(\\*)|(/)"));
+
+
+            brace = new BraceTracker(tokens);
+
+            //First, deal with the most inner brace, like normal calculate
+            while (!brace.NoBrace())
+            {
+                int start = brace.GetFrontBrace();
+                int end = brace.GetBackBrace();
+                if (start != -1 && end != tokens.Count)
+                {
+                    tokens[start] = " ";
+                    tokens[end] = " ";
+                }
+
+                //find all operators in that brace
+                OperatorTracker operators = new OperatorTracker(tokens, start, end);
+
+                //first,calculate the * and /
+                while (!operators.Op1Empty())
+                {
+                    //use operators to locate other numbers and calculate.
+                    Calculate(operators.GetOp1st(), tokens);
+                }
+
+                //then,calculate the + and -
+                while (!operators.Op2Empty())
+                {
+                    //use operators to locate other numbers and calculate.
+                    Calculate(operators.GetOp2nd(), tokens);
+                }
+
+            }
+
+            foreach (String token in tokens) { if (token != " ") return Convert.ToInt32(token); }
+            return 0;
+
+
         }
 
+        public static void Calculate(int operatorIndex, List<String> tokens)
+        {
+            String @operator = tokens[operatorIndex];
+
+            int index = 0;
+            while (tokens[operatorIndex - ++index] == " ") { }
+            int left = Convert.ToInt32(tokens[operatorIndex - index]);
+            tokens[operatorIndex - index] = " ";
+
+            index = 0;
+            while (tokens[operatorIndex + ++index] == " ") { }
+            int right = Convert.ToInt32(tokens[operatorIndex + index]);
+            tokens[operatorIndex + index] = " ";
+
+            int answer = 0;
+            if (@operator == "+") { answer = left + right; }
+            else if (@operator == "-") { answer = left - right; }
+            else if (@operator == "*") { answer = left * right; }
+            else if (@operator == "/") { answer = left / right; }
+
+            tokens[operatorIndex] = answer.ToString();
+        }
 
         /// <summary>
         /// Return variable's value if it exist
@@ -71,8 +115,8 @@ namespace FormulaEvaluator
         /// A helper method to remove all white space
         /// </summary>
         /// <param name="tokens"></param>
-        /// <returns>a new array contains no space tokens</returns>
-        public static String[] checkTokenValid(String[] tokens)
+        /// <returns>a new List contains no space tokens</returns>
+        public static List<String> checkTokenValid(String[] tokens)
         {
             List<String> newTokens = new List<string>();
             char space = ' ';
@@ -105,7 +149,7 @@ namespace FormulaEvaluator
                     newTokens.Add(token);
                 }
             }
-            return newTokens.ToArray();
+            return newTokens;
         }
 
 
