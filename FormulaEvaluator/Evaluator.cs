@@ -17,8 +17,7 @@ namespace FormulaEvaluator
     ///
     /// File Contents
     ///
-    ///    [... and of course you should describe the contents of the 
-    ///    file in broad terms here ...]
+    /// this is a main part of Evaluate function, it will take a String as an expression (if it is valid) then calculate the result. Variables are also supported.
     /// </summary>
     public delegate int Lookup(String variable_name);
     public class Evaluator
@@ -34,6 +33,12 @@ namespace FormulaEvaluator
         variables.Remove(variable_name);
         }
 
+        /// <summary>
+        /// To evaluate the String as a expression, and get a int result.
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="variableEvaluator"></param>
+        /// <returns>a int as the result for the expression</returns>
         public static int Evaluate(String expression,
                                    Lookup variableEvaluator)
         {
@@ -74,6 +79,7 @@ namespace FormulaEvaluator
 
             }
 
+            //Find the last element left in the token, which will be the result.
             foreach (String token in tokens) { if (token != " ") return Convert.ToInt32(token); }
             return 0;
 
@@ -90,6 +96,7 @@ namespace FormulaEvaluator
         {
             String @operator = tokens[operatorIndex];
 
+            //To loop to left until find a int or variable, then get it and remove it.
             int index = 0;
             while (tokens[operatorIndex - ++index] == " ") { }
             int left = 0;
@@ -102,7 +109,7 @@ namespace FormulaEvaluator
             }
             tokens[operatorIndex - index] = " ";
 
-
+            //To loop to right until find a int or variable, then get it and remove it.
             index = 0;
             while (tokens[operatorIndex + ++index] == " ") { }
             int right = 0;
@@ -116,6 +123,7 @@ namespace FormulaEvaluator
             }
             tokens[operatorIndex + index] = " ";
 
+            //Compute the result and put it back
             int answer = 0;
             if (@operator == "+") { answer = left + right; }
             else if (@operator == "-") { answer = left - right; }
