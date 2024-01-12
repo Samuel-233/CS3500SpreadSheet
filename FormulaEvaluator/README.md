@@ -28,4 +28,4 @@ List any peers (or other people) in the class (or outside for that matter) that 
 
     1. C# Access String - https://www.w3schools.com/cs/cs_strings_access.php
     2. C# String to int - https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/how-to-convert-a-string-to-a-number
-    3. Title of page - URL
+    3. How to know if a String is a number - https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/how-to-determine-whether-a-string-represents-a-numeric-value

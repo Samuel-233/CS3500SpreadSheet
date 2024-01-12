@@ -26,6 +26,14 @@ namespace FormulaEvaluator
         static Dictionary<String, int> variables = new Dictionary<string, int>();
         static BraceTracker? brace = null;
 
+        public static void AddVariable(String variable_name, int value){
+            variables.Add(variable_name, value);
+        }
+
+        public static void RemoveVariable(String variable_name){
+        variables.Remove(variable_name);
+        }
+
         public static int Evaluate(String expression,
                                    Lookup variableEvaluator)
         {
@@ -72,18 +80,40 @@ namespace FormulaEvaluator
 
         }
 
+        /// <summary>
+        /// A method to evaluate expression that already remove the bracket
+        /// </summary>
+        /// <param name="operatorIndex">the position of the operator</param>
+        /// <param name="tokens">a list of tokens that store the expression</param>
+        /// <exception cref="Exception">throw error if variable don't exist</exception>
         public static void Calculate(int operatorIndex, List<String> tokens)
         {
             String @operator = tokens[operatorIndex];
 
             int index = 0;
             while (tokens[operatorIndex - ++index] == " ") { }
-            int left = Convert.ToInt32(tokens[operatorIndex - index]);
+            int left = 0;
+            String variable = tokens[operatorIndex - index];
+            if (!int.TryParse(variable, out left)){
+                if (variables.TryGetValue(variable, out left))
+                {
+                }
+                else throw new Exception($"no such variable {variable} in data");
+            }
             tokens[operatorIndex - index] = " ";
+
 
             index = 0;
             while (tokens[operatorIndex + ++index] == " ") { }
-            int right = Convert.ToInt32(tokens[operatorIndex + index]);
+            int right = 0;
+            variable = tokens[operatorIndex + index];
+            if (!int.TryParse(variable, out right))
+            {
+                if (variables.TryGetValue(variable, out right))
+                {
+                }
+                else throw new Exception($"no such variable {variable} in data");
+            }
             tokens[operatorIndex + index] = " ";
 
             int answer = 0;
