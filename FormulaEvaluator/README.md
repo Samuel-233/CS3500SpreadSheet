@@ -26,6 +26,6 @@ List any peers (or other people) in the class (or outside for that matter) that 
 
 # References:
 
-    1. Title of page - URL
+    1. C# Access String - https://www.w3schools.com/cs/cs_strings_access.php
     2. Title of page - URL
     3. Title of page - URL
