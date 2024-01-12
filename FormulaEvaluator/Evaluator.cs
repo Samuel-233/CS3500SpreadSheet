@@ -22,16 +22,10 @@ namespace FormulaEvaluator
     public delegate int Lookup(String variable_name);
     public static class Evaluator
     {
-        static Dictionary<String, int> variables = new Dictionary<string, int>();
+        
         static BraceTracker? brace = null;
 
-        public static void AddVariable(String variable_name, int value){
-            variables.Add(variable_name, value);
-        }
 
-        public static void RemoveVariable(String variable_name){
-        variables.Remove(variable_name);
-        }
 
         /// <summary>
         /// To evaluate the String as a expression, and get a int result.
@@ -43,7 +37,7 @@ namespace FormulaEvaluator
                                    Lookup variableEvaluator)
         {
             
-            List<String> tokens = checkTokenValid(
+            List<String> tokens = ProcessString.StringToTokens(
             Regex.Split(expression, "(\\()|(\\))|(-)|(\\+)|(\\*)|(/)"));
 
 
@@ -67,14 +61,14 @@ namespace FormulaEvaluator
                 while (!operators.Op1Empty())
                 {
                     //use operators to locate other numbers and calculate.
-                    Calculate(operators.GetOp1st(), tokens);
+                    Calculate(operators.GetOp1st(), tokens, variableEvaluator);
                 }
 
                 //then,calculate the + and -
                 while (!operators.Op2Empty())
                 {
                     //use operators to locate other numbers and calculate.
-                    Calculate(operators.GetOp2nd(), tokens);
+                    Calculate(operators.GetOp2nd(), tokens, variableEvaluator);
                 }
 
             }
@@ -92,7 +86,7 @@ namespace FormulaEvaluator
         /// <param name="operatorIndex">the position of the operator</param>
         /// <param name="tokens">a list of tokens that store the expression</param>
         /// <exception cref="Exception">throw error if variable don't exist</exception>
-        public static void Calculate(int operatorIndex, List<String> tokens)
+        public static void Calculate(int operatorIndex, List<String> tokens, Lookup variableEvaluator)
         {
             String @operator = tokens[operatorIndex];
 
@@ -102,10 +96,14 @@ namespace FormulaEvaluator
             int left = 0;
             String variable = tokens[operatorIndex - index];
             if (!int.TryParse(variable, out left)){
-                if (variables.TryGetValue(variable, out left))
+                try
                 {
+                    left = variableEvaluator(variable);
                 }
-                else throw new Exception($"no such variable {variable} in data");
+                catch
+                {
+                    throw new Exception($"no such variable {variable} in data");
+                }
             }
             tokens[operatorIndex - index] = " ";
 
@@ -116,79 +114,29 @@ namespace FormulaEvaluator
             variable = tokens[operatorIndex + index];
             if (!int.TryParse(variable, out right))
             {
-                if (variables.TryGetValue(variable, out right))
+                try
                 {
+                    right = variableEvaluator(variable);
                 }
-                else throw new Exception($"no such variable {variable} in data");
+                catch
+                {
+                    throw new Exception($"no such variable {variable} in data");
+                }
             }
             tokens[operatorIndex + index] = " ";
 
             //Compute the result and put it back
             int answer = 0;
-            if (@operator == "+") { answer = left + right; }
-            else if (@operator == "-") { answer = left - right; }
-            else if (@operator == "*") { answer = left * right; }
-            else if (@operator == "/") { answer = left / right; }
+            if (@operator.Equals("+")) { answer = left + right; }
+            else if (@operator.Equals("-")) { answer = left - right; }
+            else if (@operator.Equals("*")) { answer = left * right; }
+            else if (@operator.Equals("/")) { answer = left / right; }
 
             tokens[operatorIndex] = answer.ToString();
         }
 
-        /// <summary>
-        /// Return variable's value if it exist
-        /// </summary>
-        /// <param name="variable_name"></param>
-        /// <returns>Return variable's value if it exist</returns>
-        /// <exception cref="Exception"></exception>
-        public static int LookUp(String variable_name)
-        {
-            if (variables.ContainsKey(variable_name))
-            {
-                return variables[variable_name];
-            }
-            throw new Exception("Not a valid variable");
-        }
 
-
-        /// <summary>
-        /// A helper method to remove all white space
-        /// </summary>
-        /// <param name="tokens"></param>
-        /// <returns>a new List contains no space tokens</returns>
-        public static List<String> checkTokenValid(String[] tokens)
-        {
-            List<String> newTokens = new List<string>();
-            char space = ' ';
-            foreach (String token in tokens)
-            {
-                int frontIndex = 0;
-                int backIndex = token.Length - 1;
-                bool haveSpace = false;
-                if (token.Length == 0 || (token.Length == 1 && token[0] == space))
-                {
-                    continue;
-                }
-                while (frontIndex < token.Length - 1 && token[frontIndex] == space)
-                {
-                    haveSpace = true;
-                    frontIndex++;
-                }
-                while (backIndex > 0 && token[backIndex] == space)
-                {
-                    haveSpace = true;
-                    backIndex--;
-                }
-                if (haveSpace && frontIndex <= backIndex)
-                {
-                    newTokens.Add(token.Substring(frontIndex, backIndex - frontIndex + 1));
-                    continue;
-                }
-                if (!haveSpace)
-                {
-                    newTokens.Add(token);
-                }
-            }
-            return newTokens;
-        }
+ 
 
 
 
