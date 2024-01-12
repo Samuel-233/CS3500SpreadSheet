@@ -20,7 +20,7 @@ namespace FormulaEvaluator
     /// this is a main part of Evaluate function, it will take a String as an expression (if it is valid) then calculate the result. Variables are also supported.
     /// </summary>
     public delegate int Lookup(String variable_name);
-    public class Evaluator
+    public static class Evaluator
     {
         static Dictionary<String, int> variables = new Dictionary<string, int>();
         static BraceTracker? brace = null;
