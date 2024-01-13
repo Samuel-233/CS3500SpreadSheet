@@ -41,6 +41,7 @@
                 else if (token == ")") {FeedBackBrace(index);}
                 index++;
             }
+
         }
 
         public BraceIndex GetInnerBrace() {

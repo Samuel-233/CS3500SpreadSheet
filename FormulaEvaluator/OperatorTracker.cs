@@ -37,8 +37,8 @@
             Operator2nd = new Stack<int>();
 
 
-
-            for (int i = start + 1; i < end; i++)
+            //Because we are using stack, but we calculate from left to right, so we need loop from right to left
+            for (int i = end-1; i > start; i--)
             {
                 String token = expression[i];
                 if (token == "*" || token == "/") { Operator1st.Push(i); }

@@ -51,6 +51,7 @@ namespace FormulaEvaluator
 
                 if (start != -1 && end != tokens.Count)
                 {
+                    if(start < -1 || end > tokens.Count+1) { throw new Exception("Number of front brace is not equal to the back brace"); }
                     tokens[start] = " ";
                     tokens[end] = " ";
                 }
