@@ -4,10 +4,10 @@ namespace FormulaEvaluator
 {
     /// <summary>
     /// Author:    Shu Chen
-    /// Partner:   [Partner Name or None]
-    /// Date:      2024/1/10
+    /// Partner:   None
+    /// Date:      2024/1/12
     /// Course:    CS 3500, University of Utah, School of Computing
-    /// Copyright: CS 3500 and [Your Name(s)] - This work may not 
+    /// Copyright: CS 3500 and Shu Chen - This work may not 
     ///            be copied for use in Academic Coursework.
     ///
     /// I, Shu Chen, certify that I wrote this code from scratch and
@@ -46,8 +46,9 @@ namespace FormulaEvaluator
             //First, deal with the most inner brace, like normal calculate
             while (!brace.NoBrace())
             {
-                int start = brace.GetFrontBrace();
-                int end = brace.GetBackBrace();
+
+                BraceTracker.BraceIndex.BraceIndexToInts(brace.GetInnerBrace(),out int start,out int end);  
+
                 if (start != -1 && end != tokens.Count)
                 {
                     tokens[start] = " ";
