@@ -1,9 +1,11 @@
-﻿namespace FormulaEvaluator
+﻿using System.Collections.Generic;
+
+namespace FormulaEvaluator
 {
     /// <summary>
     /// Author:    Shu Chen
     /// Partner:   None
-    /// Date:      2024/1/12
+    /// Date:      2024/1/13
     /// Course:    CS 3500, University of Utah, School of Computing
     /// Copyright: CS 3500 and Shu Chen - This work may not 
     ///            be copied for use in Academic Coursework.
@@ -42,12 +44,30 @@
                 index++;
             }
 
+            CheckBraceValid();
+
         }
 
+        /// <summary>
+        /// Get the most inner brace
+        /// </summary>
+        /// <returns>a BraceIndex data type which contains two int index</returns>
         public BraceIndex GetInnerBrace() {
             BraceIndex index = brace[brace.Count - 1];
             brace.RemoveAt(brace.Count - 1); 
             return index;
+        }
+
+        /// <summary>
+        /// A helper method to check if all braces are matched
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        private void CheckBraceValid() { 
+            for(int i = 0; i < brace.Count; i++) {
+                if(brace[i].backBraceIndex == -2 || brace[i].frontBraceIndex == -2) {
+                    throw new Exception("Number of front brace is not equal to the back brace");
+                }
+            }
         }
 
 

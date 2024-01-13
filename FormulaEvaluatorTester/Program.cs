@@ -4,7 +4,7 @@ using FormulaEvaluatorTester;
 /// <summary>
 /// Author:    Shu Chen
 /// Partner:   None
-/// Date:      2024/1/12
+/// Date:      2024/1/13
 /// Course:    CS 3500, University of Utah, School of Computing
 /// Copyright: CS 3500 and Shu Chen - This work may not 
 ///            be copied for use in Academic Coursework.
@@ -26,10 +26,10 @@ Console.WriteLine((1+1)==Evaluator.Evaluate("1+1", null));
 Console.WriteLine((1 + ((1 + 2) * 3) / 4) == Evaluator.Evaluate("1 + (( 1    +2) *3)/4", null));
 
 //test for two brackets in a same level, and in a large bracket
-Console.WriteLine((1 + (1 + 1) * (9 / 3))==Evaluator.Evaluate("1 + (1 + 1) * (9 / 3)", null));
+Console.WriteLine((1 + (1 + 1) * (9 / 3)) == Evaluator.Evaluate("1 + (1 + 1) * (9 / 3)", null));
 
 //test for the order of the calculate
-Console.WriteLine((10+(1+1)*9/3)==Evaluator.Evaluate("a+(1+1)*9/3", VariableStorage.LookUp));
+Console.WriteLine((10 + (1 + 1) * 9 / 3) == Evaluator.Evaluate("a+(1+1)*9/3", VariableStorage.LookUp));
 
 //test for two variables.
 Console.WriteLine((1024 * (10 + (1 / 1) * (9 / 3)) - 1024) == Evaluator.Evaluate("b*(a+(1/1)*(9/3))-b", VariableStorage.LookUp));
@@ -37,9 +37,29 @@ Console.WriteLine((1024 * (10 + (1 / 1) * (9 / 3)) - 1024) == Evaluator.Evaluate
 //Test for only one number in the brace
 Console.WriteLine(((10 + (4) / 2) + (0)) == Evaluator.Evaluate("((10+(4)/2)+(0))", null));
 
-
 //Test for many braces, and the order of the same level of the operation
 Console.WriteLine((1234 - 6000 / ((100) + (20 + 5) / 5) * 3) == Evaluator.Evaluate("(1234 - 6000 / ((100) + (20 + 5) / 5) * 3)", null));
+
+//Test for null lookup function
+try
+{
+    Evaluator.Evaluate("c", null);
+}catch (Exception ex) { Console.WriteLine($"\n Expected for exception of null look up, the actual exception is{ex}"); }
+
+//test for null variable
+try
+{
+   Console.WriteLine(Evaluator.Evaluate("c", VariableStorage.LookUp));
+}
+catch (Exception ex) { Console.WriteLine($"\n Expected for exception of no variable, the actual exception is{ex}"); }
+
+
+//test for misMatch braces
+try
+{
+    Console.WriteLine(Evaluator.Evaluate("((1+1)", VariableStorage.LookUp));
+}
+catch (Exception ex) { Console.WriteLine($"\n Expected for mismatch braces, the actual exception is{ex}"); }
 
 Console.ReadLine();
 

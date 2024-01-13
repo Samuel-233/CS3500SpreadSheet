@@ -1,4 +1,5 @@
-namespace FormulaEvaluator{
+namespace FormulaEvaluator
+{
     /// <summary>
     /// Author:    Shu Chen
     /// Partner:   None
@@ -16,7 +17,8 @@ namespace FormulaEvaluator{
     ///
     /// This is a class to Process Strings, break down it in to other forms that easier to process
     /// </summary>
-    public class ProcessString {
+    public class ProcessString
+    {
         /// <summary>
         /// A helper method to remove all white space
         /// </summary>
@@ -62,5 +64,5 @@ namespace FormulaEvaluator{
             return newTokens;
         }
     }
-   
+
 }

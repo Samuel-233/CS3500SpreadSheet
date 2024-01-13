@@ -4,10 +4,10 @@ namespace FormulaEvaluator
 {
     /// <summary>
     /// Author:    Shu Chen
-    /// Partner:   None
-    /// Date:      2024/1/13
+    /// Partner:   [Partner Name or None]
+    /// Date:      2024/1/10
     /// Course:    CS 3500, University of Utah, School of Computing
-    /// Copyright: CS 3500 and Shu Chen - This work may not 
+    /// Copyright: CS 3500 and [Your Name(s)] - This work may not 
     ///            be copied for use in Academic Coursework.
     ///
     /// I, Shu Chen, certify that I wrote this code from scratch and
@@ -22,10 +22,8 @@ namespace FormulaEvaluator
     public delegate int Lookup(String variable_name);
     public static class Evaluator
     {
-        
+
         static BraceTracker? brace = null;
-
-
 
         /// <summary>
         /// To evaluate the String as a expression, and get a int result.
@@ -37,7 +35,7 @@ namespace FormulaEvaluator
                                    Lookup variableEvaluator)
         {
             
-            List<String> tokens = ProcessString.StringToTokens(
+            List<String> tokens = ProcessString. (
             Regex.Split(expression, "(\\()|(\\))|(-)|(\\+)|(\\*)|(/)"));
 
 
@@ -46,13 +44,12 @@ namespace FormulaEvaluator
             //First, deal with the most inner brace, like normal calculate
             while (!brace.NoBrace())
             {
-
-                BraceTracker.BraceIndex.BraceIndexToInts(brace.GetInnerBrace(),out int start,out int end);  
-
+                int start = brace.GetFrontBrace();
+                int end = brace.GetBackBrace();
                 if (start != -1 && end != tokens.Count)
                 {
-                    tokens[end] = " ";
                     tokens[start] = " ";
+                    tokens[end] = " ";
                 }
 
                 //find all operators in that brace
@@ -62,29 +59,21 @@ namespace FormulaEvaluator
                 while (!operators.Op1Empty())
                 {
                     //use operators to locate other numbers and calculate.
-                    Calculate(operators.GetOp1st(), tokens, variableEvaluator);
+                    Calculate(operators.GetOp1st(), tokens);
                 }
 
                 //then,calculate the + and -
                 while (!operators.Op2Empty())
                 {
                     //use operators to locate other numbers and calculate.
-                    Calculate(operators.GetOp2nd(), tokens, variableEvaluator);
+                    Calculate(operators.GetOp2nd(), tokens);
                 }
 
             }
 
-            int answer = 0;
             //Find the last element left in the token, which will be the result.
-            foreach (String token in tokens) {
-                if (token.Equals(" ")) { continue; }
-                if (!int.TryParse(token, out answer))
-                {
-                   answer = EvalVariable(variableEvaluator, token);
-                }
-            }
-
-            return answer;
+            foreach (String token in tokens) { if (token != " ") return Convert.ToInt32(token); }
+            return 0;
 
 
         }
@@ -95,7 +84,7 @@ namespace FormulaEvaluator
         /// <param name="operatorIndex">the position of the operator</param>
         /// <param name="tokens">a list of tokens that store the expression</param>
         /// <exception cref="Exception">throw error if variable don't exist</exception>
-        private static void Calculate(int operatorIndex, List<String> tokens, Lookup variableEvaluator)
+        public static void Calculate(int operatorIndex, List<String> tokens)
         {
             String @operator = tokens[operatorIndex];
 
@@ -105,7 +94,10 @@ namespace FormulaEvaluator
             int left = 0;
             String variable = tokens[operatorIndex - index];
             if (!int.TryParse(variable, out left)){
-                left = EvalVariable(variableEvaluator, variable);
+                if (variables.TryGetValue(variable, out left))
+                {
+                }
+                else throw new Exception($"no such variable {variable} in data");
             }
             tokens[operatorIndex - index] = " ";
 
@@ -116,7 +108,10 @@ namespace FormulaEvaluator
             variable = tokens[operatorIndex + index];
             if (!int.TryParse(variable, out right))
             {
-                right = EvalVariable(variableEvaluator, variable);
+                if (variables.TryGetValue(variable, out right))
+                {
+                }
+                else throw new Exception($"no such variable {variable} in data");
             }
             tokens[operatorIndex + index] = " ";
 
@@ -130,21 +125,21 @@ namespace FormulaEvaluator
             tokens[operatorIndex] = answer.ToString();
         }
 
-
         /// <summary>
-        /// Check if the look up function is null before evaluate the variable.
+        /// Return variable's value if it exist
         /// </summary>
-        /// <param name="lookup">lookup function</param>
-        /// <param name="variable">variable name</param>
-        /// <returns>the value of variable</returns>
-        /// <exception cref="Exception">if lookup is null</exception>
-        private static int EvalVariable(Lookup lookup,String variable) {
-            if(lookup == null) { throw new Exception("please provide a look up function"); }
-            return lookup(variable);
+        /// <param name="variable_name"></param>
+        /// <returns>Return variable's value if it exist</returns>
+        /// <exception cref="Exception"></exception>
+        public static int LookUp(String variable_name)
+        {
+            if (variables.ContainsKey(variable_name))
+            {
+                if
+                return variables[variable_name];
+            }
+            throw new Exception("Not a valid variable");
         }
-
-
-
 
     }
 }

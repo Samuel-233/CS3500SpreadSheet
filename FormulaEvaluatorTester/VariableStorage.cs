@@ -7,7 +7,7 @@ namespace FormulaEvaluatorTester
         public static int LookUp(String variableName)
         {
             int result;
-            variables.TryGetValue(variableName, out result);
+            if(!variables.TryGetValue(variableName, out result)) throw new Exception($"No variable called {variableName}");
             return result;
         }
 
