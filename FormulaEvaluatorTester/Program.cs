@@ -20,6 +20,7 @@ using FormulaEvaluatorTester;
 /// </summary>
 VariableStorage.AddVariable("a", 10);
 VariableStorage.AddVariable("b", 1024);
+VariableStorage.AddVariable("bb", 2048);
 Console.WriteLine((1+1)==Evaluator.Evaluate("1+1", null));
 
 //test for one bracket in another bracket
@@ -39,6 +40,9 @@ Console.WriteLine(((10 + (4) / 2) + (0)) == Evaluator.Evaluate("((10+(4)/2)+(0))
 
 //Test for many braces, and the order of the same level of the operation
 Console.WriteLine((1234 - 6000 / ((100) + (20 + 5) / 5) * 3) == Evaluator.Evaluate("(1234 - 6000 / ((100) + (20 + 5) / 5) * 3)", null));
+
+//Test for two length variable
+Console.WriteLine(2048 == Evaluator.Evaluate("bb", VariableStorage.LookUp));
 
 //Test for null lookup function
 try
