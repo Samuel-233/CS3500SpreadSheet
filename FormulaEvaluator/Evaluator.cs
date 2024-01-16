@@ -126,7 +126,7 @@ namespace FormulaEvaluator
             else if (@operator.Equals("-")) { answer = left - right; }
             else if (@operator.Equals("*")) { answer = left * right; }
             else if (@operator.Equals("/")) {
-                if (right == 0) throw new InvalidDataException("Can not divide by zeor");
+                if (right == 0) throw new InvalidDataException("Can not divide by zero");
                 answer = left / right; 
             }
 

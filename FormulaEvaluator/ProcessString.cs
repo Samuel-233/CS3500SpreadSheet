@@ -30,36 +30,8 @@ namespace FormulaEvaluator
             char space = ' ';
             foreach (String token in tokens)
             {
-                int frontIndex = 0;
-                int backIndex = token.Length - 1;
-                bool haveSpace = false;
-                //If token is empty or just one space, ignore that
-                if (token.Length == 0 || (token.Length == 1 && token[0] == space))
-                {
-                    continue;
-                }
-                //remove spaces before the useful data
-                while (frontIndex < token.Length - 1 && token[frontIndex] == space)
-                {
-                    haveSpace = true;
-                    frontIndex++;
-                }
-                //remove spaces behind the useful data
-                while (backIndex > 0 && token[backIndex] == space)
-                {
-                    haveSpace = true;
-                    backIndex--;
-                }
-                //if there is a space and not every char of token is space, add this token to list
-                if (haveSpace && frontIndex <= backIndex)
-                {
-                    newTokens.Add(token.Substring(frontIndex, backIndex - frontIndex + 1));
-                    continue;
-                }
-                if (!haveSpace)
-                {
-                    newTokens.Add(token);
-                }
+                string newToken = token.Trim();
+                if(newToken.Length > 0 ) newTokens.Add(newToken);
             }
             return newTokens;
         }
