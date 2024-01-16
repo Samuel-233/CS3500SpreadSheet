@@ -26,3 +26,4 @@ I didn't speak to anyone yet, I will do it if I have time. Most of my problems a
     1. C# Access String - https://www.w3schools.com/cs/cs_strings_access.php
     2. C# String to int - https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/how-to-convert-a-string-to-a-number
     3. How to know if a String is a number - https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/how-to-determine-whether-a-string-represents-a-numeric-value
+    4. Trim String - https://www.geeksforgeeks.org/c-sharp-trim-method/
