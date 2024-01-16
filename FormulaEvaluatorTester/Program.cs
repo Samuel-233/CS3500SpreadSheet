@@ -65,6 +65,21 @@ try
 }
 catch (Exception ex) { Console.WriteLine($"\n Expected for mismatch braces, the actual exception is{ex}"); }
 
+//test for misMatch braces
+try
+{
+    Console.WriteLine(Evaluator.Evaluate("(1+1))", VariableStorage.LookUp));
+}
+catch (Exception ex) { Console.WriteLine($"\n Expected for mismatch braces, the actual exception is{ex}"); }
+
+
+//test divide by zero
+try
+{
+    Console.WriteLine(Evaluator.Evaluate("1/0", VariableStorage.LookUp));
+}
+catch (Exception ex) { Console.WriteLine($"\n Expected for cannot divide by zero, the actual exception is{ex}"); }
+
 Console.ReadLine();
 
 

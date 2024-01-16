@@ -125,7 +125,10 @@ namespace FormulaEvaluator
             if (@operator.Equals("+")) { answer = left + right; }
             else if (@operator.Equals("-")) { answer = left - right; }
             else if (@operator.Equals("*")) { answer = left * right; }
-            else if (@operator.Equals("/")) { answer = left / right; }
+            else if (@operator.Equals("/")) {
+                if (right == 0) throw new InvalidDataException("Can not divide by zeor");
+                answer = left / right; 
+            }
 
             tokens[operatorIndex] = answer.ToString();
         }
