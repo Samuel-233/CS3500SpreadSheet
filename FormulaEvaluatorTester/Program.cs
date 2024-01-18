@@ -44,6 +44,7 @@ Console.WriteLine((1234 - 6000 / ((100) + (20 + 5) / 5) * 3) == Evaluator.Evalua
 //Test for two length variable
 Console.WriteLine(2048 == Evaluator.Evaluate("bb", VariableStorage.LookUp));
 
+
 //Test for null lookup function
 try
 {
