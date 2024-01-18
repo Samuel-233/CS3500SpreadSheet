@@ -4,7 +4,7 @@ using FormulaEvaluatorTester;
 /// <summary>
 /// Author:    Shu Chen
 /// Partner:   None
-/// Date:      2024/1/13
+/// Date:      2024/1/14
 /// Course:    CS 3500, University of Utah, School of Computing
 /// Copyright: CS 3500 and Shu Chen - This work may not 
 ///            be copied for use in Academic Coursework.
@@ -65,6 +65,21 @@ try
     Console.WriteLine(Evaluator.Evaluate("((1+1)", VariableStorage.LookUp));
 }
 catch (Exception ex) { Console.WriteLine($"\n Expected for mismatch braces, the actual exception is{ex}"); }
+
+//test for misMatch braces
+try
+{
+    Console.WriteLine(Evaluator.Evaluate("(1+1))", VariableStorage.LookUp));
+}
+catch (Exception ex) { Console.WriteLine($"\n Expected for mismatch braces, the actual exception is{ex}"); }
+
+
+//test divide by zero
+try
+{
+    Console.WriteLine(Evaluator.Evaluate("1/0", VariableStorage.LookUp));
+}
+catch (Exception ex) { Console.WriteLine($"\n Expected for cannot divide by zero, the actual exception is{ex}"); }
 
 Console.ReadLine();
 
