@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SpreadsheetUtilities
 {
-//Node's dependent means those nodes that relay on this node
+//Node's dependent means those nodes that relay on this node (Children)
 //Node's dependee means this node's parent
 
     internal class DependencyManager
@@ -24,35 +24,55 @@ namespace SpreadsheetUtilities
         /// </summary>
         /// <param name="dependee">the parent node</param>
         /// <param name="dependent">the child node</param>
-        public void AddNodePair(String dependee, String dependent){
+        public bool AddNodePair(String dependee, String dependent){
             Node parent = AddNode(dependee);
             Node child = AddNode(dependent);
 
-            parent.AddChild(child);
-            child.AddParent(parent);
+            bool added = false;
+            added |= parent.AddChild(child);
+            added |= child.AddParent(parent);
+            return added;
         }
 
-        public void RemoveNodePair(String dependee, String dependent){
+        public bool RemoveNodePair(String dependee, String dependent){
             Node parent,child;
             dependencyGraph.TryGetValue(dependee, out parent);
-            dependencyGraph.TryGetValue(dependee, out child);
+            dependencyGraph.TryGetValue(dependent, out child);
 
-            parent.RemoveChild(child);
-            child.RemoveParent(parent);
+            bool removed = false;
+
+            removed |= parent.RemoveChild(child);
+            removed |= child.RemoveParent(parent);
             Clean(dependee );
             Clean(dependent );
+            return removed;
         }
+        /*
+                /// <summary>
+                /// Try to find the node
+                /// </summary>
+                /// <param name="name">node's name</param>
+                /// <returns>the target node</returns>
+                /// <exception cref="Exception">Throw error if node doesn't exist</exception>
+                public Node FindNode(String name){
+                    if(dependencyGraph.ContainsKey(name)){
+                    return dependencyGraph[name];
+                    }throw new Exception($"can not find the node called {name}");
+                }
+        */
 
         /// <summary>
         /// Try to find the node
         /// </summary>
         /// <param name="name">node's name</param>
         /// <returns>the target node</returns>
-        /// <exception cref="Exception">Throw error if node doesn't exist</exception>
-        public Node FindNode(String name){
-            if(dependencyGraph.ContainsKey(name)){
-            return dependencyGraph[name];
-            }throw new Exception($"can not find the node called {name}");
+        public Node FindNode(String name)
+        {
+            if (dependencyGraph.ContainsKey(name))
+            {
+                return dependencyGraph[name];
+            }
+            return null;
         }
 
 
@@ -62,7 +82,9 @@ namespace SpreadsheetUtilities
         /// <param name="name"></param>
         /// <returns></returns>
         public List<Node> GetAllDependees(String name) {
-            return FindNode(name).GetChildren();
+            Node node = FindNode(name);
+            if (node!=null) return node.GetParents();
+            return new List<Node>();
         }
 
         /// <summary>
@@ -71,7 +93,9 @@ namespace SpreadsheetUtilities
         /// <param name="name"></param>
         /// <returns></returns>
         public List<Node> GetAllDependents(String name){
-            return FindNode(name).GetParents();
+            Node node = FindNode(name);
+            if (node != null) return node.GetChildren();
+            return new List<Node>();
         }
 
         /// <summary>
@@ -109,8 +133,11 @@ namespace SpreadsheetUtilities
         /// </summary>
         /// <param name="name"></param>
         private void Clean(String name) {
-            int parentCount = FindNode(name).GetParents().Count;
-            int childrenCount = FindNode(name).GetChildren().Count;
+            Node node = FindNode(name);
+            if(node == null) return;
+
+            int parentCount = node.GetParents().Count;
+            int childrenCount = node.GetChildren().Count;
 
             if(parentCount == 0 &&  childrenCount == 0){ dependencyGraph.Remove(name); }
         }
@@ -144,34 +171,34 @@ namespace SpreadsheetUtilities
         /// Add a new parent to this node
         /// </summary>
         /// <param name="parent">reference to it's parent</param>
-        public void AddParent(Node parent) {
-            parents.Add(parent);
+        public bool AddParent(Node parent) {
+            return parents.Add(parent);
         }
 
         /// <summary>
         /// Add a new child to this node
         /// </summary>
         /// <param name="child">reference to it's child</param>
-        public void AddChild(Node child) {
-            children.Add(child);
+        public bool AddChild(Node child) {
+            return children.Add(child);
         }
 
         /// <summary>
         /// Remove a parent
         /// </summary>
         /// <param name="parent">reference to it's parent</param>
-        public void RemoveParent(Node parent)
+        public bool RemoveParent(Node parent)
         {
-            parents.Remove(parent);
+            return parents.Remove(parent);
         }
 
         /// <summary>
         /// Remove a child
         /// </summary>
         /// <param name="child">reference to it's child</param>
-        public void RemoveChild(Node child)
+        public bool RemoveChild(Node child)
         {
-            children.Remove(child);
+            return children.Remove(child);
         }
 
 

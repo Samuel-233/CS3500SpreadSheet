@@ -43,6 +43,7 @@ namespace SpreadsheetUtilities
     public class DependencyGraph
     {
         DependencyManager dependencyGraph;
+        int size;
 
         /// <summary>
         /// Creates an empty DependencyGraph.
@@ -50,6 +51,7 @@ namespace SpreadsheetUtilities
         public DependencyGraph()
         {
             dependencyGraph = new();
+            size = 0;
         }
 
         
@@ -59,7 +61,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public int Size
         {
-            get { return dependencyGraph.Count; }
+            get { return size; }
         }
 
 
@@ -123,7 +125,7 @@ namespace SpreadsheetUtilities
         /// <param name="t"> t cannot be evaluated until s is</param>        /// 
         public void AddDependency(string s, string t)
         {
-            dependencyGraph.AddNodePair(s, t);
+            if(dependencyGraph.AddNodePair(s, t))size++;
         }
 
 
@@ -134,7 +136,7 @@ namespace SpreadsheetUtilities
         /// <param name="t"></param>
         public void RemoveDependency(string s, string t)
         {  
-            dependencyGraph.RemoveNodePair(s, t);
+            if(dependencyGraph.RemoveNodePair(s, t))size--;
         }
 
 
@@ -146,10 +148,22 @@ namespace SpreadsheetUtilities
         {
             List<String> dependents = (List<string>)GetDependents(s);
             //Remove all dependents for node s
-            foreach(String dependent in dependents) { dependencyGraph.RemoveNodePair(s, dependent); }
+            foreach (String dependent in dependents)
+            {
+                if (dependencyGraph.RemoveNodePair(s, dependent))
+                {
+                    size--;
+                }
+            }
 
             //Add new dependents
-            foreach (String dependent in newDependents) { dependencyGraph.AddNodePair(s, dependent); }
+            foreach (String dependent in newDependents)
+            {
+                if (dependencyGraph.AddNodePair(s, dependent))
+                {
+                    size++;
+                }
+            }
         }
 
 
@@ -161,10 +175,22 @@ namespace SpreadsheetUtilities
         {
             List<String> dependees = (List<string>)GetDependees(s);
             //Remove all dependees for node s
-            foreach (String dependee in dependees) { dependencyGraph.RemoveNodePair(s, dependee); }
+            foreach (String dependee in dependees)
+            {
+                if (dependencyGraph.RemoveNodePair(dependee, s))
+                {
+                    size--;
+                }
+            }
 
             //Add new dependees
-            foreach (String dependee in newDependees) { dependencyGraph.AddNodePair(s, dependee); }
+            foreach (String dependee in newDependees)
+            {
+                if (dependencyGraph.AddNodePair(dependee, s))
+                {
+                    size++;
+                }
+            }
         }
 
     }
