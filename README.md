@@ -16,4 +16,5 @@ The Spreadsheet program is currently capable of Evaluate expression  Future exte
 
 # Time Expenditures:
 
-    1. Assignment One:   Predicted Hours:          15        Actual Hours:   11
+    1. Assignment One:   Predicted Hours:          15        Actual Hours:   11      
+    2. Assignment Two:   Predicted Hours:          10        Actual Hours:         

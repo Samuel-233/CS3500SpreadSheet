@@ -8,9 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DependencyGraph;
 
 namespace SpreadsheetUtilities
 {
+    //TODO Hash map and graph, map store the node, node point to other node
 
     /// <summary>
     /// (s1,t1) is an ordered pair of strings
@@ -41,20 +43,24 @@ namespace SpreadsheetUtilities
     /// </summary>
     public class DependencyGraph
     {
+        DependencyManager dependencyGraph;
+
         /// <summary>
         /// Creates an empty DependencyGraph.
         /// </summary>
         public DependencyGraph()
         {
+            dependencyGraph = new();
         }
 
+        
 
         /// <summary>
         /// The number of ordered pairs in the DependencyGraph.
         /// </summary>
         public int Size
         {
-            get { return 0; }
+            get { return dependencyGraph.Count(); }
         }
 
 
