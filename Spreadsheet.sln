@@ -10,7 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormulaEvaluatorTester", "FormulaEvaluatorTester\FormulaEvaluatorTester.csproj", "{4C2C7576-CF59-4A3B-8633-2E05E4C9E10E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FormulaEvaluatorTester", "FormulaEvaluatorTester\FormulaEvaluatorTester.csproj", "{4C2C7576-CF59-4A3B-8633-2E05E4C9E10E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyGraph", "DependencyGraph\DependencyGraph.csproj", "{0B32BB5C-E22F-4BE5-8F12-53983484F554}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyGraphTests", "DependencyGraphTests\DependencyGraphTests.csproj", "{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +30,14 @@ Global
 		{4C2C7576-CF59-4A3B-8633-2E05E4C9E10E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C2C7576-CF59-4A3B-8633-2E05E4C9E10E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C2C7576-CF59-4A3B-8633-2E05E4C9E10E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B32BB5C-E22F-4BE5-8F12-53983484F554}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B32BB5C-E22F-4BE5-8F12-53983484F554}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B32BB5C-E22F-4BE5-8F12-53983484F554}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B32BB5C-E22F-4BE5-8F12-53983484F554}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
