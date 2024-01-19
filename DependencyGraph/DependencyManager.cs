@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DependencyGraph
+namespace SpreadsheetUtilities
 {
 //Node's dependent means those nodes that relay on this node
 //Node's dependee means this node's parent
@@ -32,6 +32,17 @@ namespace DependencyGraph
             child.AddParent(parent);
         }
 
+        public void RemoveNodePair(String dependee, String dependent){
+            Node parent,child;
+            dependencyGraph.TryGetValue(dependee, out parent);
+            dependencyGraph.TryGetValue(dependee, out child);
+
+            parent.RemoveChild(child);
+            child.RemoveParent(parent);
+            Clean(dependee );
+            Clean(dependent );
+        }
+
         /// <summary>
         /// Try to find the node
         /// </summary>
@@ -44,29 +55,39 @@ namespace DependencyGraph
             }throw new Exception($"can not find the node called {name}");
         }
 
-        /// <summary>
-        /// return the size of the dictionary
-        /// </summary>
-        public int Count() { return dependencyGraph.Count;  }
 
         /// <summary>
-        /// Return a node's dependee Count
+        /// Return a node's all dependees
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public int dependeeCount(String name) {
-            return this.FindNode(name).ParentCount();
+        public List<Node> GetAllDependees(String name) {
+            return FindNode(name).GetChildren();
         }
 
         /// <summary>
-        /// Return a node's dependent Count
+        /// Return a node's all dependents
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public int dependentCount(String name)
-        {
-            return this.FindNode(name).ChildCount();
+        public List<Node> GetAllDependents(String name){
+            return FindNode(name).GetParents();
         }
+
+        /// <summary>
+        /// Convert a list of node to a list of node's name
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <returns></returns>
+        public static List<String> NodeToNodeName(List<Node> nodes){
+            List<String> names = new();
+            foreach(Node node in nodes){
+                names.Add(node.Name);
+            }
+            return names;
+        }
+
+        public int Count{get{ return dependencyGraph.Count; } }
 
         /// <summary>
         /// Add a new node to the dictionary (if it doesn't exist)
@@ -83,7 +104,16 @@ namespace DependencyGraph
             else return dependencyGraph[name];
         }
 
+        /// <summary>
+        /// Remove this node from the dictionary if it has no relationship to other nodes
+        /// </summary>
+        /// <param name="name"></param>
+        private void Clean(String name) {
+            int parentCount = FindNode(name).GetParents().Count;
+            int childrenCount = FindNode(name).GetChildren().Count;
 
+            if(parentCount == 0 &&  childrenCount == 0){ dependencyGraph.Remove(name); }
+        }
 
 
     }
@@ -94,8 +124,8 @@ namespace DependencyGraph
     /// </summary>
     internal class Node {
 
-        List<Node> children;
-        List<Node> parents;
+        HashSet<Node> children;
+        HashSet<Node> parents;
         String name;
 
 
@@ -114,7 +144,7 @@ namespace DependencyGraph
         /// Add a new parent to this node
         /// </summary>
         /// <param name="parent">reference to it's parent</param>
-        public void AddParent(Node parent){
+        public void AddParent(Node parent) {
             parents.Add(parent);
         }
 
@@ -122,21 +152,46 @@ namespace DependencyGraph
         /// Add a new child to this node
         /// </summary>
         /// <param name="child">reference to it's child</param>
-        public void AddChild(Node child){
+        public void AddChild(Node child) {
             children.Add(child);
         }
 
         /// <summary>
-        /// Return parents count
+        /// Remove a parent
         /// </summary>
-        /// <returns></returns>
-        public int ParentCount(){ return parents.Count; }
+        /// <param name="parent">reference to it's parent</param>
+        public void RemoveParent(Node parent)
+        {
+            parents.Remove(parent);
+        }
 
         /// <summary>
-        /// Return Children count
+        /// Remove a child
+        /// </summary>
+        /// <param name="child">reference to it's child</param>
+        public void RemoveChild(Node child)
+        {
+            children.Remove(child);
+        }
+
+
+
+        /// <summary>
+        /// Return list of parents
         /// </summary>
         /// <returns></returns>
-        public int ChildCount(){ return children.Count; }
+        public List<Node> GetParents() { return parents.ToList(); }
 
+
+        /// <summary>
+        /// Return list of children
+        /// </summary>
+        /// <returns></returns>
+        public List<Node> GetChildren() { return children.ToList(); }
+
+        /// <summary>
+        /// Node's name
+        /// </summary>
+        public String Name{ get { return this.name; } }
     }
 }

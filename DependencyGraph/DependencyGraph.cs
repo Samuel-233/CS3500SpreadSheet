@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DependencyGraph;
 
 namespace SpreadsheetUtilities
 {
@@ -60,7 +59,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public int Size
         {
-            get { return dependencyGraph.Count(); }
+            get { return dependencyGraph.Count; }
         }
 
 
@@ -73,7 +72,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public int this[string s]
         {
-            get { return 0; }
+            get { return dependencyGraph.GetAllDependees(s).Count; }
         }
 
 
@@ -82,7 +81,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public bool HasDependents(string s)
         {
-            return false;
+            return dependencyGraph.GetAllDependents(s).Count > 0;
         }
 
 
@@ -91,7 +90,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public bool HasDependees(string s)
         {
-            return false;
+            return dependencyGraph.GetAllDependees(s).Count>0;
         }
 
 
@@ -100,7 +99,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public IEnumerable<string> GetDependents(string s)
         {
-            return null;
+            return DependencyManager.NodeToNodeName(dependencyGraph.GetAllDependents(s));
         }
 
         /// <summary>
@@ -108,7 +107,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public IEnumerable<string> GetDependees(string s)
         {
-            return null;
+            return DependencyManager.NodeToNodeName(dependencyGraph.GetAllDependees(s));
         }
 
 
@@ -124,6 +123,7 @@ namespace SpreadsheetUtilities
         /// <param name="t"> t cannot be evaluated until s is</param>        /// 
         public void AddDependency(string s, string t)
         {
+            dependencyGraph.AddNodePair(s, t);
         }
 
 
@@ -133,7 +133,8 @@ namespace SpreadsheetUtilities
         /// <param name="s"></param>
         /// <param name="t"></param>
         public void RemoveDependency(string s, string t)
-        {
+        {  
+            dependencyGraph.RemoveNodePair(s, t);
         }
 
 
@@ -143,6 +144,12 @@ namespace SpreadsheetUtilities
         /// </summary>
         public void ReplaceDependents(string s, IEnumerable<string> newDependents)
         {
+            List<String> dependents = (List<string>)GetDependents(s);
+            //Remove all dependents for node s
+            foreach(String dependent in dependents) { dependencyGraph.RemoveNodePair(s, dependent); }
+
+            //Add new dependents
+            foreach (String dependent in newDependents) { dependencyGraph.AddNodePair(s, dependent); }
         }
 
 
@@ -152,6 +159,12 @@ namespace SpreadsheetUtilities
         /// </summary>
         public void ReplaceDependees(string s, IEnumerable<string> newDependees)
         {
+            List<String> dependees = (List<string>)GetDependees(s);
+            //Remove all dependees for node s
+            foreach (String dependee in dependees) { dependencyGraph.RemoveNodePair(s, dependee); }
+
+            //Add new dependees
+            foreach (String dependee in newDependees) { dependencyGraph.AddNodePair(s, dependee); }
         }
 
     }
