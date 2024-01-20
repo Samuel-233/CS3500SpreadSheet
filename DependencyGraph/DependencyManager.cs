@@ -6,8 +6,26 @@ using System.Threading.Tasks;
 
 namespace SpreadsheetUtilities
 {
-//Node's dependent means those nodes that relay on this node (Children)
-//Node's dependee means this node's parent
+    //Node's dependent means those nodes that relay on this node (Children)
+    //Node's dependee means this node's parent
+
+    /// <summary>
+    /// Author:    Shu Chen
+    /// Partner:   None
+    /// Date:      2024/1/19
+    /// Course:    CS 3500, University of Utah, School of Computing
+    /// Copyright: CS 3500 and Shu Chen - This work may not 
+    ///            be copied for use in Academic Coursework.
+    ///
+    /// I, Shu Chen, certify that I wrote this code from scratch and
+    /// did not copy it in part or whole from another source.  All 
+    /// references used in the completion of the assignments are cited 
+    /// in my README file.
+    ///
+    /// File Contents
+    ///
+    /// This is the main code for Dependency Graph, It uses Dictionary to Store Each node, so Look up time would be O(1)
+    /// </summary>
 
     internal class DependencyManager
     {
@@ -34,6 +52,12 @@ namespace SpreadsheetUtilities
             return added;
         }
 
+        /// <summary>
+        /// Remove a node pair
+        /// </summary>
+        /// <param name="dependee"></param>
+        /// <param name="dependent"></param>
+        /// <returns>return true of successfully removed a dependee or dependent or both</returns>
         public bool RemoveNodePair(String dependee, String dependent){
             Node parent,child;
             dependencyGraph.TryGetValue(dependee, out parent);
@@ -47,19 +71,6 @@ namespace SpreadsheetUtilities
             Clean(dependent );
             return removed;
         }
-        /*
-                /// <summary>
-                /// Try to find the node
-                /// </summary>
-                /// <param name="name">node's name</param>
-                /// <returns>the target node</returns>
-                /// <exception cref="Exception">Throw error if node doesn't exist</exception>
-                public Node FindNode(String name){
-                    if(dependencyGraph.ContainsKey(name)){
-                    return dependencyGraph[name];
-                    }throw new Exception($"can not find the node called {name}");
-                }
-        */
 
         /// <summary>
         /// Try to find the node
@@ -147,7 +158,7 @@ namespace SpreadsheetUtilities
 
 
     /// <summary>
-    /// This is a node class, store two references to their parents and child
+    /// This is a node class, has two HashSet to store their parents and children, one String for it's name
     /// </summary>
     internal class Node {
 
