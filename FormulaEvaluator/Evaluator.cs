@@ -5,7 +5,7 @@ namespace FormulaEvaluator
     /// <summary>
     /// Author:    Shu Chen
     /// Partner:   None
-    /// Date:      2024/1/14
+    /// Date:      2024/1/22
     /// Course:    CS 3500, University of Utah, School of Computing
     /// Copyright: CS 3500 and Shu Chen - This work may not 
     ///            be copied for use in Academic Coursework.
@@ -24,7 +24,7 @@ namespace FormulaEvaluator
     {
 
         public delegate int Lookup(String v);
-        public static int Evaluate(String exp, Lookup variableEvaluator)
+        public static int Evaluate(String expression, Lookup variableEvaluator)
         {
             int leftParenthesis = 0;
             int rightParenthesis = 0;
@@ -32,9 +32,9 @@ namespace FormulaEvaluator
 
             Stack<int> values = new Stack<int>();
             Stack<string> operators = new Stack<string>();
-            exp = exp.Trim();
+            expression = expression.Trim();
 
-            string[] tokens = Regex.Split(exp, "(\\()|(\\))|(-)|(\\+)|(\\*)|(/)");
+            string[] tokens = Regex.Split(expression, "(\\()|(\\))|(-)|(\\+)|(\\*)|(/)");
 
             int currentToken = 0;
 
