@@ -12,7 +12,7 @@ Copyright:  CS 3500 and Shu Chen - This work may not be copied for use in Academ
 
 # Overview of the Spreadsheet functionality
 
-The Spreadsheet program is currently capable of Evaluate expression  Future extensions are a fully function spread sheet
+The Spreadsheet program is currently capable of Evaluate expression, make dependency relationship. Future extensions are a fully function spread sheet
 
 # Time Expenditures:
 

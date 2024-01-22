@@ -64,9 +64,9 @@ namespace SpreadsheetUtilities
             dependencyGraph.TryGetValue(dependent, out child);
 
             bool removed = false;
+            if(parent != null){ removed |= parent.RemoveChild(child); }
+            if(child != null){ removed |= child.RemoveParent(parent); }
 
-            removed |= parent.RemoveChild(child);
-            removed |= child.RemoveParent(parent);
             Clean(dependee );
             Clean(dependent );
             return removed;

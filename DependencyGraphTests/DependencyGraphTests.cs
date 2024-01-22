@@ -261,5 +261,60 @@ namespace DevelopmentTests
             }
         }
 
+
+        /// <summary>
+        ///Test for the size after remove multiple times 
+        ///</summary>
+        [TestMethod()]
+        public void TestSizeAfterRemove()
+        {
+            DependencyGraph t = new DependencyGraph();
+            t.AddDependency("a", "b");
+            t.AddDependency("a", "c");
+            Assert.AreEqual(2, t.Size);
+            for (int i = 0; i < 10; i++) { t.RemoveDependency("a", "b"); }
+            Assert.AreEqual(1, t.Size);
+            for (int i = 0; i < 10; i++) { t.RemoveDependency("a", "c"); }
+            Assert.AreEqual(0, t.Size);
+        }
+
+        /// <summary>
+        ///Test for the size after replace multiple times 
+        ///</summary>
+        [TestMethod()]
+        public void TestSizeAfterReplace()
+        {
+            DependencyGraph t = new DependencyGraph();
+            t.AddDependency("a", "b");
+            t.AddDependency("a", "c");
+            Assert.AreEqual(2, t.Size);
+            for (int i = 0; i < 10; i++) { t.ReplaceDependents("a", new HashSet<string>() { "b" }); }
+            Assert.AreEqual(1, t.Size);
+            for (int i = 0; i < 10; i++) { t.ReplaceDependents("a", new HashSet<string>() { "b","c" }); }
+            Assert.AreEqual(2, t.Size);
+            for (int i = 0; i < 10; i++) { t.ReplaceDependents("a", new HashSet<string>() { "d","e","f" }); }
+            Assert.AreEqual(3, t.Size);
+            for (int i = 0; i < 10; i++) { t.ReplaceDependents("b", new HashSet<string>() { "a", "e", "f" }); }
+            Assert.AreEqual(6, t.Size);
+        }
+
+
+        /// <summary>
+        ///Test get method on empty graph
+        ///</summary>
+        [TestMethod()]
+        public void TestEmptyGet()
+        {
+            DependencyGraph t = new DependencyGraph();
+            IEnumerable<String> s = t.GetDependents("a");
+            Assert.AreEqual(0, s.Count());
+            s = t.GetDependees("a");
+            Assert.AreEqual(0, s.Count());
+            bool b = true;
+            b = t.HasDependents("a");
+            Assert.AreEqual(false, b);
+            b = t.HasDependees("a");
+            Assert.AreEqual(false, b);
+        }
     }
 }
