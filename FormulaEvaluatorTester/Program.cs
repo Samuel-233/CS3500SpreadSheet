@@ -18,9 +18,9 @@ using FormulaEvaluatorTester;
 ///
 /// A tester file to test the code and see if it run correctly.
 /// </summary>
-VariableStorage.AddVariable("a", 10);
-VariableStorage.AddVariable("b", 1024);
-VariableStorage.AddVariable("bb", 2048);
+VariableStorage.AddVariable("a1", 10);
+VariableStorage.AddVariable("b1", 1024);
+VariableStorage.AddVariable("bb1", 2048);
 Console.WriteLine((1+1)==Evaluator.Evaluate("1+1", null));
 
 //test for one bracket in another bracket
@@ -30,10 +30,10 @@ Console.WriteLine((1 + ((1 + 2) * 3) / 4) == Evaluator.Evaluate("1 + (( 1    +2)
 Console.WriteLine((1 + (1 + 1) * (9 / 3)) == Evaluator.Evaluate("1 + (1 + 1) * (9 / 3)", null));
 
 //test for the order of the calculate
-Console.WriteLine((10 + (1 + 1) * 9 / 3) == Evaluator.Evaluate("a+(1+1)*9/3", VariableStorage.LookUp));
+Console.WriteLine((10 + (1 + 1) * 9 / 3) == Evaluator.Evaluate("a1+(1+1)*9/3", VariableStorage.LookUp));
 
 //test for two variables.
-Console.WriteLine((1024 * (10 + (1 / 1) * (9 / 3)) - 1024) == Evaluator.Evaluate("b*(a+(1/1)*(9/3))-b", VariableStorage.LookUp));
+Console.WriteLine((1024 * (10 + (1 / 1) * (9 / 3)) - 1024) == Evaluator.Evaluate("b1*(a1+(1/1)*(9/3))-b1", VariableStorage.LookUp));
 
 //Test for only one number in the brace
 Console.WriteLine(((10 + (4) / 2) + (0)) == Evaluator.Evaluate("((10+(4)/2)+(0))", null));
@@ -42,7 +42,7 @@ Console.WriteLine(((10 + (4) / 2) + (0)) == Evaluator.Evaluate("((10+(4)/2)+(0))
 Console.WriteLine((1234 - 6000 / ((100) + (20 + 5) / 5) * 3) == Evaluator.Evaluate("(1234 - 6000 / ((100) + (20 + 5) / 5) * 3)", null));
 
 //Test for two length variable
-Console.WriteLine(2048 == Evaluator.Evaluate("bb", VariableStorage.LookUp));
+Console.WriteLine(2048 == Evaluator.Evaluate("bb1", VariableStorage.LookUp));
 
 
 //Test for null lookup function

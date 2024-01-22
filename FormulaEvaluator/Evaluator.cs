@@ -17,137 +17,227 @@ namespace FormulaEvaluator
     ///
     /// File Contents
     ///
-    /// this is a main part of Evaluate function, it will take a String as an expression (if it is valid) then calculate the result. Variables are also supported.
+    /// This class's main function Evaluate can evaluate a formula in the form of string.
     /// </summary>
     public delegate int Lookup(String variable_name);
     public static class Evaluator
     {
-        
-        static BraceTracker? brace = null;
 
-
-
-        /// <summary>
-        /// To evaluate the String as a expression, and get a int result.
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <param name="variableEvaluator"></param>
-        /// <returns>a int as the result for the expression</returns>
-        public static int Evaluate(String expression,
-                                   Lookup variableEvaluator)
+        public delegate int Lookup(String v);
+        public static int Evaluate(String exp, Lookup variableEvaluator)
         {
-            
-            List<String> tokens = ProcessString.StringToTokens(
-            Regex.Split(expression, "(\\()|(\\))|(-)|(\\+)|(\\*)|(/)"));
+            int leftParenthesis = 0;
+            int rightParenthesis = 0;
+            bool isFirstToken = true;
 
+            Stack<int> values = new Stack<int>();
+            Stack<string> operators = new Stack<string>();
+            exp = exp.Trim();
 
-            brace = new BraceTracker(tokens);
+            string[] tokens = Regex.Split(exp, "(\\()|(\\))|(-)|(\\+)|(\\*)|(/)");
 
-            //First, deal with the most inner brace, like normal calculate
-            while (!brace.NoBrace())
+            int currentToken = 0;
+
+            //Throw error if first token is not valid input
+            if (!CheckToken.IsNumber(tokens[0].Trim(), out currentToken)
+                && !CheckToken.IsVariable(tokens[0])
+                && tokens[0] != "(" && tokens[0] != "")
+                throw new ArgumentException("Not correct format, caused by first token");
+
+            for (int i = 0; i < tokens.Count(); i++)
             {
 
-                BraceTracker.BraceIndex.BraceIndexToInts(brace.GetInnerBrace(),out int start,out int end);  
 
-                if (start != -1 && end != tokens.Count)
+                if (tokens[i].Trim() == "") { continue; }
+
+
+                //Push to stack if it is number
+                if (CheckToken.IsNumber(tokens[i], out currentToken))
                 {
-                    tokens[end] = " ";
-                    tokens[start] = " ";
+                    if (isFirstToken)
+                    {
+                        values.Push(currentToken);
+                        isFirstToken = false;
+                    }
+                    else if (!isFirstToken)
+                    {
+                        PeekAndEval(values, operators, currentToken);
+                    }
                 }
 
-                //find all operators in that brace
-                OperatorTracker operators = new OperatorTracker(tokens, start, end);
-
-                //first,calculate the * and /
-                while (!operators.Op1Empty())
+                //Turn variable to value
+                else if (CheckToken.IsVariable(tokens[i]))
                 {
-                    //use operators to locate other numbers and calculate.
-                    Calculate(operators.GetOp1st(), tokens, variableEvaluator);
+                    string variable = tokens[i];
+                    isFirstToken = false;
+                    currentToken = variableEvaluator(variable);
+                    PeekAndEval(values, operators, currentToken);
                 }
 
-                //then,calculate the + and -
-                while (!operators.Op2Empty())
+                // deal with * & /
+                else if (tokens[i] == "/" || tokens[i] == "*")
                 {
-                    //use operators to locate other numbers and calculate.
-                    Calculate(operators.GetOp2nd(), tokens, variableEvaluator);
+                    operators.Push(tokens[i]);
                 }
 
+                //deal with + & - 
+                else if (tokens[i] == "+" || tokens[i] == "-")
+                {
+                    if (values.Count() >= 2 && operators.Count() >= 1 && (operators.Peek() == "+" || operators.Peek() == "-"))
+                    {
+                        CalAndPush(values, operators);
+                    }
+                    operators.Push(tokens[i]);
+                }
+
+                //Deal with left Parenthesis 
+                else if (tokens[i] == "(")
+                {
+                    leftParenthesis++;
+                    if (leftParenthesis < rightParenthesis) throw new ArgumentException("Right Parenthesis cannot become before than left Parenthesis");
+                    operators.Push(tokens[i]);
+                }
+                //Deal with right Parenthesis 
+                else if (tokens[i] == ")")
+                {
+                    rightParenthesis++;
+                    CalParenthesis(values, operators, tokens, i);
+                }
             }
 
-            int answer = 0;
-            //Find the last element left in the token, which will be the result.
-            foreach (String token in tokens) {
-                if (token.Equals(" ")) { continue; }
-                if (!int.TryParse(token, out answer))
-                {
-                   answer = EvalVariable(variableEvaluator, token);
-                }
-            }
-
-            return answer;
 
 
-        }
-
-        /// <summary>
-        /// A method to evaluate expression that already remove the bracket
-        /// </summary>
-        /// <param name="operatorIndex">the position of the operator</param>
-        /// <param name="tokens">a list of tokens that store the expression</param>
-        /// <exception cref="Exception">throw error if variable don't exist</exception>
-        private static void Calculate(int operatorIndex, List<String> tokens, Lookup variableEvaluator)
-        {
-            String @operator = tokens[operatorIndex];
-
-            //To loop to left until find a int or variable, then get it and remove it.
-            int index = 0;
-            while (tokens[operatorIndex - ++index] == " ") { }
-            int left = 0;
-            String variable = tokens[operatorIndex - index];
-            if (!int.TryParse(variable, out left)){
-                left = EvalVariable(variableEvaluator, variable);
-            }
-            tokens[operatorIndex - index] = " ";
-
-            //To loop to right until find a int or variable, then get it and remove it.
-            index = 0;
-            while (tokens[operatorIndex + ++index] == " ") { }
-            int right = 0;
-            variable = tokens[operatorIndex + index];
-            if (!int.TryParse(variable, out right))
+            //Cal if there is something left
+            if (values.Count == 2 && operators.Count == 1)
             {
-                right = EvalVariable(variableEvaluator, variable);
-            }
-            tokens[operatorIndex + index] = " ";
-
-            //Compute the result and put it back
-            int answer = 0;
-            if (@operator.Equals("+")) { answer = left + right; }
-            else if (@operator.Equals("-")) { answer = left - right; }
-            else if (@operator.Equals("*")) { answer = left * right; }
-            else if (@operator.Equals("/")) {
-                if (right == 0) throw new InvalidDataException("Can not divide by zero");
-                answer = left / right; 
+                CalAndPush(values, operators);
+                return values.Pop();
             }
 
-            tokens[operatorIndex] = answer.ToString();
+            //Return the final result.
+            else if (values.Count == 1 && operators.Count == 0)
+            {
+                return values.Pop();
+            }
+
+            else { throw new ArgumentException("Input tokens is wrong format"); }
         }
+
+
 
 
         /// <summary>
-        /// Check if the look up function is null before evaluate the variable.
+        /// Evaluate the formula inside parenthesis.
         /// </summary>
-        /// <param name="lookup">lookup function</param>
-        /// <param name="variable">variable name</param>
-        /// <returns>the value of variable</returns>
-        /// <exception cref="Exception">if lookup is null</exception>
-        private static int EvalVariable(Lookup lookup,String variable) {
-            if(lookup == null) { throw new Exception("please provide a look up function"); }
-            return lookup(variable);
+        /// <param name="values"></param>
+        /// <param name="operators"></param>
+        /// <param name="tokenArray"></param>
+        /// <param name="i"></param>
+        /// <exception cref="ArgumentException"></exception>
+        private static void CalParenthesis(Stack<int> values, Stack<string> operators, string[] tokenArray, int i)
+        {
+            //if left operator is not ( then cal it.
+            if (values.Count > 1 && operators.Count > 0 && (operators.Peek() != "("))
+            {
+                CalAndPush(values, operators);
+            }
+
+            //if left is not (  or no more operators throw error
+            if (operators.Count == 0 || operators.Peek() != "(")
+            {
+                throw new ArgumentException("bad formula format");
+            }
+
+            //pop out the  ( 
+            operators.Pop();
+
+            //cal the * / before the (
+            if (values.Count > 1 && operators.Count > 0 && (operators.Peek() == "*" || operators.Peek() == "/"))
+            {
+                CalAndPush(values, operators);
+            }
         }
 
 
 
+        /// <summary>
+        /// calculate the equation by given operator.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="operators"></param>
+        /// <exception cref="ArgumentException"></exception>
+        private static void CalAndPush(Stack<int> values, Stack<string> operators)
+        {
+            string @operator = operators.Pop();
+            int right = values.Pop();
+            int left = values.Pop();
+
+            switch (@operator)
+            {
+                case "*":
+                    values.Push(left * right);
+                    break;
+                case "/":
+                    if (right == 0) throw new ArgumentException("Divide by zero error");
+                    values.Push(left / right);
+                    break;
+                case "+":
+                    values.Push(left + right);
+                    break;
+                case "-":
+                    values.Push(left - right);
+                    break;
+                default:
+                    Console.WriteLine("bad formula error");
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// When we pushing value, need to check if the first op is * | / , if it is, then eval it.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="operators"></param>
+        /// <param name="currentToken"></param>
+        private static void PeekAndEval(Stack<int> values, Stack<string> operators, int currentToken)
+        {
+            if (operators.Count != 0 && values.Count != 0)
+            {
+                if (operators.Peek() == "/" || operators.Peek() == "*")
+                    DivAndMult(values, operators, currentToken);
+                else values.Push(currentToken);
+            }
+            else { values.Push(currentToken); }
+        }
+
+        /// <summary>
+        /// Start to evaluate the * or /.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="operators"></param>
+        /// <param name="currentToken"></param>
+        /// <exception cref="ArgumentException">Throw error if divide by zero</exception>
+        private static void DivAndMult(Stack<int> values, Stack<string> operators, int currentToken)
+        {
+            if (operators.Peek() == "/" && currentToken == 0) throw new ArgumentException("Can not divide a number by zero");
+            String @operator = operators.Pop();
+
+            if (@operator == "*") { values.Push(values.Pop() * currentToken); }
+            else { values.Push(values.Pop() / currentToken); }
+        }
+
+        /// <summary>
+        /// Check if a token is a number or variable.
+        /// </summary>
+        internal class CheckToken
+        {
+            public static bool IsNumber(string token, out int number) { return int.TryParse(token, out number); }
+            public static bool IsVariable(string token) { return Regex.IsMatch(token, @"[a-zA-Z]\d"); }
+        }
 
     }
+
+
+
+
 }

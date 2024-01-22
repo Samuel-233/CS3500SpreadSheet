@@ -11,8 +11,6 @@ Copyright:  CS 3500 and Shu Chen - This work may not be copied for use in Academ
 
 # Comments to Evaluators:
 
-I think this code is not too efficient, it has many part can be optimized: like I think it shouldn't search for a usable number/variables, but just remove the null element. But I'm still thinking about how to deal with it.
-Another problem is that I can't figure out how to use the Google docs algorithm, I used my own approach: use three stacks: first stack tracks front and back braces, another two track the operator with order(*/ before than +-). First use the first stack to locate the most inner equation, then use the operator to locate left and right value then get the result.
 
 # Assignment Specific Topics
 
