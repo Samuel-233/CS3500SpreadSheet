@@ -12,7 +12,7 @@ namespace SpreadsheetUtilities
     /// <summary>
     /// Author:    Shu Chen
     /// Partner:   None
-    /// Date:      2024/1/19
+    /// Date:      2024/1/23
     /// Course:    CS 3500, University of Utah, School of Computing
     /// Copyright: CS 3500 and Shu Chen - This work may not 
     ///            be copied for use in Academic Coursework.
@@ -40,9 +40,12 @@ namespace SpreadsheetUtilities
         /// <summary>
         /// Add a node pair to dictionary
         /// </summary>
-        /// <param name="dependee">the parent node</param>
-        /// <param name="dependent">the child node</param>
+        /// <param name="dependee">the parent node name</param>
+        /// <param name="dependent">the child node name</param>
         public bool AddNodePair(String dependee, String dependent){
+        //If passin null values, just return false;
+            if(dependee == null || dependent == null){ return false; }
+
             Node parent = AddNode(dependee);
             Node child = AddNode(dependent);
 
@@ -59,6 +62,9 @@ namespace SpreadsheetUtilities
         /// <param name="dependent"></param>
         /// <returns>return true of successfully removed a dependee or dependent or both</returns>
         public bool RemoveNodePair(String dependee, String dependent){
+        //ignore the null value
+            if(dependent == null||dependee==null){ return false; }
+
             Node parent,child;
             dependencyGraph.TryGetValue(dependee, out parent);
             dependencyGraph.TryGetValue(dependent, out child);
@@ -147,10 +153,8 @@ namespace SpreadsheetUtilities
             Node node = FindNode(name);
             if(node == null) return;
 
-            int parentCount = node.GetParents().Count;
-            int childrenCount = node.GetChildren().Count;
-
-            if(parentCount == 0 &&  childrenCount == 0){ dependencyGraph.Remove(name); }
+            if(node.GetParents().Count == 0 && 
+                node.GetChildren().Count == 0){ dependencyGraph.Remove(name); }
         }
 
 

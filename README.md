@@ -17,4 +17,4 @@ The Spreadsheet program is currently capable of Evaluate expression, make depend
 # Time Expenditures:
 
     1. Assignment One:   Predicted Hours:          15        Actual Hours:   17         Note: I spend about 5 more hours to rewrite the code, so it match prof's algorithm.
-    2. Assignment Two:   Predicted Hours:          10        Actual Hours:   2      
+    2. Assignment Two:   Predicted Hours:          10        Actual Hours:   3      

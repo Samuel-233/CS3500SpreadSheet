@@ -316,5 +316,31 @@ namespace DevelopmentTests
             b = t.HasDependees("a");
             Assert.AreEqual(false, b);
         }
+
+
+        /// <summary>
+        ///Test to add a node pair with a null parm
+        ///</summary>
+        [TestMethod()]
+        public void TestAddNullElement()
+        {
+            DependencyGraph t = new DependencyGraph();
+            t.AddDependency(null, "b");
+            t.AddDependency("b", null);
+            Assert.AreEqual(0, t.Size);
+        }
+
+        /// <summary>
+        ///Test to remove a node pair with a null parm
+        ///</summary>
+        [TestMethod()]
+        public void TestRemoveNullElement()
+        {
+            DependencyGraph t = new DependencyGraph();
+            t.AddDependency("a", "b");
+            Assert.AreEqual(1, t.Size);
+            t.RemoveDependency("a", null);
+            Assert.AreEqual(1, t.Size);
+        }
     }
 }
