@@ -342,5 +342,22 @@ namespace DevelopmentTests
             t.RemoveDependency("a", null);
             Assert.AreEqual(1, t.Size);
         }
+
+        /// <summary>
+        ///Add a node pair with same name
+        ///</summary>
+        [TestMethod()]
+        public void TestAddSameElement()
+        {
+            DependencyGraph t = new DependencyGraph();
+            t.AddDependency("a", "a");
+            t.AddDependency("a", "a");
+            Assert.AreEqual(1, t.Size);
+            t.AddDependency("a", "b");
+            Assert.AreEqual(2, t.Size);
+            t.RemoveDependency("a", "a");
+            Assert.AreEqual(1, t.Size);
+        }
+
     }
 }
