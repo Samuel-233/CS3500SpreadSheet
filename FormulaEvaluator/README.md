@@ -11,7 +11,7 @@ Copyright:  CS 3500 and Shu Chen - This work may not be copied for use in Academ
 
 # Comments to Evaluators:
 
-
+Rewrite the class form own algorithm to prof's given algorithm 
 # Assignment Specific Topics
 
 
