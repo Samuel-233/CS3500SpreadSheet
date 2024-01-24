@@ -290,9 +290,9 @@ namespace DevelopmentTests
             Assert.AreEqual(2, t.Size);
             for (int i = 0; i < 10; i++) { t.ReplaceDependents("a", new HashSet<string>() { "b" }); }
             Assert.AreEqual(1, t.Size);
-            for (int i = 0; i < 10; i++) { t.ReplaceDependents("a", new HashSet<string>() { "b","c" }); }
+            for (int i = 0; i < 10; i++) { t.ReplaceDependents("a", new HashSet<string>() { "b", "c" }); }
             Assert.AreEqual(2, t.Size);
-            for (int i = 0; i < 10; i++) { t.ReplaceDependents("a", new HashSet<string>() { "d","e","f" }); }
+            for (int i = 0; i < 10; i++) { t.ReplaceDependents("a", new HashSet<string>() { "d", "e", "f" }); }
             Assert.AreEqual(3, t.Size);
             for (int i = 0; i < 10; i++) { t.ReplaceDependents("b", new HashSet<string>() { "a", "e", "f" }); }
             Assert.AreEqual(6, t.Size);
@@ -359,5 +359,18 @@ namespace DevelopmentTests
             Assert.AreEqual(1, t.Size);
         }
 
+
+        /// <summary>
+        ///Add Dependees and test for size
+        ///</summary>
+        [TestMethod()]
+        public void TestDependeesSize()
+        {
+            DependencyGraph t = new DependencyGraph();
+            t.AddDependency("a", "b");
+            Assert.AreEqual(1, t["b"]);
+            t.AddDependency("c", "b");
+            Assert.AreEqual(2, t["b"]);
+        }
     }
 }

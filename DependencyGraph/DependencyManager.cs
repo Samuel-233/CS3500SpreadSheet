@@ -128,7 +128,7 @@ namespace SpreadsheetUtilities
             return names;
         }
 
-        public int Count{get{ return dependencyGraph.Count; } }
+      
 
         /// <summary>
         /// Add a new node to the dictionary (if it doesn't exist)
