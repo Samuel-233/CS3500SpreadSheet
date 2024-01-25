@@ -1,13 +1,8 @@
 ﻿// Skeleton implementation written by Joe Zachary for CS 3500, September 2013.
 // Version 1.1 (Fixed error in comment for RemoveDependency.)
-// Version 1.2 - Daniel Kopta 
+// Version 1.2 - Daniel Kopta
 //               (Clarified meaning of dependent and dependee.)
 //               (Clarified names in solution/project structure.)
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace SpreadsheetUtilities
 {
@@ -16,19 +11,19 @@ namespace SpreadsheetUtilities
     /// <summary>
     /// (s1,t1) is an ordered pair of strings
     /// t1 depends on s1; s1 must be evaluated before t1
-    /// 
+    ///
     /// A DependencyGraph can be modeled as a set of ordered pairs of strings.  Two ordered pairs
     /// (s1,t1) and (s2,t2) are considered equal if and only if s1 equals s2 and t1 equals t2.
-    /// Recall that sets never contain duplicates.  If an attempt is made to add an element to a 
+    /// Recall that sets never contain duplicates.  If an attempt is made to add an element to a
     /// set, and the element is already in the set, the set remains unchanged.
-    /// 
+    ///
     /// Given a DependencyGraph DG:
-    /// 
+    ///
     ///    (1) If s is a string, the set of all strings t such that (s,t) is in DG is called dependents(s).
-    ///        (The set of things that depend on s)    
-    ///        
+    ///        (The set of things that depend on s)
+    ///
     ///    (2) If s is a string, the set of all strings t such that (t,s) is in DG is called dependees(s).
-    ///        (The set of things that s depends on) 
+    ///        (The set of things that s depends on)
     //
     // For example, suppose DG = {("a", "b"), ("a", "c"), ("b", "d"), ("d", "d")}
     //     dependents("a") = {"b", "c"}
@@ -42,8 +37,8 @@ namespace SpreadsheetUtilities
     /// </summary>
     public class DependencyGraph
     {
-        DependencyManager dependencyGraph;
-        int size;
+        private DependencyManager dependencyGraph;
+        private int size;
 
         /// <summary>
         /// Creates an empty DependencyGraph.
@@ -54,8 +49,6 @@ namespace SpreadsheetUtilities
             size = 0;
         }
 
-        
-
         /// <summary>
         /// The number of ordered pairs in the DependencyGraph.
         /// </summary>
@@ -63,7 +56,6 @@ namespace SpreadsheetUtilities
         {
             get { return size; }
         }
-
 
         /// <summary>
         /// The size of dependees(s).
@@ -77,7 +69,6 @@ namespace SpreadsheetUtilities
             get { return dependencyGraph.GetAllDependees(s).Count; }
         }
 
-
         /// <summary>
         /// Reports whether dependents(s) is non-empty.
         /// </summary>
@@ -86,15 +77,13 @@ namespace SpreadsheetUtilities
             return dependencyGraph.GetAllDependents(s).Count > 0;
         }
 
-
         /// <summary>
         /// Reports whether dependees(s) is non-empty.
         /// </summary>
         public bool HasDependees(string s)
         {
-            return dependencyGraph.GetAllDependees(s).Count>0;
+            return dependencyGraph.GetAllDependees(s).Count > 0;
         }
-
 
         /// <summary>
         /// Enumerates dependents(s).
@@ -112,22 +101,20 @@ namespace SpreadsheetUtilities
             return DependencyManager.NodeToNodeName(dependencyGraph.GetAllDependees(s));
         }
 
-
         /// <summary>
         /// <para>Adds the ordered pair (s,t), if it doesn't exist</para>
-        /// 
-        /// <para>This should be thought of as:</para>   
-        /// 
+        ///
+        /// <para>This should be thought of as:</para>
+        ///
         ///   t depends on s
         ///
         /// </summary>
         /// <param name="s"> s must be evaluated first. T depends on S</param>
-        /// <param name="t"> t cannot be evaluated until s is</param>        /// 
+        /// <param name="t"> t cannot be evaluated until s is</param>        ///
         public void AddDependency(string s, string t)
         {
-            if(dependencyGraph.AddNodePair(s, t))size++;
+            if (dependencyGraph.AddNodePair(s, t)) size++;
         }
-
 
         /// <summary>
         /// Removes the ordered pair (s,t), if it exists
@@ -135,10 +122,9 @@ namespace SpreadsheetUtilities
         /// <param name="s"></param>
         /// <param name="t"></param>
         public void RemoveDependency(string s, string t)
-        {  
-            if(dependencyGraph.RemoveNodePair(s, t))size--;
+        {
+            if (dependencyGraph.RemoveNodePair(s, t)) size--;
         }
-
 
         /// <summary>
         /// Removes all existing ordered pairs of the form (s,r).  Then, for each
@@ -166,9 +152,8 @@ namespace SpreadsheetUtilities
             }
         }
 
-
         /// <summary>
-        /// Removes all existing ordered pairs of the form (r,s).  Then, for each 
+        /// Removes all existing ordered pairs of the form (r,s).  Then, for each
         /// t in newDependees, adds the ordered pair (t,s).
         /// </summary>
         public void ReplaceDependees(string s, IEnumerable<string> newDependees)
@@ -192,7 +177,5 @@ namespace SpreadsheetUtilities
                 }
             }
         }
-
     }
-
 }

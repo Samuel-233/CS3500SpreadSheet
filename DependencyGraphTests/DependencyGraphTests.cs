@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SpreadsheetUtilities;
-
 
 namespace DevelopmentTests
 {
@@ -13,7 +9,6 @@ namespace DevelopmentTests
     [TestClass()]
     public class DependencyGraphTest
     {
-
         /// <summary>
         ///Empty graph should contain nothing
         ///</summary>
@@ -23,7 +18,6 @@ namespace DevelopmentTests
             DependencyGraph t = new DependencyGraph();
             Assert.AreEqual(0, t.Size);
         }
-
 
         /// <summary>
         ///Empty graph should contain nothing
@@ -37,7 +31,6 @@ namespace DevelopmentTests
             t.RemoveDependency("x", "y");
             Assert.AreEqual(0, t.Size);
         }
-
 
         /// <summary>
         ///Empty graph should contain nothing
@@ -58,7 +51,6 @@ namespace DevelopmentTests
             Assert.IsFalse(t.GetDependents("x").GetEnumerator().MoveNext());
         }
 
-
         /// <summary>
         ///Replace on an empty DG shouldn't fail
         ///</summary>
@@ -73,8 +65,6 @@ namespace DevelopmentTests
             t.ReplaceDependees("y", new HashSet<string>());
         }
 
-
-
         ///<summary>
         ///It should be possibe to have more than one DG at a time.
         ///</summary>
@@ -87,9 +77,6 @@ namespace DevelopmentTests
             Assert.AreEqual(1, t1.Size);
             Assert.AreEqual(0, t2.Size);
         }
-
-
-
 
         /// <summary>
         ///Non-empty graph contains something
@@ -104,7 +91,6 @@ namespace DevelopmentTests
             t.AddDependency("b", "d");
             Assert.AreEqual(4, t.Size);
         }
-
 
         /// <summary>
         ///Non-empty graph contains something
@@ -139,9 +125,6 @@ namespace DevelopmentTests
             Assert.AreEqual("b", e.Current);
             Assert.IsFalse(e.MoveNext());
         }
-
-
-
 
         /// <summary>
         ///Non-empty graph contains something
@@ -180,8 +163,6 @@ namespace DevelopmentTests
             Assert.AreEqual("b", e.Current);
             Assert.IsFalse(e.MoveNext());
         }
-
-
 
         /// <summary>
         ///Using lots of data
@@ -261,9 +242,8 @@ namespace DevelopmentTests
             }
         }
 
-
         /// <summary>
-        ///Test for the size after remove multiple times 
+        ///Test for the size after remove multiple times
         ///</summary>
         [TestMethod()]
         public void TestSizeAfterRemove()
@@ -279,7 +259,7 @@ namespace DevelopmentTests
         }
 
         /// <summary>
-        ///Test for the size after replace multiple times 
+        ///Test for the size after replace multiple times
         ///</summary>
         [TestMethod()]
         public void TestSizeAfterReplace()
@@ -298,7 +278,6 @@ namespace DevelopmentTests
             Assert.AreEqual(6, t.Size);
         }
 
-
         /// <summary>
         ///Test get method on empty graph
         ///</summary>
@@ -316,7 +295,6 @@ namespace DevelopmentTests
             b = t.HasDependees("a");
             Assert.AreEqual(false, b);
         }
-
 
         /// <summary>
         ///Test to add a node pair with a null parm
@@ -358,7 +336,6 @@ namespace DevelopmentTests
             t.RemoveDependency("a", "a");
             Assert.AreEqual(1, t.Size);
         }
-
 
         /// <summary>
         ///Add Dependees and test for size

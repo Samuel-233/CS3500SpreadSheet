@@ -6,12 +6,12 @@ using FormulaEvaluatorTester;
 /// Partner:   None
 /// Date:      2024/1/14
 /// Course:    CS 3500, University of Utah, School of Computing
-/// Copyright: CS 3500 and Shu Chen - This work may not 
+/// Copyright: CS 3500 and Shu Chen - This work may not
 ///            be copied for use in Academic Coursework.
 ///
 /// I, Shu Chen, certify that I wrote this code from scratch and
-/// did not copy it in part or whole from another source.  All 
-/// references used in the completion of the assignments are cited 
+/// did not copy it in part or whole from another source.  All
+/// references used in the completion of the assignments are cited
 /// in my README file.
 ///
 /// File Contents
@@ -21,7 +21,7 @@ using FormulaEvaluatorTester;
 VariableStorage.AddVariable("a1", 10);
 VariableStorage.AddVariable("b1", 1024);
 VariableStorage.AddVariable("bb1", 2048);
-Console.WriteLine((1+1)==Evaluator.Evaluate("1+1", null));
+Console.WriteLine((1 + 1) == Evaluator.Evaluate("1+1", null));
 
 //test for one bracket in another bracket
 Console.WriteLine((1 + ((1 + 2) * 3) / 4) == Evaluator.Evaluate("1 + (( 1    +2) *3)/4", null));
@@ -44,20 +44,19 @@ Console.WriteLine((1234 - 6000 / ((100) + (20 + 5) / 5) * 3) == Evaluator.Evalua
 //Test for two length variable
 Console.WriteLine(2048 == Evaluator.Evaluate("bb1", VariableStorage.LookUp));
 
-
 //Test for null lookup function
 try
 {
     Evaluator.Evaluate("c", null);
-}catch (Exception ex) { Console.WriteLine($"\n Expected for exception of null look up, the actual exception is{ex}"); }
+}
+catch (Exception ex) { Console.WriteLine($"\n Expected for exception of null look up, the actual exception is{ex}"); }
 
 //test for null variable
 try
 {
-   Console.WriteLine(Evaluator.Evaluate("c", VariableStorage.LookUp));
+    Console.WriteLine(Evaluator.Evaluate("c", VariableStorage.LookUp));
 }
 catch (Exception ex) { Console.WriteLine($"\n Expected for exception of no variable, the actual exception is{ex}"); }
-
 
 //test for misMatch braces
 try
@@ -73,7 +72,6 @@ try
 }
 catch (Exception ex) { Console.WriteLine($"\n Expected for mismatch braces, the actual exception is{ex}"); }
 
-
 //test divide by zero
 try
 {
@@ -82,5 +80,3 @@ try
 catch (Exception ex) { Console.WriteLine($"\n Expected for cannot divide by zero, the actual exception is{ex}"); }
 
 Console.ReadLine();
-
-

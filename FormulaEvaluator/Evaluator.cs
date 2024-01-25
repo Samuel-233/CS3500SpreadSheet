@@ -7,12 +7,12 @@ namespace FormulaEvaluator
     /// Partner:   None
     /// Date:      2024/1/22
     /// Course:    CS 3500, University of Utah, School of Computing
-    /// Copyright: CS 3500 and Shu Chen - This work may not 
+    /// Copyright: CS 3500 and Shu Chen - This work may not
     ///            be copied for use in Academic Coursework.
     ///
     /// I, Shu Chen, certify that I wrote this code from scratch and
-    /// did not copy it in part or whole from another source.  All 
-    /// references used in the completion of the assignments are cited 
+    /// did not copy it in part or whole from another source.  All
+    /// references used in the completion of the assignments are cited
     /// in my README file.
     ///
     /// File Contents
@@ -20,10 +20,11 @@ namespace FormulaEvaluator
     /// This class's main function Evaluate can evaluate a formula in the form of string.
     /// </summary>
     public delegate int Lookup(String variable_name);
+
     public static class Evaluator
     {
-
         public delegate int Lookup(String v);
+
         public static int Evaluate(String expression, Lookup variableEvaluator)
         {
             int leftParenthesis = 0;
@@ -46,10 +47,7 @@ namespace FormulaEvaluator
 
             for (int i = 0; i < tokens.Count(); i++)
             {
-
-
                 if (tokens[i].Trim() == "") { continue; }
-
 
                 //Push to stack if it is number
                 if (CheckToken.IsNumber(tokens[i], out currentToken))
@@ -80,7 +78,7 @@ namespace FormulaEvaluator
                     operators.Push(tokens[i]);
                 }
 
-                //deal with + & - 
+                //deal with + & -
                 else if (tokens[i] == "+" || tokens[i] == "-")
                 {
                     if (values.Count() >= 2 && operators.Count() >= 1 && (operators.Peek() == "+" || operators.Peek() == "-"))
@@ -90,22 +88,20 @@ namespace FormulaEvaluator
                     operators.Push(tokens[i]);
                 }
 
-                //Deal with left Parenthesis 
+                //Deal with left Parenthesis
                 else if (tokens[i] == "(")
                 {
                     leftParenthesis++;
                     if (leftParenthesis < rightParenthesis) throw new ArgumentException("Right Parenthesis cannot become before than left Parenthesis");
                     operators.Push(tokens[i]);
                 }
-                //Deal with right Parenthesis 
+                //Deal with right Parenthesis
                 else if (tokens[i] == ")")
                 {
                     rightParenthesis++;
                     CalParenthesis(values, operators, tokens, i);
                 }
             }
-
-
 
             //Cal if there is something left
             if (values.Count == 2 && operators.Count == 1)
@@ -119,12 +115,8 @@ namespace FormulaEvaluator
             {
                 return values.Pop();
             }
-
             else { throw new ArgumentException("Input tokens is wrong format"); }
         }
-
-
-
 
         /// <summary>
         /// Evaluate the formula inside parenthesis.
@@ -148,7 +140,7 @@ namespace FormulaEvaluator
                 throw new ArgumentException("bad formula format");
             }
 
-            //pop out the  ( 
+            //pop out the  (
             operators.Pop();
 
             //cal the * / before the (
@@ -157,8 +149,6 @@ namespace FormulaEvaluator
                 CalAndPush(values, operators);
             }
         }
-
-
 
         /// <summary>
         /// calculate the equation by given operator.
@@ -177,16 +167,20 @@ namespace FormulaEvaluator
                 case "*":
                     values.Push(left * right);
                     break;
+
                 case "/":
                     if (right == 0) throw new ArgumentException("Divide by zero error");
                     values.Push(left / right);
                     break;
+
                 case "+":
                     values.Push(left + right);
                     break;
+
                 case "-":
                     values.Push(left - right);
                     break;
+
                 default:
                     Console.WriteLine("bad formula error");
                     break;
@@ -231,13 +225,11 @@ namespace FormulaEvaluator
         /// </summary>
         internal class CheckToken
         {
-            public static bool IsNumber(string token, out int number) { return int.TryParse(token, out number); }
-            public static bool IsVariable(string token) { return Regex.IsMatch(token, @"[a-zA-Z]\d"); }
+            public static bool IsNumber(string token, out int number)
+            { return int.TryParse(token, out number); }
+
+            public static bool IsVariable(string token)
+            { return Regex.IsMatch(token, @"[a-zA-Z]\d"); }
         }
-
     }
-
-
-
-
 }

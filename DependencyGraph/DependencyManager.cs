@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SpreadsheetUtilities
+﻿namespace SpreadsheetUtilities
 {
     //Node's dependent means those nodes that relay on this node (Children)
     //Node's dependee means this node's parent
@@ -14,12 +8,12 @@ namespace SpreadsheetUtilities
     /// Partner:   None
     /// Date:      2024/1/23
     /// Course:    CS 3500, University of Utah, School of Computing
-    /// Copyright: CS 3500 and Shu Chen - This work may not 
+    /// Copyright: CS 3500 and Shu Chen - This work may not
     ///            be copied for use in Academic Coursework.
     ///
     /// I, Shu Chen, certify that I wrote this code from scratch and
-    /// did not copy it in part or whole from another source.  All 
-    /// references used in the completion of the assignments are cited 
+    /// did not copy it in part or whole from another source.  All
+    /// references used in the completion of the assignments are cited
     /// in my README file.
     ///
     /// File Contents
@@ -31,20 +25,20 @@ namespace SpreadsheetUtilities
     {
         private Dictionary<String, Node> dependencyGraph;
 
-        public DependencyManager(){
+        public DependencyManager()
+        {
             dependencyGraph = new();
         }
 
-
-    
         /// <summary>
         /// Add a node pair to dictionary
         /// </summary>
         /// <param name="dependee">the parent node name</param>
         /// <param name="dependent">the child node name</param>
-        public bool AddNodePair(String dependee, String dependent){
-        //If passin null values, just return false;
-            if(dependee == null || dependent == null){ return false; }
+        public bool AddNodePair(String dependee, String dependent)
+        {
+            //If passin null values, just return false;
+            if (dependee == null || dependent == null) { return false; }
 
             Node parent = AddNode(dependee);
             Node child = AddNode(dependent);
@@ -61,20 +55,21 @@ namespace SpreadsheetUtilities
         /// <param name="dependee"></param>
         /// <param name="dependent"></param>
         /// <returns>return true of successfully removed a dependee or dependent or both</returns>
-        public bool RemoveNodePair(String dependee, String dependent){
-        //ignore the null value
-            if(dependent == null||dependee==null){ return false; }
+        public bool RemoveNodePair(String dependee, String dependent)
+        {
+            //ignore the null value
+            if (dependent == null || dependee == null) { return false; }
 
-            Node parent,child;
+            Node parent, child;
             dependencyGraph.TryGetValue(dependee, out parent);
             dependencyGraph.TryGetValue(dependent, out child);
 
             bool removed = false;
-            if(parent != null){ removed |= parent.RemoveChild(child); }
-            if(child != null){ removed |= child.RemoveParent(parent); }
+            if (parent != null) { removed |= parent.RemoveChild(child); }
+            if (child != null) { removed |= child.RemoveParent(parent); }
 
-            Clean(dependee );
-            Clean(dependent );
+            Clean(dependee);
+            Clean(dependent);
             return removed;
         }
 
@@ -92,15 +87,15 @@ namespace SpreadsheetUtilities
             return null;
         }
 
-
         /// <summary>
         /// Return a node's all dependees
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public List<Node> GetAllDependees(String name) {
+        public List<Node> GetAllDependees(String name)
+        {
             Node node = FindNode(name);
-            if (node!=null) return node.GetParents();
+            if (node != null) return node.GetParents();
             return new List<Node>();
         }
 
@@ -109,7 +104,8 @@ namespace SpreadsheetUtilities
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public List<Node> GetAllDependents(String name){
+        public List<Node> GetAllDependents(String name)
+        {
             Node node = FindNode(name);
             if (node != null) return node.GetChildren();
             return new List<Node>();
@@ -120,15 +116,15 @@ namespace SpreadsheetUtilities
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public static List<String> NodeToNodeName(List<Node> nodes){
+        public static List<String> NodeToNodeName(List<Node> nodes)
+        {
             List<String> names = new();
-            foreach(Node node in nodes){
+            foreach (Node node in nodes)
+            {
                 names.Add(node.Name);
             }
             return names;
         }
-
-      
 
         /// <summary>
         /// Add a new node to the dictionary (if it doesn't exist)
@@ -149,44 +145,42 @@ namespace SpreadsheetUtilities
         /// Remove this node from the dictionary if it has no relationship to other nodes
         /// </summary>
         /// <param name="name"></param>
-        private void Clean(String name) {
+        private void Clean(String name)
+        {
             Node node = FindNode(name);
-            if(node == null) return;
+            if (node == null) return;
 
-            if(node.GetParents().Count == 0 && 
-                node.GetChildren().Count == 0){ dependencyGraph.Remove(name); }
+            if (node.GetParents().Count == 0 &&
+                node.GetChildren().Count == 0) { dependencyGraph.Remove(name); }
         }
-
-
     }
-
 
     /// <summary>
     /// This is a node class, has two HashSet to store their parents and children, one String for it's name
     /// </summary>
-    internal class Node {
-
-        HashSet<Node> children;
-        HashSet<Node> parents;
-        String name;
-
+    internal class Node
+    {
+        private HashSet<Node> children;
+        private HashSet<Node> parents;
+        private String name;
 
         /// <summary>
         /// Add a new node
         /// </summary>
         /// <param name="name"></param>
-        public Node(String name) {
+        public Node(String name)
+        {
             this.name = name;
             children = new();
             parents = new();
         }
 
-
         /// <summary>
         /// Add a new parent to this node
         /// </summary>
         /// <param name="parent">reference to it's parent</param>
-        public bool AddParent(Node parent) {
+        public bool AddParent(Node parent)
+        {
             return parents.Add(parent);
         }
 
@@ -194,7 +188,8 @@ namespace SpreadsheetUtilities
         /// Add a new child to this node
         /// </summary>
         /// <param name="child">reference to it's child</param>
-        public bool AddChild(Node child) {
+        public bool AddChild(Node child)
+        {
             return children.Add(child);
         }
 
@@ -216,24 +211,24 @@ namespace SpreadsheetUtilities
             return children.Remove(child);
         }
 
-
-
         /// <summary>
         /// Return list of parents
         /// </summary>
         /// <returns></returns>
-        public List<Node> GetParents() { return parents.ToList(); }
-
+        public List<Node> GetParents()
+        { return parents.ToList(); }
 
         /// <summary>
         /// Return list of children
         /// </summary>
         /// <returns></returns>
-        public List<Node> GetChildren() { return children.ToList(); }
+        public List<Node> GetChildren()
+        { return children.ToList(); }
 
         /// <summary>
         /// Node's name
         /// </summary>
-        public String Name{ get { return this.name; } }
+        public String Name
+        { get { return this.name; } }
     }
 }
