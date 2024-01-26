@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyGraph", "Dependen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyGraphTests", "DependencyGraphTests\DependencyGraphTests.csproj", "{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugAfterGrading", "DebugAfterGrading\DebugAfterGrading.csproj", "{FDAAEA09-EA9B-4627-A539-6011DB4EFB0F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradingTests", "GradingTests\GradingTests.csproj", "{039975CF-7AA3-4F76-8E62-114AF0EFFF31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +40,10 @@ Global
 		{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FDAAEA09-EA9B-4627-A539-6011DB4EFB0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FDAAEA09-EA9B-4627-A539-6011DB4EFB0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FDAAEA09-EA9B-4627-A539-6011DB4EFB0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FDAAEA09-EA9B-4627-A539-6011DB4EFB0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{039975CF-7AA3-4F76-8E62-114AF0EFFF31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{039975CF-7AA3-4F76-8E62-114AF0EFFF31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{039975CF-7AA3-4F76-8E62-114AF0EFFF31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{039975CF-7AA3-4F76-8E62-114AF0EFFF31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
