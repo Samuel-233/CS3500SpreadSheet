@@ -15,8 +15,6 @@
 // Change log:
 //  (Version 1.2) Changed the definition of equality with regards
 //                to numeric tokens
-
-//Finished Rule: 1 2 3 4 5 6 7
 using SpreadsheetUtilities;
 using System;
 using System.Collections;
@@ -286,6 +284,7 @@ internal class CheckTokenValid
 {
     /// <summary>
     /// Check every tokens in the input tokens is valid or not, if not throw error, if yes put it in to list
+    /// Finished Rule: 1 2 3 4 5 6 7 8
     /// </summary>
     /// <param name="inputTokens">Tokens needs to be check</param>
     /// <param name="normalize">Normalize Func</param>
@@ -307,13 +306,16 @@ internal class CheckTokenValid
         {
             string token = inputTokenList[i];
             double value = 0;
+
             //Add it if it is a number
             if (CheckTokenValid.IsNumber(token, out value))
             {
+                if (!IsNextTokenOPorRP(inputTokenList, i)) throw new FormulaFormatException("Any token that immediately follows a number, a variable, or a closing parenthesis must be either an operator or a closing parenthesis. - Rule 8");
                 isFirstToken = false;
                 vaildTokens.Add(value.ToString());
                 continue;
             }
+
             //Add it if it is an operator
             if (CheckTokenValid.IsOperator(token))
             {
@@ -338,6 +340,7 @@ internal class CheckTokenValid
                 vaildTokens.Add(token);
                 continue;
             }
+
             //Add it if this variable is valid.
             if (CheckTokenValid.IsVariable(token))
             {
@@ -346,6 +349,7 @@ internal class CheckTokenValid
                 {
                     isFirstToken = false;
                     vaildTokens.Add(newToken);
+                    if (!IsNextTokenOPorRP(inputTokenList, i)) throw new FormulaFormatException("Any token that immediately follows a number, a variable, or a closing parenthesis must be either an operator or a closing parenthesis. - Rule 8");
                     continue;
                 }
                 else throw new FormulaFormatException($"The token {token} is not valid after converted to {newToken}!");
@@ -358,6 +362,8 @@ internal class CheckTokenValid
         if (leftParent != rightParent) throw new FormulaFormatException("Number of left and right parenthesis is not equal! - Rule 4");
         return vaildTokens;
     }
+
+
     /// <summary>
     /// Return true if next token is a number || variable || LeftParenthesis
     /// </summary>
@@ -374,6 +380,25 @@ internal class CheckTokenValid
             }
         }
         return false;
+    }
+
+    /// <summary>
+    /// Return true if next token is an Operator or Right Parenthesis
+    /// </summary>
+    /// <returns></returns>
+    private static bool IsNextTokenOPorRP(List<string> tokens, int index)
+    {
+        if (index < tokens.Count() - 1)
+        {
+            string nextToken = tokens[index + 1];
+            if (CheckTokenValid.IsOperator(nextToken) ||
+                nextToken.Equals(")"))
+            {
+                return true;
+            }
+            return false;
+        }
+        return true;
     }
     private static bool IsNumber(string token, out double number) { return double.TryParse(token, out number); }
     private static bool IsVariable(string token) { return Regex.IsMatch(token, @"[a-zA-Z]\d"); }
