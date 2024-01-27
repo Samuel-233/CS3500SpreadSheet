@@ -347,6 +347,7 @@ internal class CheckTokenValid
                 else if (token.Equals(")"))
                 {
                     rightParent++;
+                    if (!IsNextTokenOPorRP(inputTokenList, i)) throw new FormulaFormatException("Any token that immediately follows a number, a variable, or a closing parenthesis must be either an operator or a closing parenthesis. - Rule 8");
                     if (rightParent > leftParent) throw new FormulaFormatException("Right Parentheses is more than Left Parentheses! - Rule 3");
                 }
                 else if (Regex.IsMatch(token, @"[\+\-*//*]"))
@@ -437,7 +438,7 @@ internal class CheckTokenValid
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    private static bool IsVariable(string token) { return Regex.IsMatch(token, @"[a-zA-Z]\d"); }
+    private static bool IsVariable(string token) { return Regex.IsMatch(token, @"[a-zA-Z_](?: [a-zA-Z_]|\d)*"); }
 
     /// <summary>
     /// Check if this token is an operator

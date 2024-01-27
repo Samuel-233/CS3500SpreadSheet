@@ -202,6 +202,7 @@ namespace FormulaTests
             Assert.ThrowsException<FormulaFormatException>(() => new Formula("1 (", s => s, s => true));
             Assert.ThrowsException<FormulaFormatException>(() => new Formula("A1 (", s => s, s => true));
             Assert.ThrowsException<FormulaFormatException>(() => new Formula("A1 1", s => s, s => true));
+            Assert.ThrowsException<FormulaFormatException>(() => new Formula("3*((20+1)/7)*(8)8", s => s, s => true));
 
             //Check is Valid Func
             try

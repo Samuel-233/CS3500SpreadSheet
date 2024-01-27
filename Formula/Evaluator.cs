@@ -231,7 +231,7 @@ namespace SpreadsheetUtilities
         internal class CheckToken
         {
             public static bool IsNumber(string token, out double number) { return double.TryParse(token, out number); }
-            public static bool IsVariable(string token) { return Regex.IsMatch(token, @"[a-zA-Z]\d"); }
+            public static bool IsVariable(string token) { return Regex.IsMatch(token, @"[a-zA-Z_](?: [a-zA-Z_]|\d)*"); }
         }
 
     }
