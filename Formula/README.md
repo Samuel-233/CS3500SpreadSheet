@@ -20,3 +20,5 @@ Copyright:  CS 3500 and Shu Chen - This work may not be copied for use in Academ
 I didn't speak to anyone yet, I will do it if I have time. Most of my problems are solved by myself.
 
 # References:
+
+1. Read only collection - Chat GPT

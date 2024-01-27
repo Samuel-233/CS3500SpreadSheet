@@ -19,6 +19,7 @@ using SpreadsheetUtilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -45,7 +46,8 @@ namespace SpreadsheetUtilities
     /// </summary>
     public class Formula
     {
-        private List<string> validFormula;
+        private ReadOnlyCollection<string> validFormula;
+        private HashSet<string> variables;
         /// <summary>
         /// Creates a Formula from a string that consists of an infix expression written as
         /// described in the class comment.  If the expression is syntactically invalid,
@@ -83,10 +85,12 @@ namespace SpreadsheetUtilities
         /// </summary>
         public Formula(String formula, Func<string, string> normalize, Func<string, bool> isValid)
         {
+            variables = new HashSet<string>();
+
             IEnumerable<string> formulaTokens = GetTokens(formula);
             if (formulaTokens.Count() < 1) { throw new FormulaFormatException("Formula need has at least one token! - Rule 2"); }
-            List<string> vaildTokens = CheckTokenValid.CreateAValidTokenList(formulaTokens, normalize, isValid);
-            validFormula = vaildTokens;
+            List<string> vaildTokens = CheckTokenValid.CreateAValidTokenList(formulaTokens, normalize, isValid, out variables);
+            validFormula = new ReadOnlyCollection<string>(vaildTokens);
         }
 
 
@@ -113,7 +117,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public object Evaluate(Func<string, double> lookup)
         {
-            return null;
+            return Evaluator.Evaluate(validFormula,lookup);
         }
 
         /// <summary>
@@ -129,10 +133,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public IEnumerable<String> GetVariables()
         {
-            List<String> variables = new List<String>();
-
-
-            return null;
+            return variables;
         }
 
         /// <summary>
@@ -147,7 +148,11 @@ namespace SpreadsheetUtilities
         /// </summary>
         public override string ToString()
         {
-            return null;
+            StringBuilder sb = new StringBuilder();
+            foreach (string tokens in validFormula) {
+                sb.Append(tokens);
+            }
+            return sb.ToString();
         }
 
         /// <summary>
@@ -175,7 +180,7 @@ namespace SpreadsheetUtilities
         public override bool Equals(object? obj)
         {
             if (!(obj is Formula)) return false;
-            List<string> formula2 = ((Formula)obj).GetFormula();
+            ReadOnlyCollection<string> formula2 = ((Formula)obj).GetFormula();
             if (validFormula.Count != formula2.Count) return false;
             for (int i = 0; i < validFormula.Count; i++) {
                 if (!validFormula[i].Equals(formula2[i])) return false;
@@ -200,7 +205,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public static bool operator !=(Formula f1, Formula f2)
         {
-            return false;
+            return !f1.Equals(f2);
         }
 
         /// <summary>
@@ -210,7 +215,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public override int GetHashCode()
         {
-            return 0;
+            return this.ToString().GetHashCode();
         }
 
         /// <summary>
@@ -249,7 +254,7 @@ namespace SpreadsheetUtilities
         /// return the formula
         /// </summary>
         /// <returns></returns>
-        public List<string> GetFormula() { return validFormula; }
+        public ReadOnlyCollection<string> GetFormula() { return validFormula; }
     }
 
     /// <summary>
@@ -304,12 +309,14 @@ internal class CheckTokenValid
     /// <param name="isValid">is Valid Func</param>
     /// <returns>a list of valid token</returns>
     /// <exception cref="FormulaFormatException">Throw exception if the token has problem</exception>
-    public static List<string> CreateAValidTokenList(IEnumerable<string> inputTokens,
-                                                    Func<string, string> normalize,
-                                                    Func<string, bool> isValid)
+    public static List<string> CreateAValidTokenList(IEnumerable<string>inputTokens,
+                                                    Func<string, string>normalize,
+                                                    Func<string, bool>  isValid,
+                                                    out HashSet<string> variables)
     {
         List<string> inputTokenList = inputTokens.ToList();
         List<string> vaildTokens = new List<string>();
+        variables = new HashSet<string>();
         bool isFirstToken = true;
         int leftParent = 0;
         int rightParent = 0;
@@ -362,6 +369,7 @@ internal class CheckTokenValid
                 {
                     isFirstToken = false;
                     vaildTokens.Add(newToken);
+                    variables.Add(newToken);
                     if (!IsNextTokenOPorRP(inputTokenList, i)) throw new FormulaFormatException("Any token that immediately follows a number, a variable, or a closing parenthesis must be either an operator or a closing parenthesis. - Rule 8");
                     continue;
                 }
