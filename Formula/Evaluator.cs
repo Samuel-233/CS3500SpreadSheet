@@ -37,9 +37,6 @@ namespace SpreadsheetUtilities
 
             for (int i = 0; i < tokens.Count(); i++)
             {
-                if (tokens[i].Trim() == "") { continue; }
-
-
                 //Push to stack if it is number
                 if (CheckToken.IsNumber(tokens[i], out currentToken))
                 {
@@ -57,7 +54,13 @@ namespace SpreadsheetUtilities
                 else if (CheckToken.IsVariable(tokens[i]))
                 {
                     string variable = tokens[i];
-                    currentToken = variableEvaluator(variable);
+                    try{
+                        currentToken = variableEvaluator(variable);
+                    }catch (Exception e){
+                        return new FormulaError(e.Message);
+                    }
+                    
+                    
                     if(PeekAndEval(values, operators, currentToken,out error))return error;
                 }
 
