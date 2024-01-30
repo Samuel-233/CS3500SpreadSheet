@@ -12,15 +12,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FormulaEvaluatorTester", "FormulaEvaluatorTester\FormulaEvaluatorTester.csproj", "{4C2C7576-CF59-4A3B-8633-2E05E4C9E10E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyGraph", "DependencyGraph\DependencyGraph.csproj", "{0B32BB5C-E22F-4BE5-8F12-53983484F554}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyGraph", "DependencyGraph\DependencyGraph.csproj", "{0B32BB5C-E22F-4BE5-8F12-53983484F554}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyGraphTests", "DependencyGraphTests\DependencyGraphTests.csproj", "{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradingTests", "GradingTests\GradingTests.csproj", "{039975CF-7AA3-4F76-8E62-114AF0EFFF31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyGraphTests", "DependencyGraphTests\DependencyGraphTests.csproj", "{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Formula", "Formula\Formula.csproj", "{CDB43278-04AC-4196-95D2-EA88178FE72B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormulaTests", "FormulaTests\FormulaTests.csproj", "{7BFBF747-9970-45A2-891E-CE84110AB32B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradingTests", "GradingTests\GradingTests.csproj", "{5A763EBC-1601-4087-8BD8-0E725AE79637}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,10 +44,6 @@ Global
 		{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7CF39B1-B8C2-4EC3-A10C-DB06DE1F2FD7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{039975CF-7AA3-4F76-8E62-114AF0EFFF31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{039975CF-7AA3-4F76-8E62-114AF0EFFF31}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{039975CF-7AA3-4F76-8E62-114AF0EFFF31}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{039975CF-7AA3-4F76-8E62-114AF0EFFF31}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CDB43278-04AC-4196-95D2-EA88178FE72B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CDB43278-04AC-4196-95D2-EA88178FE72B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDB43278-04AC-4196-95D2-EA88178FE72B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -56,6 +52,10 @@ Global
 		{7BFBF747-9970-45A2-891E-CE84110AB32B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BFBF747-9970-45A2-891E-CE84110AB32B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BFBF747-9970-45A2-891E-CE84110AB32B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A763EBC-1601-4087-8BD8-0E725AE79637}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A763EBC-1601-4087-8BD8-0E725AE79637}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A763EBC-1601-4087-8BD8-0E725AE79637}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A763EBC-1601-4087-8BD8-0E725AE79637}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -31,8 +31,18 @@ namespace FormulaTests
             Assert.AreEqual(2.0, new Formula("1+A1", s => s, s => true).Evaluate(s => 1));
             Assert.AreEqual(1.0, new Formula("A1/A1", s => s, s => true).Evaluate(s => 9));
             Assert.AreEqual(6.0, new Formula("a1+A1", s => s.ToUpper(), s => true).Evaluate(s => 3));
-            Assert.AreEqual(3.0, new Formula("A1/b1", s => s, s => true).Evaluate(s => s.Equals("A1")? 9.0:3.0));
+            Assert.AreEqual(3.0, new Formula("A1/b1", s => s, s => true).Evaluate(s => s.Equals("A1") ? 9.0 : 3.0));
             Assert.AreEqual(2.5, new Formula("A1/b1", s => s, s => true).Evaluate(s => s.Equals("A1") ? 5 : 2));
+        }
+
+        /// <summary>
+        /// Test Complex calculation
+        /// </summary>
+        [TestMethod]
+        public void TestComplexCal()
+        {
+            Assert.AreEqual(-63.6, new Formula("y1*4.0-20/0.25+4.0*(8.0-3.0*2.0)/20.0*x7", s => s, s => true).Evaluate(s => (s == "x7") ? 1 : 4));
+            Assert.IsTrue(new Formula("y1*((2.0+20)/(15+20))/0.0*x7", s => s, s => true).Evaluate(s => (s == "x7") ? 1 : 4)is FormulaError);
         }
 
         /// <summary>
