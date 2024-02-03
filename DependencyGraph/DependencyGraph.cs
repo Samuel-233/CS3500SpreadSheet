@@ -48,6 +48,7 @@ namespace SpreadsheetUtilities
             dependencyGraph = new();
             size = 0;
         }
+        
 
         /// <summary>
         /// The number of ordered pairs in the DependencyGraph.
