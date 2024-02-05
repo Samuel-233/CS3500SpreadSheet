@@ -19,18 +19,17 @@ namespace SpreadsheetUtilities
 
         /// <summary>
         /// Create a new Cell to the sheet, also update this cell's father according to it's formula (if it is)
+        /// If the justAdd param is true, it will just add the cell in to dict, and not care about the dependency, vise virsa
         /// </summary>
         /// <param name="name"></param>
         /// <param name="content"></param>
         public void AddCell(String name, Object content)
         {
-            
             if (content is Formula) {
                 IEnumerable<String> dependees = ((Formula)content).GetVariables();
                 dependency.ReplaceDependees(name, dependees);
             }else dependency.ReplaceDependees(name, new HashSet<String> { });
-
-            cells[name] =  new Cell(name, content);
+            cells[name] = new Cell(name, content);
         }
 
         /// <summary>
@@ -45,76 +44,30 @@ namespace SpreadsheetUtilities
             return dependency.GetDependents(name);
         }
 
+        /// <summary>
+        /// Loop over all cells and extract their name
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<String> GetAllCellName() 
         {
             foreach(KeyValuePair<String, Cell> cell in cells) 
             { 
-                if(cell.Value!=null)yield return cell.Value.name; 
+                if(cell.Value!=null&&!((Cell)cell.Value).value.Equals("") ) yield return cell.Value.name; 
             }
         }
 
         /// <summary>
-        /// Get All dependees that need to cal first before cal this formula
+        /// Get cell's content by its name
         /// </summary>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public IEnumerable<String> GetAllDependees(String cellName)
-        {
-            return BFS(cellName, s => dependency.HasDependees(s), s => dependency.GetDependees(s));
+        public object GetCellContent(string name){
+            Cell cell;
+            if (cells.TryGetValue(name, out cell)) return cell.content;
+            else return "";
         }
 
-        /// <summary>
-        /// Get All dependents that relay on this formula
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<String> GetAllDependents(String cellName)
-        {
-            return BFS(cellName, s => dependency.HasDependents(s), s => dependency.GetDependents(s));
-        }
 
-        /// <summary>
-        /// A BFS Search to get A cell's all dependents or dependees
-        /// </summary>
-        /// <param name="cellName"></param>
-        /// <param name="HasDep"></param>
-        /// <param name="GetDep"></param>
-        /// <returns></returns>
-        private IEnumerable<String> BFS(String cellName,Func<String,bool> HasDep, Func<string,IEnumerable<String>>GetDep) {
-            ClearVisitHistory();
-            if (HasDep(cellName))
-            {
-                Queue<String> deps = new();
-                deps.Enqueue(cellName);
-
-                //BFS Search
-                while (deps.Count > 0)
-                {
-                    string dep = deps.Dequeue();
-                    IEnumerable<String> childDeps = GetDep(dep);
-                    foreach (String childDep in childDeps)
-                    {
-                        Cell cell = cells[childDep];
-                        if (!cell.visited)
-                        {
-                            cell.visited = true;
-                            deps.Enqueue(childDep);
-                            yield return childDep;
-                        }
-                    }
-
-                }
-            }
-        }
-
-        /// <summary>
-        /// Set all node's visited to false
-        /// </summary>
-        private void ClearVisitHistory() {
-            foreach (KeyValuePair<string, Cell> pair in cells) {
-                ((Cell)pair.Value).visited = false;
-            }
-        }
-
-        
     }
 
 

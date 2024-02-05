@@ -28,13 +28,11 @@
         public DependencyManager()
         {
             dependencyGraph = new();
-            allowLoop = true;
         }
 
         public DependencyManager(bool allowLoop)
         {
             dependencyGraph = new();
-            this.allowLoop = allowLoop;
         }
 
         /// <summary>

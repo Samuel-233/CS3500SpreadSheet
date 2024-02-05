@@ -6,38 +6,21 @@ using System.Threading.Tasks;
 
 namespace SpreadsheetUtilities
 {
+    /// <summary>
+    /// This is a class which is the basic element of a spreadSheet.
+    /// </summary>
     internal class Cell
     {
-        Object content;
-        Object value;
+        public Object value { get; set; }
         bool caled;
-        
 
-        //Name of the cell, or position of the cell
+        public Object content { get; set; }
         public String name { get; set; }
 
-        /*        Type type;
-
-                enum Type{
-                    String = 0,
-                    Double = 1,
-                    Error = 2
-                }
-        */
-
-        public bool visited { get; set; }
-
-        public Cell(String name)
-        {
-            this.name = name;
-            content = new String("");
-            visited = false;
-        }
 
         public Cell(String name, Object content)
         {
             this.name = name;
-            visited = false;
             if (content is String)
             {
                 this.content = content;
@@ -57,9 +40,6 @@ namespace SpreadsheetUtilities
             }
         }
 
-        public Object GetValue(){
-            return this.value;
-        }
 
     }
 }

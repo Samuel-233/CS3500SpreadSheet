@@ -438,7 +438,7 @@ internal class CheckTokenValid
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    private static bool IsVariable(string token) { return Regex.IsMatch(token, @"[a-zA-Z_](?: [a-zA-Z_]|\d)*"); }
+    public static bool IsVariable(string token) { return Regex.IsMatch(token, @"[a-zA-Z_](?: [a-zA-Z_]|\d)*"); }
 
     /// <summary>
     /// Check if this token is an operator
