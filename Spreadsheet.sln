@@ -24,7 +24,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradingTests", "GradingTest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spreadsheet", "Spreadsheet\Spreadsheet.csproj", "{F0B30ED6-72F6-45C0-981E-20DBB7E4A5C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadSheetTests", "SpreadSheetTests\SpreadSheetTests.csproj", "{3175D9DF-4F00-4367-A531-CD654F9FAD6C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetTests", "SpreadSheetTests\SpreadsheetTests.csproj", "{3175D9DF-4F00-4367-A531-CD654F9FAD6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
