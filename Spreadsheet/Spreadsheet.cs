@@ -25,7 +25,7 @@ namespace SS
     ///
     /// File Contents
     ///
-    /// This is a Spread sheet class which implement Abstract Spreadsheet class
+    /// This is a Spread sheet class which implement Abstract Spreadsheet class, It can add dependency between cells by cells formula
     /// </summary>
     public class Spreadsheet : AbstractSpreadsheet
     {
