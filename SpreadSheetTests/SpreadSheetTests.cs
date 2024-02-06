@@ -7,6 +7,9 @@ namespace SpreadSheetTests
     [TestClass]
     public class SpreadSheetTests
     {
+    /// <summary>
+    /// Test for wrong format
+    /// </summary>
         [TestMethod]
         public void TestWrongFormat()
         {
@@ -15,6 +18,9 @@ namespace SpreadSheetTests
             Assert.ThrowsException<InvalidNameException>(() => s.GetCellContents("1A1A"));
         }
 
+        /// <summary>
+        /// Test for null name
+        /// </summary>
         [TestMethod]
         public void TestNullName()
         {
@@ -23,6 +29,9 @@ namespace SpreadSheetTests
         }
 
 
+        /// <summary>
+        /// Empty cell should return a empty string
+        /// </summary>
         [TestMethod]
         public void TestGetEmptyCell()
         {
@@ -31,6 +40,9 @@ namespace SpreadSheetTests
             Assert.AreEqual("", s.GetCellContents("AA11"));
         }
 
+        /// <summary>
+        /// Fill in data in to cell
+        /// </summary>
         [TestMethod]
         public void TestChangeCell()
         {
@@ -45,6 +57,9 @@ namespace SpreadSheetTests
             Assert.IsTrue(Enumerable.SequenceEqual(new List<string> { "A1" ,"B1","C1"},s.GetNamesOfAllNonemptyCells()));
         }
 
+        /// <summary>
+        /// Test for dependency
+        /// </summary>
         [TestMethod]
         public void TestDependency()
         {
@@ -57,6 +72,9 @@ namespace SpreadSheetTests
             Assert.IsTrue(Enumerable.SequenceEqual(new List<string> {"D1","C1","B1","A1"},cellNeedToCal));
         }
 
+        /// <summary>
+        /// Test for circular dependency, if there is, there shouldn't have data in the last cell that entered
+        /// </summary>
         [TestMethod]
         public void TestCircularDependency()
         {
