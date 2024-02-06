@@ -23,7 +23,23 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-
+/// <summary>
+/// Author:    Shu Chen
+/// Partner:   None
+/// Date:      2024/2/6
+/// Course:    CS 3500, University of Utah, School of Computing
+/// Copyright: CS 3500 and Shu Chen - This work may not
+///            be copied for use in Academic Coursework.
+///
+/// I, Shu Chen, certify that I wrote this code from scratch and
+/// did not copy it in part or whole from another source.  All
+/// references used in the completion of the assignments are cited
+/// in my README file.
+///
+/// File Contents
+///
+/// This is a class to eval a formula by calling evaluator class
+/// </summary>
 namespace SpreadsheetUtilities
 {
     /// <summary>
@@ -224,8 +240,7 @@ namespace SpreadsheetUtilities
         /// followed by zero or more letters, digits, or underscores; a double literal; and anything that doesn't
         /// match one of those patterns.  There are no empty tokens, and no token contains white space.
         /// </summary>
-        //TODO Change it to private
-        public static IEnumerable<string> GetTokens(String formula)
+        private static IEnumerable<string> GetTokens(String formula)
         {
             // Patterns for individual tokens
             String lpPattern = @"\(";

@@ -3,10 +3,27 @@
 // Version 1.2 - Daniel Kopta
 //               (Clarified meaning of dependent and dependee.)
 //               (Clarified names in solution/project structure.)
+/// <summary>
+/// Author:    Shu Chen
+/// Partner:   None
+/// Date:      2024/2/6
+/// Course:    CS 3500, University of Utah, School of Computing
+/// Copyright: CS 3500 and Shu Chen - This work may not
+///            be copied for use in Academic Coursework.
+///
+/// I, Shu Chen, certify that I wrote this code from scratch and
+/// did not copy it in part or whole from another source.  All
+/// references used in the completion of the assignments are cited
+/// in my README file.
+///
+/// File Contents
+///
+/// This is a class to record dependency graph by calling dependency manager
+/// </summary>
 
 namespace SpreadsheetUtilities
 {
-    //TODO Hash map and graph, map store the node, node point to other node
+    
 
     /// <summary>
     /// (s1,t1) is an ordered pair of strings
