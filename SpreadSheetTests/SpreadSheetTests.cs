@@ -28,6 +28,7 @@ namespace SpreadSheetTests
         {
             Spreadsheet s = new Spreadsheet();
             Assert.AreEqual("",s.GetCellContents("A1"));
+            Assert.AreEqual("", s.GetCellContents("AA11"));
         }
 
         [TestMethod]

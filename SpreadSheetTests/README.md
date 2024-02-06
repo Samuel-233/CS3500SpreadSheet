@@ -4,7 +4,7 @@ Partner:    None
 Course:     CS 3500, University of Utah, School of Computing
 GitHub ID:  Samuel-233
 Repo:       https://github.com/uofu-cs3500-spring24/spreadsheet-Samuel-233
-Date:       3/2/2024
+Date:       6/2/2024
 Project:    Spread Sheet
 Copyright:  CS 3500 and Shu Chen - This work may not be copied for use in Academic Coursework.
 ```

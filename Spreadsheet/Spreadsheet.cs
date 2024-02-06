@@ -109,7 +109,7 @@ namespace SS
         private void CheckNameValid(string name)
         {
             if (name == null) throw new ArgumentNullException("name is null");
-            if (!Regex.IsMatch(name, @"[a-zA-Z_](?: [a-zA-Z_]|\d)*"))
+            if (!Regex.IsMatch(name, @"^[a-zA-Z_]+[0-9]*$"))
                 throw new InvalidNameException();
         }
 
