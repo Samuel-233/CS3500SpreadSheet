@@ -17,6 +17,7 @@ It also can create cells with dependency by entering the formula with variables
 
 Future extensions are a fully function spread sheet
 
+This is the main branch
 # Time Expenditures:
 
     1. Assignment One:   Predicted Hours:          15        Actual Hours:   17         Note: I spend about 5 more hours to rewrite the code, so it match prof's algorithm.
