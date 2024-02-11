@@ -23,3 +23,4 @@ I didn't speak to anyone yet, I will do it if I have time. Most of my problems a
 # References:
 
 1. Regex for variables - https://utah.instructure.com/courses/940768/external_tools/90790
+2. How to use "base" - Copilot

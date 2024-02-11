@@ -26,7 +26,7 @@ namespace SpreadsheetUtilities
     internal class Cell
     {
         public Object value { get; set; }
-        bool caled;
+        public bool caled { get; set; }
 
         public Object content { get; set; }
         public String name { get; set; }
@@ -50,7 +50,6 @@ namespace SpreadsheetUtilities
                 this.content = content;
                 this.caled = false;
                 this.value = 0.0;
-                //TODO Eval this!
             }
         }
 
