@@ -155,7 +155,6 @@ namespace SS
     public abstract class AbstractSpreadsheet
     {
 
-        //TODO Check this
         /// <summary>
         ///   Returns the names of all non-empty cells.
         /// </summary>
@@ -172,7 +171,6 @@ namespace SS
         /// </summary>
         /// 
         /// <exception cref="InvalidNameException"> 
-        //TODO Check this rule
         ///   Thrown if the name is invalid: blank/empty/""
         /// </exception>
         /// 
@@ -217,7 +215,6 @@ namespace SS
         ///     evaluated, followed by B1 re-evaluated, followed by C1 re-evaluated.
         ///   </para>
         /// </returns>
-        /////TODO Return the list but not set, also make sure the order is right
         protected abstract IList<String> SetCellContents(String name, double number);
 
         /// <summary>
@@ -227,7 +224,6 @@ namespace SS
         /// <requires> 
         ///   The name parameter must be valid/non-empty ""
         /// </requires>
-        //TODO Check the Para valid
         /// <exception cref="InvalidNameException"> 
         ///   If the name is invalid, throw an InvalidNameException
         /// </exception>       
@@ -240,7 +236,6 @@ namespace SS
         ///       This method returns a LIST consisting of the passed in name followed by the names of all 
         ///       other cells whose value depends, directly or indirectly, on the named cell.
         ///   </para>
-        //TODO make sure the order is correct
         ///   <para>
         ///       The order must correspond to a valid dependency ordering for recomputing
         ///       all of the cells, i.e., if you re-evaluate each cell in the order of the list,
@@ -330,7 +325,6 @@ namespace SS
         ///     Given a list of names of cells that have changed, return a list of
         ///     all cells that must be recalculated.
         ///   </para>
-        //TODO just need to check if variable name is valid or not
         ///   <requires>
         ///     Invariant: Requires that if names contains s,
         ///     then s must be a valid cell name.
@@ -552,7 +546,7 @@ namespace SS
         ///   C# does not support this syntax, we abused the system and simply create a "regular" method to
         ///   be implemented by the base class.
         /// </remarks>
-        /// 
+        //TODO Throw this error
         /// <exception cref="SpreadsheetReadWriteException"> 
         ///   1Thrown if any problem occurs while reading the file or looking up the version information.
         /// </exception>
@@ -598,7 +592,8 @@ namespace SS
         ///   If the name is invalid, throw an InvalidNameException
         /// </exception>
         /// 
-        /// <param name="name"> The name of the cell that we want the value of (will be normalized)</param>
+        /// <param name="name"> The name of the cell that we want the value of (will be 
+        /// d)</param>
         /// 
         /// <returns>
         ///   Returns the value (as opposed to the contents) of the named cell.  The return

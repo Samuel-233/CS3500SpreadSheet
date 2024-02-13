@@ -67,6 +67,7 @@ namespace SpreadSheetTests
             s.SetContentsOfCell("B1", "test");
             s.SetContentsOfCell("C1", "=1+1");
             s.SetContentsOfCell("D1", "");
+            s.SetContentsOfCell("D1", null);
             Assert.AreEqual(1.0, s.GetCellContents("A1"));
             Assert.AreEqual("test", s.GetCellContents("B1"));
             Assert.AreEqual(new Formula("1+1"), s.GetCellContents("C1"));
@@ -158,8 +159,9 @@ namespace SpreadSheetTests
             Assert.AreEqual(3.0, s.GetCellValue("C1"));
             Assert.AreEqual(5.0, s.GetCellValue("D1"));
             Assert.AreEqual(8.0, s.GetCellValue("E1"));
-
-
+            s.SetContentsOfCell("A1", "=2/0");
+            Assert.IsTrue(s.GetCellValue("F1") is FormulaError);
+            Assert.IsTrue(s.GetCellValue("C1") is FormulaError);
         }
     }
 }

@@ -32,9 +32,14 @@ namespace SS
     {
         DependencyGraph dependency;
         Dictionary<string, Cell> cells;
+        string filePath;
 
 
-        public override bool Changed { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
+        public override bool Changed
+        {
+            get;
+            protected set;
+        }
 
         //TODO Let user can do : AbstractSpreadsheet sheet3 = new Spreadsheet(PathToFile, ValidityDelegate, NormalizeDelegate, VersionString);
 
@@ -58,7 +63,15 @@ namespace SS
         {
             this.dependency = new();
             this.cells = new();
+            this.filePath = "";
         }
+
+        public Spreadsheet(string pathToFile,Func<string, bool> isValid, Func<string, string> normalize, string version):
+            this(isValid,normalize,version)
+        {
+            this.filePath = pathToFile; 
+        }
+
 
         /// <summary>
         /// Get a specific cell's value
@@ -67,6 +80,7 @@ namespace SS
         /// <returns></returns>
         public override object GetCellContents(string name)
         {
+            NormalizeName(ref name);
             CheckNameValid(name);
             return GetCellContent(name);
         }
@@ -94,6 +108,9 @@ namespace SS
         /// <returns>all elements that need to recalculate</returns>
         public override IList<string> SetContentsOfCell(string name, string content)
         {
+            NormalizeName(ref name);
+            if (content == null) return new List<string>() ;
+            this.Changed = true;
             CheckNameValid(name);
             double number;
             IList<string> reCalList;
@@ -239,6 +256,7 @@ namespace SS
         public override void Save(string filename)
         {
             throw new NotImplementedException();
+            this.Changed = false;
         }
 
         public override string GetXML()
@@ -312,7 +330,7 @@ namespace SS
         }
 
         /// <summary>
-        /// A look up function to find 
+        /// A look up function to find cell value
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -320,6 +338,7 @@ namespace SS
         private double LookUp(string name)
         {
             Cell cell;
+            NormalizeName(ref name);
             CheckNameValid(name);
             if (!cells.TryGetValue(name, out cell)) return 0.0;
 
@@ -356,6 +375,14 @@ namespace SS
                 cell.caled=false;
                 GetCellValue(cellName);
             }
+        }
+
+       /// <summary>
+       /// Normalize the string
+       /// </summary>
+       /// <param name="name"></param>
+        private void NormalizeName(ref string name){
+            name = this.Normalize(name);
         }
 
     }
