@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using SpreadsheetUtilities;
 using SS;
+
 /// <summary>
 /// Author:    Shu Chen
 /// Partner:   None
@@ -43,7 +43,6 @@ namespace SpreadSheetTests
             Spreadsheet s = new Spreadsheet();
             Assert.ThrowsException<InvalidNameException>(() => s.GetCellContents(null));
         }
-
 
         /// <summary>
         /// Empty cell should return a empty string
@@ -117,7 +116,6 @@ namespace SpreadSheetTests
 
             Assert.AreEqual("", s.GetCellContents("C1"));
         }
-
 
         /// <summary>
         /// Test to cal cell value

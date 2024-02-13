@@ -1,15 +1,7 @@
 ﻿using SpreadsheetUtilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using static System.Net.Mime.MediaTypeNames;
-using System.Xml.Linq;
 using System.Xml;
-using System.Collections;
 
 namespace SS
 {
@@ -18,12 +10,12 @@ namespace SS
     /// Partner:   None
     /// Date:      2024/2/13
     /// Course:    CS 3500, University of Utah, School of Computing
-    /// Copyright: CS 3500 and Shu Chen - This work may not 
+    /// Copyright: CS 3500 and Shu Chen - This work may not
     ///            be copied for use in Academic Coursework.
     ///
     /// I, Shu Chen, certify that I wrote this code from scratch and
-    /// did not copy it in part or whole from another source.  All 
-    /// references used in the completion of the assignments are cited 
+    /// did not copy it in part or whole from another source.  All
+    /// references used in the completion of the assignments are cited
     /// in my README file.
     ///
     /// File Contents
@@ -32,10 +24,9 @@ namespace SS
     /// </summary>
     public class Spreadsheet : AbstractSpreadsheet
     {
-        DependencyGraph dependency;
-        Dictionary<string, Cell> cells;
-        string filePath;
-
+        private DependencyGraph dependency;
+        private Dictionary<string, Cell> cells;
+        private string filePath;
 
         public override bool Changed
         {
@@ -43,17 +34,16 @@ namespace SS
             protected set;
         }
 
-        
-
         /// <summary>
         /// Constructor of Spread sheet class with out isValid, normalize Func, and version pram
         /// </summary>
         public Spreadsheet() :
-            this(s => true,s => s, "default version")
+            this(s => true, s => s, "default version")
         {
             this.dependency = new();
             this.cells = new();
         }
+
         /// <summary>
         /// Constructor of Spread sheet class with isValid, normalize Func, and version pram
         /// </summary>
@@ -75,12 +65,11 @@ namespace SS
         /// <param name="isValid">a function to tell how is the variable should look like beside the Regex rule</param>
         /// <param name="normalize">a function to make the variable in a proper format</param>
         /// <param name="version">version to help saving</param>
-        public Spreadsheet(string pathToFile,Func<string, bool> isValid, Func<string, string> normalize, string version):
-            this(isValid,normalize,version)
+        public Spreadsheet(string pathToFile, Func<string, bool> isValid, Func<string, string> normalize, string version) :
+            this(isValid, normalize, version)
         {
-            this.filePath = pathToFile; 
+            this.filePath = pathToFile;
         }
-
 
         /// <summary>
         /// Get a specific cell's value
@@ -111,14 +100,14 @@ namespace SS
         /// </summary>
         /// <param name="name">The name of the cell</param>
         /// <param name="content">The new content of the cell</param>
-        ///<exception cref="InvalidNameException"> 
+        ///<exception cref="InvalidNameException">
         ///   If the name parameter is null or invalid, throw an InvalidNameException
         /// </exception>
         /// <returns>all elements that need to recalculate</returns>
         public override IList<string> SetContentsOfCell(string name, string content)
         {
             NormalizeName(ref name);
-            if (content == null) return new List<string>() ;
+            if (content == null) return new List<string>();
             this.Changed = true;
             CheckNameValid(name);
             double number;
@@ -135,11 +124,10 @@ namespace SS
                 UpdateValue(reCalList);
                 return reCalList;
             }
-            
+
             reCalList = SetCellContents(name, content);
             UpdateValue(reCalList);
             return reCalList;
-
         }
 
         /// <summary>
@@ -174,8 +162,6 @@ namespace SS
         {
             return AddCell(name, formula);
         }
-
-
 
         /// <summary>
         /// Check if a variable name is valid or not
@@ -218,7 +204,6 @@ namespace SS
             return set;
         }
 
-
         /// <summary>
         /// Add the cell to the sheet, if the cell cause a loop, undo this
         /// </summary>
@@ -226,7 +211,8 @@ namespace SS
         /// <param name="content">the new content that user want to set</param>
         /// <exception cref="CircularException"> if a circular relation found, and undo the add cell</exception>
         /// <returns>a set of to show which cells need to recalculate</returns>
-        private IList<string> AddCell(string name, object content) {
+        private IList<string> AddCell(string name, object content)
+        {
             object contentBackUp = GetCellContent(name);
             TryAddCell(name, content);
             LinkedList<string> cellsNeedToReCal;
@@ -234,11 +220,13 @@ namespace SS
             {
                 cellsNeedToReCal = (LinkedList<string>)GetCellsToRecalculate(IE2ISet(GetDirectDependents(name)));
                 cellsNeedToReCal.AddFirst(name);
-            }catch(CircularException e){
+            }
+            catch (CircularException e)
+            {
                 AddCell(name, contentBackUp);
                 throw e;
             }
-            
+
             return IE2IList(cellsNeedToReCal);
         }
 
@@ -253,8 +241,6 @@ namespace SS
             if (!cells.TryGetValue(name, out Cell cell)) throw new ArgumentNullException("value is null");
             return dependency.GetDependents(name);
         }
-
-
 
         /// <summary>
         /// A func to check the file's version
@@ -292,13 +278,12 @@ namespace SS
         /// <param name="filename">the file name</param>
         public override void Save(string filename)
         {
-
-            if(!filePath.Equals("")) 
+            if (!filePath.Equals(""))
             {
                 filename = Path.Combine(filePath, filename);
             }
 
-            File.WriteAllText(filename,GetXML());
+            File.WriteAllText(filename, GetXML());
 
             this.Changed = false;
         }
@@ -336,33 +321,30 @@ namespace SS
         /// A function to Evaluate the formula in the cell, or return a string if the values is a string
         /// </summary>
         /// <param name="name">the cell's name</param>
-        /// <exception cref="InvalidNameException"> 
+        /// <exception cref="InvalidNameException">
         ///   If the name is invalid, throw an InvalidNameException
         /// </exception>
         /// <returns>can be string, double, or formula error</returns>
         public override object GetCellValue(string name)
         {
-            
             object o = GetCellContent(name);
-            
-            if(o is Formula) {
+
+            if (o is Formula)
+            {
                 object value;
                 try
                 {
                     value = ((Formula)o).Evaluate(LookUp);
-                }catch(Exception e){
+                }
+                catch (Exception e)
+                {
                     return new FormulaError(e.Message);
                 }
                 return value;
             }
             if (o is double) { return (double)o; }
             else return (string)o;
-
-            
-
         }
-
-        
 
         /// <summary>
         /// Create a new Cell to the sheet, also update this cell's father according to it's formula (if it is)
@@ -385,7 +367,7 @@ namespace SS
         /// Get cell's content by its name
         /// </summary>
         /// <param name="name">the name of the cell</param>
-        /// <exception cref="InvalidNameException"> 
+        /// <exception cref="InvalidNameException">
         ///   If the name is invalid, throw an InvalidNameException
         /// </exception>
         /// <returns>Cell's content</returns>
@@ -411,8 +393,8 @@ namespace SS
             if (!cells.TryGetValue(name, out cell)) return 0.0;
 
             //If this formula is caled, then return the value, or recursively cal the formula in it.
-            if (cell.content is Formula) {
-
+            if (cell.content is Formula)
+            {
                 if (cell.caled) return (double)cell.value;
 
                 object result = ((Formula)cell.content).Evaluate(LookUp);
@@ -421,14 +403,15 @@ namespace SS
                     cell.caled = true;
                     cell.value = result;
                     return (double)result;
-                } else
+                }
+                else
                 {
                     //Throw the error (Get value func will catch it and return a formula exception)
                     throw new Exception($"Cell {cell.name} can not evaluate");
                 }
             }
 
-            if(cell.content is double){ return (double)cell.content; }
+            if (cell.content is double) { return (double)cell.content; }
 
             throw new Exception($"Cell {cell.name} is a string");
         }
@@ -437,23 +420,23 @@ namespace SS
         /// Update all values that needs to be re eval.
         /// </summary>
         /// <param name="cellsNeedToReCal">cells that needs to recalculate</param>
-        private void UpdateValue(IList<string> cellsNeedToReCal){
-            foreach(string cellName in cellsNeedToReCal){
+        private void UpdateValue(IList<string> cellsNeedToReCal)
+        {
+            foreach (string cellName in cellsNeedToReCal)
+            {
                 Cell cell = cells[cellName];
-                cell.caled=false;
+                cell.caled = false;
                 GetCellValue(cellName);
             }
         }
 
-       /// <summary>
-       /// Normalize the string
-       /// </summary>
-       /// <param name="name">cell that need to normalize</param>
-        private void NormalizeName(ref string name){
+        /// <summary>
+        /// Normalize the string
+        /// </summary>
+        /// <param name="name">cell that need to normalize</param>
+        private void NormalizeName(ref string name)
+        {
             name = this.Normalize(name);
         }
-
     }
-
-
 }

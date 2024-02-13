@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SpreadsheetUtilities
 {
@@ -9,12 +8,12 @@ namespace SpreadsheetUtilities
     /// Partner:   None
     /// Date:      2024/1/26
     /// Course:    CS 3500, University of Utah, School of Computing
-    /// Copyright: CS 3500 and Shu Chen - This work may not 
+    /// Copyright: CS 3500 and Shu Chen - This work may not
     ///            be copied for use in Academic Coursework.
     ///
     /// I, Shu Chen, certify that I wrote this code from scratch and
-    /// did not copy it in part or whole from another source.  All 
-    /// references used in the completion of the assignments are cited 
+    /// did not copy it in part or whole from another source.  All
+    /// references used in the completion of the assignments are cited
     /// in my README file.
     ///
     /// File Contents
@@ -23,30 +22,28 @@ namespace SpreadsheetUtilities
     /// </summary>
     public static class Evaluator
     {
-
         public delegate int Lookup(string v);
-        public static object Evaluate(ReadOnlyCollection<string> tokens, Func<string,double> variableEvaluator)
-        {
 
+        public static object Evaluate(ReadOnlyCollection<string> tokens, Func<string, double> variableEvaluator)
+        {
             Stack<double> values = new Stack<double>();
             Stack<string> operators = new Stack<string>();
             FormulaError error;
 
             double currentToken = 0;
 
-
             for (int i = 0; i < tokens.Count(); i++)
             {
                 //Push to stack if it is number
                 if (CheckToken.IsNumber(tokens[i], out currentToken))
                 {
-                    if (values.Count==0)
+                    if (values.Count == 0)
                     {
                         values.Push(currentToken);
                     }
                     else
                     {
-                        if(PeekAndEval(values, operators, currentToken,out error))return error;
+                        if (PeekAndEval(values, operators, currentToken, out error)) return error;
                     }
                 }
 
@@ -54,14 +51,16 @@ namespace SpreadsheetUtilities
                 else if (CheckToken.IsVariable(tokens[i]))
                 {
                     string variable = tokens[i];
-                    try{
+                    try
+                    {
                         currentToken = variableEvaluator(variable);
-                    }catch (Exception e){
+                    }
+                    catch (Exception e)
+                    {
                         return new FormulaError(e.Message);
                     }
-                    
-                    
-                    if(PeekAndEval(values, operators, currentToken,out error))return error;
+
+                    if (PeekAndEval(values, operators, currentToken, out error)) return error;
                 }
 
                 // deal with * & /
@@ -70,29 +69,27 @@ namespace SpreadsheetUtilities
                     operators.Push(tokens[i]);
                 }
 
-                //deal with + & - 
+                //deal with + & -
                 else if (tokens[i] == "+" || tokens[i] == "-")
                 {
                     if (values.Count() >= 2 && operators.Count() >= 1 && (operators.Peek() == "+" || operators.Peek() == "-"))
                     {
-                        if(CalAndPush(values, operators,out error))return error;
+                        if (CalAndPush(values, operators, out error)) return error;
                     }
                     operators.Push(tokens[i]);
                 }
 
-                //Deal with left Parenthesis 
+                //Deal with left Parenthesis
                 else if (tokens[i] == "(")
                 {
                     operators.Push(tokens[i]);
                 }
-                //Deal with right Parenthesis 
+                //Deal with right Parenthesis
                 else if (tokens[i] == ")")
                 {
-                    if(CalParenthesis(values, operators, tokens, i, out error)) return error;
+                    if (CalParenthesis(values, operators, tokens, i, out error)) return error;
                 }
             }
-
-
 
             //Cal if there is something left
             if (values.Count == 2 && operators.Count == 1)
@@ -106,12 +103,8 @@ namespace SpreadsheetUtilities
             {
                 return values.Pop();
             }
-
             else { return new FormulaError("Input Formula encounter some unknown problem, please check it."); }
         }
-
-
-
 
         /// <summary>
         /// Evaluate the formula inside parenthesis.
@@ -129,7 +122,7 @@ namespace SpreadsheetUtilities
                 if (CalAndPush(values, operators, out error)) return true;
             }
 
-            //pop out the  ( 
+            //pop out the  (
             operators.Pop();
 
             //cal the * / before the (
@@ -141,8 +134,6 @@ namespace SpreadsheetUtilities
             error = new FormulaError();
             return false;
         }
-
-
 
         /// <summary>
         /// calculate the equation by given operator.
@@ -162,19 +153,24 @@ namespace SpreadsheetUtilities
                 case "*":
                     values.Push(left * right);
                     break;
+
                 case "/":
-                    if (right == 0) { 
+                    if (right == 0)
+                    {
                         error = new FormulaError("Divide by zero error");
                         return true;
                     }
                     values.Push(left / right);
                     break;
+
                 case "+":
                     values.Push(left + right);
                     break;
+
                 case "-":
                     values.Push(left - right);
                     break;
+
                 default:
                     break;
             }
@@ -192,10 +188,10 @@ namespace SpreadsheetUtilities
         {
             if (operators.Count != 0 && values.Count != 0)
             {
-                if (operators.Peek() == "/" || operators.Peek() == "*"){
-                    if(DivAndMult(values, operators, currentToken,out error))return true;
+                if (operators.Peek() == "/" || operators.Peek() == "*")
+                {
+                    if (DivAndMult(values, operators, currentToken, out error)) return true;
                 }
-                
                 else values.Push(currentToken);
             }
             else { values.Push(currentToken); }
@@ -211,11 +207,12 @@ namespace SpreadsheetUtilities
         /// <param name="currentToken"></param>
         private static bool DivAndMult(Stack<double> values, Stack<string> operators, double currentToken, out FormulaError error)
         {
-            if (operators.Peek() == "/" && currentToken == 0) {
+            if (operators.Peek() == "/" && currentToken == 0)
+            {
                 error = new FormulaError("Can not divide a number by zero");
                 return true;
             }
-            
+
             string @operator = operators.Pop();
 
             if (@operator == "*") { values.Push(values.Pop() * currentToken); }
@@ -230,13 +227,11 @@ namespace SpreadsheetUtilities
         /// </summary>
         internal class CheckToken
         {
-            public static bool IsNumber(string token, out double number) { return double.TryParse(token, out number); }
-            public static bool IsVariable(string token) { return Regex.IsMatch(token, @"[a-zA-Z_](?: [a-zA-Z_]|\d)*"); }
+            public static bool IsNumber(string token, out double number)
+            { return double.TryParse(token, out number); }
+
+            public static bool IsVariable(string token)
+            { return Regex.IsMatch(token, @"[a-zA-Z_](?: [a-zA-Z_]|\d)*"); }
         }
-
     }
-
-
-
-
 }
