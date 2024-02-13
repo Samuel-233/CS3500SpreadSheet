@@ -58,7 +58,7 @@ namespace SS
     }
 
 
-    //TODO implement it
+
     /// <summary>
     ///   <para>
     ///     Thrown to indicate that a read or write attempt has failed.
@@ -91,7 +91,6 @@ namespace SS
     ///      <item> The second "half" ends with one or more numbers (digits)</item>
     /// </list>   
     /// 
-    //TODO Change the rule
     /// <example>
     ///     For example, "A15", "a15", "XY032", and "BC7" are cell names so long as they
     ///     satisfy IsValid.  On the other hand, "Z", "X_", and "hello" are not cell names,
@@ -546,7 +545,6 @@ namespace SS
         ///   C# does not support this syntax, we abused the system and simply create a "regular" method to
         ///   be implemented by the base class.
         /// </remarks>
-        //TODO Throw this error
         /// <exception cref="SpreadsheetReadWriteException"> 
         ///   1Thrown if any problem occurs while reading the file or looking up the version information.
         /// </exception>

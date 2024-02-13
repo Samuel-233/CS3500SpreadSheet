@@ -8,13 +8,15 @@ using System.Text.RegularExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Net.Mime.MediaTypeNames;
 using System.Xml.Linq;
+using System.Xml;
+using System.Collections;
 
 namespace SS
 {
     /// <summary>
     /// Author:    Shu Chen
     /// Partner:   None
-    /// Date:      2024/2/10
+    /// Date:      2024/2/13
     /// Course:    CS 3500, University of Utah, School of Computing
     /// Copyright: CS 3500 and Shu Chen - This work may not 
     ///            be copied for use in Academic Coursework.
@@ -41,7 +43,7 @@ namespace SS
             protected set;
         }
 
-        //TODO Let user can do : AbstractSpreadsheet sheet3 = new Spreadsheet(PathToFile, ValidityDelegate, NormalizeDelegate, VersionString);
+        
 
         /// <summary>
         /// Constructor of Spread sheet class with out isValid, normalize Func, and version pram
@@ -254,20 +256,80 @@ namespace SS
 
 
 
+        /// <summary>
+        /// A func to check the file's version
+        /// </summary>
+        /// <param name="filename">File name include file path(If needed)</param>
+        /// <returns>a version info</returns>
+        /// <exception cref="SpreadsheetReadWriteException">Throw error if any error occors</exception>
         public override string GetSavedVersion(string filename)
         {
-            throw new NotImplementedException();
+            try
+            {
+                XmlReader xmlReader = XmlReader.Create(filename);
+                string version;
+
+                while (xmlReader.Read())
+                {
+                    //keep reading until we see your element
+                    if (xmlReader.Name.Equals("Keyword") && (xmlReader.NodeType == XmlNodeType.Element))
+                    {
+                        // get attribute from the XML element here
+                        return xmlReader.GetAttribute("version");
+                    }
+                }
+                throw new SpreadsheetReadWriteException("Can not find the version");
+            }
+            catch (Exception e)
+            {
+                throw new SpreadsheetReadWriteException($"Can not read the file {filename}");
+            }
         }
 
+        /// <summary>
+        /// A func to save the spread sheet in to XML format
+        /// </summary>
+        /// <param name="filename">the file name</param>
         public override void Save(string filename)
         {
-            throw new NotImplementedException();
+
+            if(!filePath.Equals("")) 
+            {
+                filename = Path.Combine(filePath, filename);
+            }
+
+            File.WriteAllText(filename,GetXML());
+
             this.Changed = false;
         }
 
+        /// <summary>
+        /// Turn the spread sheet data in to XML format
+        /// </summary>
+        /// <returns>a XML format string</returns>
         public override string GetXML()
         {
-            throw new NotImplementedException();
+            StringBuilder sb = new StringBuilder();
+
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.IndentChars = "  ";
+
+            using (XmlWriter writer = XmlWriter.Create(sb, settings))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartAttribute("version", this.Version);
+
+                foreach (KeyValuePair<string, Cell> cell in cells)
+                {
+                    cell.Value.WriteXml(writer);
+                }
+
+                writer.WriteEndElement(); // Ends the Nation block
+                writer.WriteEndDocument();
+            }
+
+            return sb.ToString();
         }
 
         /// <summary>

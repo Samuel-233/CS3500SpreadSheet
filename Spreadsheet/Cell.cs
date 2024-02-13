@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using System.Xml;
 /// <summary>
 /// Author:    Shu Chen
 /// Partner:   None
@@ -26,7 +28,7 @@ namespace SpreadsheetUtilities
     internal class Cell
     {
         public Object value { get; set; }
-        
+
         /// <summary>
         /// A bool to record the cell's value is newest or not
         /// </summary>
@@ -64,6 +66,33 @@ namespace SpreadsheetUtilities
             }
         }
 
+        /// <summary>
+        /// Write this cell in to XML format
+        /// </summary>
+        /// <param name="writer"></param>
+        public void WriteXml(XmlWriter writer)
+        {
+            writer.WriteStartElement("cell");
+            writer.WriteElementString("name", this.name);
+            writer.WriteElementString("content", ContentToString());
+            writer.WriteEndElement();
+        }
+
+        /// <summary>
+        /// Return the content in string
+        /// </summary>
+        /// <returns></returns>
+        private string ContentToString() {
+            if (content is Formula)
+            {
+                return "=" + ((Formula)content).ToString();
+            }
+            else if (content is String)
+            {
+                return (string)content;
+            }
+            else return ((double)content).ToString();
+        }
 
     }
 }
