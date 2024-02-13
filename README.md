@@ -13,7 +13,8 @@ Copyright:  CS 3500 and Shu Chen - This work may not be copied for use in Academ
 # Overview of the Spreadsheet functionality
 
 The Spreadsheet program is currently capable of Evaluate expression, make dependency relationship.
-It also can create cells with dependency by entering the formula with variables
+It also can create cells with dependency by entering the formula with variables.
+By using SpreadSheet, user can put data in to cells, and do calculations between them. 
 
 Future extensions are a fully function spread sheet
 

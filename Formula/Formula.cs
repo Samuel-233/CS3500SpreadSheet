@@ -62,8 +62,21 @@ namespace SpreadsheetUtilities
     /// </summary>
     public class Formula
     {
+    /// <summary>
+    /// This is a Read only collection to store tokens of the formula
+    /// </summary>
         private ReadOnlyCollection<string> validFormula;
+
+        /// <summary>
+        /// To track the unique variables in the formula
+        /// </summary>
         private HashSet<string> variables;
+
+        /// <summary>
+        /// The final formula in a string form
+        /// </summary>
+        private string finalFormula;
+
         /// <summary>
         /// Creates a Formula from a string that consists of an infix expression written as
         /// described in the class comment.  If the expression is syntactically invalid,
@@ -107,6 +120,7 @@ namespace SpreadsheetUtilities
             if (formulaTokens.Count() < 1) { throw new FormulaFormatException("Formula need has at least one token! - Rule 2"); }
             List<string> vaildTokens = CheckTokenValid.CreateAValidTokenList(formulaTokens, normalize, isValid, out variables);
             validFormula = new ReadOnlyCollection<string>(vaildTokens);
+            InitializeToString();
         }
 
 
@@ -152,6 +166,19 @@ namespace SpreadsheetUtilities
             return variables;
         }
 
+
+        /// <summary>
+        /// A helper method to make the formula in to string, and ToString method just need to get the final formula variable.
+        /// </summary>
+        private void InitializeToString(){
+            StringBuilder sb = new StringBuilder();
+            foreach (string tokens in validFormula)
+            {
+                sb.Append(tokens);
+            }
+            this.finalFormula = sb.ToString();
+        }
+
         /// <summary>
         /// Returns a string containing no spaces which, if passed to the Formula
         /// constructor, will produce a Formula f such that this.Equals(f).  All of the
@@ -164,11 +191,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (string tokens in validFormula) {
-                sb.Append(tokens);
-            }
-            return sb.ToString();
+            return this.finalFormula;
         }
 
         /// <summary>

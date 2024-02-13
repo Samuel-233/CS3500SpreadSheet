@@ -55,9 +55,9 @@ namespace SS
         /// <summary>
         /// Constructor of Spread sheet class with isValid, normalize Func, and version pram
         /// </summary>
-        /// <param name="isValid"></param>
-        /// <param name="normalize"></param>
-        /// <param name="version"></param>
+        /// <param name="isValid">a function to tell how is the variable should look like beside the Regex rule</param>
+        /// <param name="normalize">a function to make the variable in a proper format</param>
+        /// <param name="version">version to help saving</param>
         public Spreadsheet(Func<string, bool> isValid, Func<string, string> normalize, string version)
             : base(isValid, normalize, version)
         {
@@ -66,6 +66,13 @@ namespace SS
             this.filePath = "";
         }
 
+        /// <summary>
+        /// Constructor of Spread sheet class with isValid, normalize Func,version pram and file path
+        /// </summary>
+        /// <param name="pathToFile">a path to save the file</param>
+        /// <param name="isValid">a function to tell how is the variable should look like beside the Regex rule</param>
+        /// <param name="normalize">a function to make the variable in a proper format</param>
+        /// <param name="version">version to help saving</param>
         public Spreadsheet(string pathToFile,Func<string, bool> isValid, Func<string, string> normalize, string version):
             this(isValid,normalize,version)
         {
@@ -76,8 +83,8 @@ namespace SS
         /// <summary>
         /// Get a specific cell's value
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <param name="name">the name of the cell</param>
+        /// <returns>the content of the cell</returns>
         public override object GetCellContents(string name)
         {
             NormalizeName(ref name);
@@ -88,7 +95,7 @@ namespace SS
         /// <summary>
         /// Get all cells which value is not ""
         /// </summary>
-        /// <returns></returns>
+        /// <returns>a list contain all nonempty cells</returns>
         public override IEnumerable<string> GetNamesOfAllNonemptyCells()
         {
             foreach (KeyValuePair<string, Cell> cell in cells)
@@ -100,8 +107,8 @@ namespace SS
         /// <summary>
         /// If content can parse to double, then add it directly, if starts with "=" then add it as formula, else add as string to the cell content
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="content"></param>
+        /// <param name="name">The name of the cell</param>
+        /// <param name="content">The new content of the cell</param>
         ///<exception cref="InvalidNameException"> 
         ///   If the name parameter is null or invalid, throw an InvalidNameException
         /// </exception>
@@ -136,8 +143,8 @@ namespace SS
         /// <summary>
         /// Set a cell contents with a given number
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="number"></param>
+        /// <param name="name">The name of the cell</param>
+        /// <param name="number">the new content that want to set to the cell</param>
         /// <returns>a set of to show which cells need to recalculate</returns>
         protected override IList<string> SetCellContents(string name, double number)
         {
@@ -147,8 +154,8 @@ namespace SS
         /// <summary>
         /// Set a cell contents with a given text
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="text"></param>
+        /// <param name="name">The name of the cell</param>
+        /// <param name="number">the new content that want to set to the cell</param>
         /// <returns>a set of to show which cells need to recalculate</returns>
         protected override IList<string> SetCellContents(string name, string text)
         {
@@ -158,8 +165,8 @@ namespace SS
         /// <summary>
         /// Set a cell contents with a given formula
         /// </summary>
-        /// <param name="name">Cell's name</param>
-        /// <param name="formula"></param>
+        /// <param name="name">The name of the cell</param>
+        /// <param name="number">the new content that want to set to the cell</param>
         /// <returns>a set of to show which cells need to recalculate</returns>
         protected override IList<string> SetCellContents(string name, Formula formula)
         {
@@ -171,9 +178,8 @@ namespace SS
         /// <summary>
         /// Check if a variable name is valid or not
         /// </summary>
-        /// <param name="name"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="InvalidNameException"></exception>
+        /// <param name="name">The name of the cell</param>
+        /// <exception cref="InvalidNameException">Return exception when the name (variable) is null, mismatch, or invalid</exception>
         private void CheckNameValid(string name)
         {
             if (name == null || !Regex.IsMatch(name, @"^[a-zA-Z_]+[0-9]*$") || !this.IsValid(name))
@@ -183,7 +189,7 @@ namespace SS
         /// <summary>
         /// This is a method that convert IE to IList
         /// </summary>
-        /// <param name="strings"></param>
+        /// <param name="strings">A IEnumerable that want to turn in to IList</param>
         /// <returns></returns>
         private IList<string> IE2IList(IEnumerable<string> strings)
         {
@@ -198,7 +204,7 @@ namespace SS
         /// <summary>
         /// This is a method that convert IE to ISet
         /// </summary>
-        /// <param name="strings"></param>
+        /// <param name="strings">A IEnumerable that want to turn in to ISet</param>
         /// <returns></returns>
         private ISet<string> IE2ISet(IEnumerable<string> strings)
         {
@@ -214,8 +220,8 @@ namespace SS
         /// <summary>
         /// Add the cell to the sheet, if the cell cause a loop, undo this
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="content"></param>
+        /// <param name="name">The cell's name</param>
+        /// <param name="content">the new content that user want to set</param>
         /// <exception cref="CircularException"> if a circular relation found, and undo the add cell</exception>
         /// <returns>a set of to show which cells need to recalculate</returns>
         private IList<string> AddCell(string name, object content) {
@@ -237,8 +243,8 @@ namespace SS
         /// <summary>
         /// Get the Direct Dependents of corresponding cell
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <param name="name">name of the cell</param>
+        /// <returns>the direct dependents of the cells</returns>
         protected override IEnumerable<string> GetDirectDependents(string name)
         {
             CheckNameValid(name);
@@ -265,13 +271,13 @@ namespace SS
         }
 
         /// <summary>
-        /// 
+        /// A function to Evaluate the formula in the cell, or return a string if the values is a string
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">the cell's name</param>
         /// <exception cref="InvalidNameException"> 
         ///   If the name is invalid, throw an InvalidNameException
         /// </exception>
-        /// <returns></returns>
+        /// <returns>can be string, double, or formula error</returns>
         public override object GetCellValue(string name)
         {
             
@@ -300,8 +306,8 @@ namespace SS
         /// Create a new Cell to the sheet, also update this cell's father according to it's formula (if it is)
         /// If the justAdd param is true, it will just add the cell in to dict, and not care about the dependency, vise virsa
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="content"></param>
+        /// <param name="name">the name of the cell</param>
+        /// <param name="content">the content want to set</param>
         private void TryAddCell(string name, object content)
         {
             if (content is Formula)
@@ -316,11 +322,11 @@ namespace SS
         /// <summary>
         /// Get cell's content by its name
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">the name of the cell</param>
         /// <exception cref="InvalidNameException"> 
         ///   If the name is invalid, throw an InvalidNameException
         /// </exception>
-        /// <returns></returns>
+        /// <returns>Cell's content</returns>
         private object GetCellContent(string name)
         {
             Cell cell;
@@ -332,9 +338,9 @@ namespace SS
         /// <summary>
         /// A look up function to find cell value
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">the name of the cell</param>
         /// <returns></returns>
-        /// <exception cref="Exception"></exception>
+        /// <exception cref="Exception">If the target cell is a string or cannot evaluate</exception>
         private double LookUp(string name)
         {
             Cell cell;
@@ -368,7 +374,7 @@ namespace SS
         /// <summary>
         /// Update all values that needs to be re eval.
         /// </summary>
-        /// <param name="cellsNeedToReCal"></param>
+        /// <param name="cellsNeedToReCal">cells that needs to recalculate</param>
         private void UpdateValue(IList<string> cellsNeedToReCal){
             foreach(string cellName in cellsNeedToReCal){
                 Cell cell = cells[cellName];
@@ -380,7 +386,7 @@ namespace SS
        /// <summary>
        /// Normalize the string
        /// </summary>
-       /// <param name="name"></param>
+       /// <param name="name">cell that need to normalize</param>
         private void NormalizeName(ref string name){
             name = this.Normalize(name);
         }
