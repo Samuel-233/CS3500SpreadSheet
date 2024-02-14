@@ -23,10 +23,6 @@ namespace SpreadsheetUtilities
     {
         public Object value { get; set; }
 
-        /// <summary>
-        /// A bool to record the cell's value is newest or not
-        /// </summary>
-        public bool caled { get; set; }
 
         /// <summary>
         /// The content of the string, can be string or double, or formula
@@ -45,18 +41,15 @@ namespace SpreadsheetUtilities
             {
                 this.content = content;
                 this.value = content;
-                this.caled = true;
             }
             else if (content is Double)
             {
                 this.content = content;
                 this.value = content;
-                this.caled = true;
             }
             else if (content is Formula)
             {
                 this.content = content;
-                this.caled = false;
                 this.value = 0.0;
             }
         }

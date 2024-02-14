@@ -344,6 +344,8 @@ namespace SS
                 {
                     return new FormulaError(e.Message);
                 }
+                Cell cell = cells[name];
+                cell.value = value;
                 return value;
             }
             if (o is double) { return (double)o; }
@@ -399,20 +401,8 @@ namespace SS
             //If this formula is caled, then return the value, or recursively cal the formula in it.
             if (cell.content is Formula)
             {
-                if (cell.caled) return (double)cell.value;
-
-                object result = ((Formula)cell.content).Evaluate(LookUp);
-                if (result is double)
-                {
-                    cell.caled = true;
-                    cell.value = result;
-                    return (double)result;
-                }
-                else
-                {
-                    //Throw the error (Get value func will catch it and return a formula exception)
-                    throw new Exception($"Cell {cell.name} can not evaluate");
-                }
+                if (cell.value is double) return (double)cell.value;
+                else throw new Exception($"cell {cell.name} has a Formula error");
             }
 
             if (cell.content is double) { return (double)cell.content; }
@@ -429,7 +419,6 @@ namespace SS
             foreach (string cellName in cellsNeedToReCal)
             {
                 Cell cell = cells[cellName];
-                cell.caled = false;
                 GetCellValue(cellName);
             }
         }
