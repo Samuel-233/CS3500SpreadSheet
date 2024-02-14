@@ -25,3 +25,4 @@ I didn't speak to anyone yet, I will do it if I have time. Most of my problems a
 1. Regex for variables - https://utah.instructure.com/courses/940768/external_tools/90790
 2. How to use "base" - Copilot
 3. Encoding XML with UTF-8 - http://www.wenfeifei.com/art/detail/o8G7L0k
+4. BOM problem - https://stackoverflow.com/questions/17795167/xml-loaddata-data-at-the-root-level-is-invalid-line-1-position-1

@@ -161,5 +161,27 @@ namespace SpreadSheetTests
             Assert.IsTrue(s.GetCellValue("F1") is FormulaError);
             Assert.IsTrue(s.GetCellValue("C1") is FormulaError);
         }
+
+        /// <summary>
+        /// Test Save and Read
+        /// </summary>
+        [TestMethod]
+        public void TestSaveAndRead()
+        {
+            Spreadsheet s = new Spreadsheet();
+            s.SetContentsOfCell("A1", "1");
+            s.SetContentsOfCell("B1", "2");
+            s.SetContentsOfCell("C1", "=A1+B1");
+            s.SetContentsOfCell("D1", "string");
+
+            s.Save("saveTestSimple.txt");
+            s = new Spreadsheet("saveTestSimple.txt", s => true, s => s, "default");
+
+            Assert.AreEqual(1.0, s.GetCellValue("A1"));
+            Assert.AreEqual(2.0, s.GetCellValue("B1"));
+            Assert.AreEqual(3.0, s.GetCellValue("C1"));
+            Assert.AreEqual("string", s.GetCellValue("D1"));
+
+        }
     }
 }

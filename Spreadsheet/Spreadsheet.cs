@@ -1,4 +1,5 @@
 ﻿using SpreadsheetUtilities;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -300,7 +301,6 @@ namespace SS
         /// <returns>a XML format string</returns>
         public override string GetXML()
         {
-            StringBuilder sb = new StringBuilder();
             MemoryStream stream = new MemoryStream();
 
             XmlWriterSettings settings = new XmlWriterSettings()
@@ -319,10 +319,10 @@ namespace SS
                 {
                     cell.Value.WriteXml(writer);
                 }
-
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
             }
+            
 
             return Encoding.UTF8.GetString(stream.ToArray());
         }
@@ -438,10 +438,24 @@ namespace SS
             name = this.Normalize(name);
         }
 
+
         private void LoadFile(string pathToFile)
         {
+            using (StreamReader reader = new StreamReader(pathToFile, true))
+            {
+                string content = reader.ReadToEnd();
+                CreateCellFromXML(content);
+            }
+            
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="XML"></param>
+        private void CreateCellFromXML(string XML){
             // Create an XmlReader inside this block, and automatically Dispose() it at the end.
-            using (XmlReader reader = XmlReader.Create(pathToFile))
+            using (XmlReader reader = XmlReader.Create(new StringReader(XML)))
             {
                 while (reader.Read())
                 {
@@ -468,7 +482,6 @@ namespace SS
                 }
             }
         }
-
 
 
     }
