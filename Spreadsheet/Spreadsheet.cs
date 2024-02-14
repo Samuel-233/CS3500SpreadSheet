@@ -282,8 +282,12 @@ namespace SS
             {
                 filename = Path.Combine(filePath, filename);
             }
-
-            File.WriteAllText(filename, GetXML());
+            try{
+                File.WriteAllText(filename, GetXML());
+            }catch (Exception e){
+                throw new SpreadsheetReadWriteException(e.Message);
+            }
+            
 
             this.Changed = false;
         }
@@ -390,7 +394,7 @@ namespace SS
             Cell cell;
             NormalizeName(ref name);
             CheckNameValid(name);
-            if (!cells.TryGetValue(name, out cell)) return 0.0;
+            if (!cells.TryGetValue(name, out cell)) throw new Exception($"Cell {cell.name} is empty"); ;
 
             //If this formula is caled, then return the value, or recursively cal the formula in it.
             if (cell.content is Formula)
