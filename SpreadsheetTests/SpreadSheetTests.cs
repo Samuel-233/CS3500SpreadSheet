@@ -1,6 +1,5 @@
 using SpreadsheetUtilities;
 using SS;
-using System.ComponentModel;
 
 /// <summary>
 /// Author:    Shu Chen
@@ -163,7 +162,6 @@ namespace SpreadSheetTests
             Assert.IsTrue(s.GetCellValue("C1") is FormulaError);
         }
 
-
         /// <summary>
         /// Test Save and Read
         /// </summary>
@@ -180,9 +178,7 @@ namespace SpreadSheetTests
             Assert.AreEqual(2.0, s.GetCellValue("B1"));
             Assert.AreEqual(3.0, s.GetCellValue("C1"));
             Assert.AreEqual("string", s.GetCellValue("F1"));
-
         }
-
 
         /// <summary>
         /// Test all error cases for read and write
@@ -217,13 +213,12 @@ namespace SpreadSheetTests
             s.SetContentsOfCell("A1", "1");
             Assert.ThrowsException<SpreadsheetReadWriteException>(() => s.Save("*()_+.exe"));
         }
-        
 
         /// <summary>
         /// A method to create a spreadsheet with number, string, formula error
         /// </summary>
         /// <returns></returns>
-        private Spreadsheet SmallSpreadSheet() 
+        private Spreadsheet SmallSpreadSheet()
         {
             Spreadsheet s = new();
             s.SetContentsOfCell("A1", "1");

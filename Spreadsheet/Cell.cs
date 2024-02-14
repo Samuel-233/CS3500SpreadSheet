@@ -23,7 +23,6 @@ namespace SpreadsheetUtilities
     {
         public Object value { get; set; }
 
-
         /// <summary>
         /// The content of the string, can be string or double, or formula
         /// </summary>

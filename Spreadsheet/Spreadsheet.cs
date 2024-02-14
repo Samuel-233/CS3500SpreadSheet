@@ -1,7 +1,4 @@
 ﻿using SpreadsheetUtilities;
-using System;
-using System.IO;
-using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -69,7 +66,6 @@ namespace SS
         public Spreadsheet(string pathToFile, Func<string, bool> isValid, Func<string, string> normalize, string version) :
             this(isValid, normalize, version)
         {
-            
             LoadFile(pathToFile);
         }
 
@@ -190,7 +186,6 @@ namespace SS
             return list;
         }
 
-
         /// <summary>
         /// Add the cell to the sheet, if the cell cause a loop, undo this
         /// </summary>
@@ -265,7 +260,7 @@ namespace SS
         /// <exception cref="SpreadsheetReadWriteException">Throw error if any error occurs</exception>
         public override void Save(string filename)
         {
-            if(Changed == false) return;
+            if (Changed == false) return;
             try
             {
                 using (StreamWriter sw = new StreamWriter(filename))
@@ -308,7 +303,6 @@ namespace SS
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
             }
-            
 
             return sw.ToString();
         }
@@ -328,14 +322,14 @@ namespace SS
             if (o is Formula)
             {
                 object value;
-/*                try
-                {*/
-                    value = ((Formula)o).Evaluate(LookUp);
-/*                }
-                catch (Exception e)
-                {
-                    return new FormulaError(e.Message);
-                }*/
+                /*                try
+                                {*/
+                value = ((Formula)o).Evaluate(LookUp);
+                /*                }
+                                catch (Exception e)
+                                {
+                                    return new FormulaError(e.Message);
+                                }*/
                 Cell cell = cells[name];
                 cell.value = value;
                 return value;
@@ -425,7 +419,6 @@ namespace SS
             name = this.Normalize(name);
         }
 
-
         /// <summary>
         /// Load The XML File
         /// </summary>
@@ -433,7 +426,8 @@ namespace SS
         /// <exception cref="SpreadsheetReadWriteException">Throw error if can not open it</exception>
         private void LoadFile(string pathToFile)
         {
-            if (!this.Version.Equals(GetSavedVersion(pathToFile))){
+            if (!this.Version.Equals(GetSavedVersion(pathToFile)))
+            {
                 throw new SpreadsheetReadWriteException("Version misMatch");
             }
             try
@@ -448,15 +442,14 @@ namespace SS
             {
                 throw new SpreadsheetReadWriteException(e.Message);
             }
-
-
         }
 
         /// <summary>
         /// Read a string in XML format and create cell from it.
         /// </summary>
         /// <param name="XML">Data in XML Format</param>
-        private void CreateCellFromXML(string XML){
+        private void CreateCellFromXML(string XML)
+        {
             // Create an XmlReader inside this block, and automatically Dispose() it at the end.
             using (XmlReader reader = XmlReader.Create(new StringReader(XML)))
             {
@@ -466,13 +459,13 @@ namespace SS
                 {
                     if (reader.IsStartElement())
                     {
-
                         switch (reader.Name)
                         {
                             case "name":
                                 reader.Read();
                                 cellName = reader.Value;
                                 break;
+
                             case "content":
                                 reader.Read();
                                 content = reader.Value;
@@ -484,7 +477,6 @@ namespace SS
             }
         }
 
-
         /// <summary>
         /// A Utf 8 String Writer Class
         /// </summary>
@@ -495,6 +487,5 @@ namespace SS
                 get { return Encoding.UTF8; }
             }
         }
-
     }
 }
