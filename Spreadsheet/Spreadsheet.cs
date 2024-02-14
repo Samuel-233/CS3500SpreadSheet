@@ -26,7 +26,6 @@ namespace SS
     {
         private DependencyGraph dependency;
         private Dictionary<string, Cell> cells;
-        private string filePath;
 
         public override bool Changed
         {
@@ -55,7 +54,6 @@ namespace SS
         {
             this.dependency = new();
             this.cells = new();
-            this.filePath = "";
         }
 
         /// <summary>
@@ -68,7 +66,7 @@ namespace SS
         public Spreadsheet(string pathToFile, Func<string, bool> isValid, Func<string, string> normalize, string version) :
             this(isValid, normalize, version)
         {
-            this.filePath = pathToFile;
+            LoadFile(pathToFile);
         }
 
         /// <summary>
@@ -247,7 +245,7 @@ namespace SS
         /// </summary>
         /// <param name="filename">File name include file path(If needed)</param>
         /// <returns>a version info</returns>
-        /// <exception cref="SpreadsheetReadWriteException">Throw error if any error occors</exception>
+        /// <exception cref="SpreadsheetReadWriteException">Throw error if any error occurs</exception>
         public override string GetSavedVersion(string filename)
         {
             try
@@ -276,18 +274,22 @@ namespace SS
         /// A func to save the spread sheet in to XML format
         /// </summary>
         /// <param name="filename">the file name</param>
+        /// <exception cref="SpreadsheetReadWriteException">Throw error if any error occurs</exception>
         public override void Save(string filename)
         {
-            if (!filePath.Equals(""))
+
+            try
             {
-                filename = Path.Combine(filePath, filename);
+                using (StreamWriter sw = new StreamWriter(filename, false, Encoding.UTF8))
+                {
+                    string xmlContent = GetXML();
+                    sw.Write(xmlContent);
+                }
             }
-            try{
-                File.WriteAllText(filename, GetXML());
-            }catch (Exception e){
+            catch (Exception e)
+            {
                 throw new SpreadsheetReadWriteException(e.Message);
             }
-            
 
             this.Changed = false;
         }
@@ -299,26 +301,30 @@ namespace SS
         public override string GetXML()
         {
             StringBuilder sb = new StringBuilder();
+            MemoryStream stream = new MemoryStream();
 
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.IndentChars = "  ";
+            XmlWriterSettings settings = new XmlWriterSettings()
+            {
+                Indent = true,
+                IndentChars = "  ",
+                Encoding = Encoding.UTF8
+            };
 
-            using (XmlWriter writer = XmlWriter.Create(sb, settings))
+            using (XmlWriter writer = XmlWriter.Create(stream, settings))
             {
                 writer.WriteStartDocument();
-                writer.WriteStartAttribute("version", this.Version);
-
+                writer.WriteStartElement("spreadsheet");
+                writer.WriteAttributeString("version", this.Version);
                 foreach (KeyValuePair<string, Cell> cell in cells)
                 {
                     cell.Value.WriteXml(writer);
                 }
 
-                writer.WriteEndElement(); // Ends the Nation block
+                writer.WriteEndElement();
                 writer.WriteEndDocument();
             }
 
-            return sb.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
 
         /// <summary>
@@ -431,5 +437,39 @@ namespace SS
         {
             name = this.Normalize(name);
         }
+
+        private void LoadFile(string pathToFile)
+        {
+            // Create an XmlReader inside this block, and automatically Dispose() it at the end.
+            using (XmlReader reader = XmlReader.Create(pathToFile))
+            {
+                while (reader.Read())
+                {
+                    if (reader.IsStartElement())
+                    {
+                        string cellName;
+                        object content;
+                        switch (reader.Name)
+                        {
+                            case "name":
+                                reader.Read();
+                                cellName = reader.Value;
+                                break;
+                            case "content":
+                                reader.Read();
+                                content = reader.Value;
+                                break;
+
+                            case "version":
+                                Console.WriteLine($"Current Version: {this.Version}, File Version: {reader["version"]}");
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+
+
     }
 }
