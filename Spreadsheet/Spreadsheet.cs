@@ -11,7 +11,7 @@ namespace SS
     /// <summary>
     /// Author:    Shu Chen
     /// Partner:   None
-    /// Date:      2024/2/13
+    /// Date:      2024/2/14
     /// Course:    CS 3500, University of Utah, School of Computing
     /// Copyright: CS 3500 and Shu Chen - This work may not
     ///            be copied for use in Academic Coursework.
@@ -110,7 +110,6 @@ namespace SS
         {
             NormalizeName(ref name);
             if (content == null) return new List<string>();
-            this.Changed = true;
             CheckNameValid(name);
             double number;
             IList<string> reCalList;
@@ -191,20 +190,6 @@ namespace SS
             return list;
         }
 
-        /// <summary>
-        /// This is a method that convert IE to ISet
-        /// </summary>
-        /// <param name="strings">A IEnumerable that want to turn in to ISet</param>
-        /// <returns></returns>
-        private ISet<string> IE2ISet(IEnumerable<string> strings)
-        {
-            ISet<string> set = new HashSet<string>();
-            foreach (string s in strings)
-            {
-                set.Add(s);
-            }
-            return set;
-        }
 
         /// <summary>
         /// Add the cell to the sheet, if the cell cause a loop, undo this
@@ -220,8 +205,7 @@ namespace SS
             LinkedList<string> cellsNeedToReCal;
             try
             {
-                cellsNeedToReCal = (LinkedList<string>)GetCellsToRecalculate(IE2ISet(GetDirectDependents(name)));
-                cellsNeedToReCal.AddFirst(name);
+                cellsNeedToReCal = (LinkedList<string>)GetCellsToRecalculate(name);
             }
             catch (CircularException e)
             {
@@ -281,37 +265,10 @@ namespace SS
         /// <exception cref="SpreadsheetReadWriteException">Throw error if any error occurs</exception>
         public override void Save(string filename)
         {
-            XmlWriterSettings settings = new XmlWriterSettings()
-            {
-                Indent = true,
-                IndentChars = "  ",
-                Encoding = Encoding.UTF8
-            };
-            try{
-                using (XmlWriter writer = XmlWriter.Create(filename, settings))
-                {
-                    writer.WriteStartDocument();
-                    writer.WriteStartElement("spreadsheet");
-                    writer.WriteAttributeString("version", this.Version);
-                    foreach (KeyValuePair<string, Cell> cell in cells)
-                    {
-                        cell.Value.WriteXml(writer);
-                    }
-                    writer.WriteEndElement();
-                    writer.WriteEndDocument();
-                }
-
-                this.Changed = false;
-            }catch (Exception e)
-            {
-                throw new SpreadsheetReadWriteException(e.Message);
-            }
-
-            return;
-
+            if(Changed == false) return;
             try
             {
-                using (StreamWriter sw = new StreamWriter(filename, false, Encoding.UTF8))
+                using (StreamWriter sw = new StreamWriter(filename))
                 {
                     string xmlContent = GetXML();
                     sw.Write(xmlContent);
@@ -321,8 +278,7 @@ namespace SS
             {
                 throw new SpreadsheetReadWriteException(e.Message);
             }
-
-            
+            this.Changed = false;
         }
 
         /// <summary>
@@ -331,7 +287,7 @@ namespace SS
         /// <returns>a XML format string</returns>
         public override string GetXML()
         {
-            MemoryStream stream = new MemoryStream();
+            Utf8StringWriter sw = new();
 
             XmlWriterSettings settings = new XmlWriterSettings()
             {
@@ -340,7 +296,7 @@ namespace SS
                 Encoding = Encoding.UTF8
             };
 
-            using (XmlWriter writer = XmlWriter.Create(stream, settings))
+            using (XmlWriter writer = XmlWriter.Create(sw, settings))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("spreadsheet");
@@ -354,7 +310,7 @@ namespace SS
             }
             
 
-            return Encoding.UTF8.GetString(stream.ToArray());
+            return sw.ToString();
         }
 
         /// <summary>
@@ -372,14 +328,14 @@ namespace SS
             if (o is Formula)
             {
                 object value;
-                try
-                {
+/*                try
+                {*/
                     value = ((Formula)o).Evaluate(LookUp);
-                }
+/*                }
                 catch (Exception e)
                 {
                     return new FormulaError(e.Message);
-                }
+                }*/
                 Cell cell = cells[name];
                 cell.value = value;
                 return value;
@@ -403,6 +359,7 @@ namespace SS
             }
             else dependency.ReplaceDependees(name, new HashSet<string> { });
             cells[name] = new Cell(name, content);
+            Changed = true;
         }
 
         /// <summary>
@@ -469,6 +426,11 @@ namespace SS
         }
 
 
+        /// <summary>
+        /// Load The XML File
+        /// </summary>
+        /// <param name="pathToFile">file location</param>
+        /// <exception cref="SpreadsheetReadWriteException">Throw error if can not open it</exception>
         private void LoadFile(string pathToFile)
         {
             if (!this.Version.Equals(GetSavedVersion(pathToFile))){
@@ -491,9 +453,9 @@ namespace SS
         }
 
         /// <summary>
-        /// 
+        /// Read a string in XML format and create cell from it.
         /// </summary>
-        /// <param name="XML"></param>
+        /// <param name="XML">Data in XML Format</param>
         private void CreateCellFromXML(string XML){
             // Create an XmlReader inside this block, and automatically Dispose() it at the end.
             using (XmlReader reader = XmlReader.Create(new StringReader(XML)))
@@ -516,16 +478,23 @@ namespace SS
                                 content = reader.Value;
                                 SetContentsOfCell(cellName, content);
                                 break;
-
-                            case "version":
-                                Console.WriteLine($"Current Version: {this.Version}, File Version: {reader["version"]}");
-                                break;
                         }
                     }
                 }
             }
         }
 
+
+        /// <summary>
+        /// A Utf 8 String Writer Class
+        /// </summary>
+        internal class Utf8StringWriter : StringWriter
+        {
+            public override Encoding Encoding
+            {
+                get { return Encoding.UTF8; }
+            }
+        }
 
     }
 }

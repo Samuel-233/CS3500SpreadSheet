@@ -1,10 +1,11 @@
 using SpreadsheetUtilities;
 using SS;
+using System.ComponentModel;
 
 /// <summary>
 /// Author:    Shu Chen
 /// Partner:   None
-/// Date:      2024/2/6
+/// Date:      2024/2/14
 /// Course:    CS 3500, University of Utah, School of Computing
 /// Copyright: CS 3500 and Shu Chen - This work may not
 ///            be copied for use in Academic Coursework.
@@ -162,26 +163,76 @@ namespace SpreadSheetTests
             Assert.IsTrue(s.GetCellValue("C1") is FormulaError);
         }
 
+
         /// <summary>
         /// Test Save and Read
         /// </summary>
         [TestMethod]
         public void TestSaveAndRead()
         {
-            Spreadsheet s = new Spreadsheet();
-            s.SetContentsOfCell("A1", "1");
-            s.SetContentsOfCell("B1", "2");
-            s.SetContentsOfCell("C1", "=A1+B1");
-            s.SetContentsOfCell("D1", "string");
+            Spreadsheet s = SmallSpreadSheet();
 
+            s.Save("saveTestSimple.txt");
             s.Save("saveTestSimple.txt");
             s = new Spreadsheet("saveTestSimple.txt", s => true, s => s, "default");
 
             Assert.AreEqual(1.0, s.GetCellValue("A1"));
             Assert.AreEqual(2.0, s.GetCellValue("B1"));
             Assert.AreEqual(3.0, s.GetCellValue("C1"));
-            Assert.AreEqual("string", s.GetCellValue("D1"));
+            Assert.AreEqual("string", s.GetCellValue("F1"));
 
+        }
+
+
+        /// <summary>
+        /// Test all error cases for read and write
+        /// </summary>
+        [TestMethod]
+        [TestCategory("RWE")]
+        public void TestReadAndWriteException()
+        {
+            //Test Missing File
+            Assert.ThrowsException<SpreadsheetReadWriteException>(() => new Spreadsheet("missingFile", s => true, s => s, "default"));
+            Spreadsheet s = SmallSpreadSheet();
+            s.Save("RWE.txt");
+
+            //Test Wrong version
+            Assert.ThrowsException<SpreadsheetReadWriteException>(() => new Spreadsheet("RWE.txt", s => true, s => s, "wrongVersion"));
+
+            //Test wrong format in version
+            using (StreamWriter outputFile = new StreamWriter("wrongFormatXML.txt"))
+            {
+                outputFile.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<WRONG version=\"default\">\r\n </WRONG>");
+            }
+            Assert.ThrowsException<SpreadsheetReadWriteException>(() => new Spreadsheet("wrongFormatXML.txt", s => true, s => s, "default"));
+
+            //Test wrong format in data
+            using (StreamWriter outputFile = new StreamWriter("wrongFormatXML1.txt"))
+            {
+                outputFile.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<spreadsheet version=\"default\">\r\n  <Wrong>\r\n    <name>A1</name>\r\n    <content>1</content>\r\n  </cell>\r\n  </spreadsheet>");
+            }
+            Assert.ThrowsException<SpreadsheetReadWriteException>(() => new Spreadsheet("wrongFormatXML1.txt", s => true, s => s, "default"));
+
+            //Test wrong saving format
+            s.SetContentsOfCell("A1", "1");
+            Assert.ThrowsException<SpreadsheetReadWriteException>(() => s.Save("*()_+.exe"));
+        }
+        
+
+        /// <summary>
+        /// A method to create a spreadsheet with number, string, formula error
+        /// </summary>
+        /// <returns></returns>
+        private Spreadsheet SmallSpreadSheet() 
+        {
+            Spreadsheet s = new();
+            s.SetContentsOfCell("A1", "1");
+            s.SetContentsOfCell("B1", "2");
+            s.SetContentsOfCell("C1", "=A1+B1");
+            s.SetContentsOfCell("D1", "=1/0");
+            s.SetContentsOfCell("E1", "=D1+C1");
+            s.SetContentsOfCell("F1", "string");
+            return s;
         }
     }
 }
