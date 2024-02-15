@@ -1,16 +1,15 @@
-﻿
-namespace FormulaEvaluatorTester
+﻿namespace FormulaEvaluatorTester
 {
     public class VariableStorage
     {
-        static Dictionary<String, int> variables = new Dictionary<string, int>();
+        private static Dictionary<String, int> variables = new Dictionary<string, int>();
+
         public static int LookUp(String variableName)
         {
             int result;
-            if(!variables.TryGetValue(variableName, out result)) throw new Exception($"No variable called {variableName}");
+            if (!variables.TryGetValue(variableName, out result)) throw new Exception($"No variable called {variableName}");
             return result;
         }
-
 
         public static void AddVariable(String variable_name, int value)
         {

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Xml;
+
 /// <summary>
 /// Author:    Shu Chen
 /// Partner:   None
@@ -22,15 +19,19 @@ using System.Threading.Tasks;
 /// </summary>
 namespace SpreadsheetUtilities
 {
-
     internal class Cell
     {
         public Object value { get; set; }
-        bool caled;
 
+        /// <summary>
+        /// The content of the string, can be string or double, or formula
+        /// </summary>
         public Object content { get; set; }
-        public String name { get; set; }
 
+        /// <summary>
+        /// Cell's name
+        /// </summary>
+        public String name { get; set; }
 
         public Cell(String name, Object content)
         {
@@ -39,21 +40,46 @@ namespace SpreadsheetUtilities
             {
                 this.content = content;
                 this.value = content;
-                this.caled = true;
             }
             else if (content is Double)
             {
                 this.content = content;
                 this.value = content;
-                this.caled = true;
-            } else if (content is Formula) {
+            }
+            else if (content is Formula)
+            {
                 this.content = content;
-                this.caled = false;
                 this.value = 0.0;
-                //TODO Eval this!
             }
         }
 
+        /// <summary>
+        /// Write this cell in to XML format
+        /// </summary>
+        /// <param name="writer"></param>
+        public void WriteXml(XmlWriter writer)
+        {
+            writer.WriteStartElement("cell");
+            writer.WriteElementString("name", this.name);
+            writer.WriteElementString("content", ContentToString());
+            writer.WriteEndElement();
+        }
 
+        /// <summary>
+        /// Return the content in string
+        /// </summary>
+        /// <returns></returns>
+        private string ContentToString()
+        {
+            if (content is Formula)
+            {
+                return "=" + ((Formula)content).ToString();
+            }
+            else if (content is String)
+            {
+                return (string)content;
+            }
+            else return ((double)content).ToString();
+        }
     }
 }

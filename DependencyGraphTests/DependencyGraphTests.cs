@@ -1,4 +1,5 @@
 using SpreadsheetUtilities;
+
 /// <summary>
 /// Author:    Shu Chen
 /// Partner:   None
@@ -82,7 +83,7 @@ namespace DevelopmentTests
         }
 
         ///<summary>
-        ///It should be possibe to have more than one DG at a time.
+        ///It should be possible to have more than one DG at a time.
         ///</summary>
         [TestMethod()]
         public void StaticTest()

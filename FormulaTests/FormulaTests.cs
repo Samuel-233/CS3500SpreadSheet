@@ -19,19 +19,20 @@ using SpreadsheetUtilities;
 /// </summary>
 namespace FormulaTests
 {
-/// <summary>
-/// A test class for Formula
-/// </summary>
-    
+    /// <summary>
+    /// A test class for Formula
+    /// </summary>
+
     [TestClass]
     public class FormulaTests
     {
-    /// <summary>
-    /// Test basic calculation
-    /// </summary>
+        /// <summary>
+        /// Test basic calculation
+        /// </summary>
         [TestMethod]
-        public void TestBasicCal(){
-            Assert.AreEqual(2.0, new Formula("1+1", s => s, s => true).Evaluate(s=>0));
+        public void TestBasicCal()
+        {
+            Assert.AreEqual(2.0, new Formula("1+1", s => s, s => true).Evaluate(s => 0));
             Assert.AreEqual(3.0, new Formula("9.0/3.0", s => s, s => true).Evaluate(s => 0));
             Assert.AreEqual(8.2, new Formula("2*4.1", s => s, s => true).Evaluate(s => 0));
             Assert.AreEqual(0.0, new Formula("1-1", s => s, s => true).Evaluate(s => 0));
@@ -59,7 +60,7 @@ namespace FormulaTests
         public void TestComplexCal()
         {
             Assert.AreEqual(-63.6, new Formula("y1*4.0-20/0.25+4.0*(8.0-3.0*2.0)/20.0*x7", s => s, s => true).Evaluate(s => (s == "x7") ? 1 : 4));
-            Assert.IsTrue(new Formula("y1*((2.0+20)/(15+20))/0.0*x7", s => s, s => true).Evaluate(s => (s == "x7") ? 1 : 4)is FormulaError);
+            Assert.IsTrue(new Formula("y1*((2.0+20)/(15+20))/0.0*x7", s => s, s => true).Evaluate(s => (s == "x7") ? 1 : 4) is FormulaError);
         }
 
         /// <summary>
@@ -78,24 +79,24 @@ namespace FormulaTests
         }
 
         /// <summary>
-        /// Test Operators 
+        /// Test Operators
         /// </summary>
         [TestMethod]
-        public void TestOperators(){
-            Assert.IsTrue(new Formula("1", s => s, s => false)==(new Formula("1", s => s, s => false)));
-            Assert.IsTrue(new Formula("1+1", s => s, s => false)==(new Formula("1+1", s => s, s => false)));
-            Assert.IsTrue(new Formula("1.0", s => s, s => false)==(new Formula("1.0", s => s, s => false)));
-            Assert.IsFalse(new Formula("1.0+1.0", s => s, s => false)!=(new Formula("1+1", s => s, s => false)));
+        public void TestOperators()
+        {
+            Assert.IsTrue(new Formula("1", s => s, s => false) == (new Formula("1", s => s, s => false)));
+            Assert.IsTrue(new Formula("1+1", s => s, s => false) == (new Formula("1+1", s => s, s => false)));
+            Assert.IsTrue(new Formula("1.0", s => s, s => false) == (new Formula("1.0", s => s, s => false)));
+            Assert.IsFalse(new Formula("1.0+1.0", s => s, s => false) != (new Formula("1+1", s => s, s => false)));
             Assert.IsFalse(new Formula("1.0+1", s => s, s => false) != (new Formula("1+1.0", s => s, s => false)));
-
-
         }
 
         /// <summary>
         /// Test hash code
         /// </summary>
         [TestMethod]
-        public void TestHashCode(){
+        public void TestHashCode()
+        {
             Assert.AreEqual(new Formula("10.000+1", s => s, s => false).GetHashCode(),
                 new Formula("1e1+1.0000", s => s, s => false).GetHashCode());
             Assert.AreEqual(new Formula("a1+1.0", s => s, s => true).GetHashCode(),
@@ -110,19 +111,19 @@ namespace FormulaTests
         /// Test variables
         /// </summary>
         [TestMethod]
-        public void TestGetVariables(){
+        public void TestGetVariables()
+        {
             Formula formula = new Formula("a1+b1+C1+DD1", s => s, s => true);
 
             IEnumerator<string> e = formula.GetVariables().GetEnumerator();
             Assert.IsTrue(e.MoveNext());
             Assert.AreEqual("a1", e.Current);
             Assert.IsTrue(e.MoveNext());
-            Assert.AreEqual("b1", e.Current); 
+            Assert.AreEqual("b1", e.Current);
             Assert.IsTrue(e.MoveNext());
             Assert.AreEqual("C1", e.Current);
             Assert.IsTrue(e.MoveNext());
             Assert.AreEqual("DD1", e.Current);
-
 
             formula = new Formula("a1+a1+b1+b1", s => s, s => true);
 
@@ -130,8 +131,8 @@ namespace FormulaTests
             Assert.IsTrue(e.MoveNext());
             Assert.AreEqual("a1", e.Current);
             Assert.IsTrue(e.MoveNext());
-            Assert.AreEqual("b1", e.Current); 
-            
+            Assert.AreEqual("b1", e.Current);
+
             formula = new Formula("a1+b1+A1+B1", s => s.ToUpper(), s => true);
             e = formula.GetVariables().GetEnumerator();
             Assert.IsTrue(e.MoveNext());
@@ -139,7 +140,6 @@ namespace FormulaTests
             Assert.IsTrue(e.MoveNext());
             Assert.AreEqual("B1", e.Current);
         }
-
 
         /// <summary>
         /// Test to see each formula is equal or not
@@ -159,20 +159,19 @@ namespace FormulaTests
             Assert.IsTrue(new Formula("x1+y2", s => s.ToUpper(), s => true).Equals(new Formula("X1+y2", s => s.ToUpper(), s => true)));
             Assert.IsTrue(new Formula("x1+y2", s => s.ToUpper(), s => true).Equals(new Formula("X1+Y2", s => s.ToUpper(), s => true)));
 
-
             Assert.IsFalse(new Formula("a1+1.0", s => s, s => true).Equals(new Formula("a1", s => s, s => true)));
             Assert.IsFalse(new Formula("x1+y2", s => s.ToUpper(), s => true).Equals(new Formula("Y2+X1", s => s.ToUpper(), s => true)));
             Assert.IsFalse(new Formula("1+1.0", s => s, s => true).Equals(new Formula("1+2.0", s => s, s => true)));
 
-            Assert.IsFalse(new Formula("a1+1.0", s => s, s => true).Equals(new List<string> {"a1","1.0"}));
-
+            Assert.IsFalse(new Formula("a1+1.0", s => s, s => true).Equals(new List<string> { "a1", "1.0" }));
         }
 
         /// <summary>
         /// Test the "compile" stage of the Formula class
         /// </summary>
         [TestMethod]
-        public void TestFormat(){
+        public void TestFormat()
+        {
             try
             {
                 new Formula("1.0+1.1", s => s, s => false);
