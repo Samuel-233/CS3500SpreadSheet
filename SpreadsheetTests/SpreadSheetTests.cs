@@ -212,7 +212,7 @@ namespace SpreadSheetTests
 
             //Test wrong saving format
             s.SetContentsOfCell("A1", "1");
-            Assert.ThrowsException<SpreadsheetReadWriteException>(() => s.Save("*()_+.exe"));
+            Assert.ThrowsException<SpreadsheetReadWriteException>(() => s.Save("/wrongpath/abc.txt"));
         }
 
         /// <summary>
