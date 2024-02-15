@@ -1,4 +1,6 @@
 ﻿using SpreadsheetUtilities;
+using System;
+using System.IO;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -38,7 +40,7 @@ namespace SS
         /// Constructor of Spread sheet class with out isValid, normalize Func, and version pram
         /// </summary>
         public Spreadsheet() :
-            this(s => true, s => s, "default version")
+            this(s => true, s => s, "default")
         {
             this.dependency = new();
             this.cells = new();
@@ -67,6 +69,7 @@ namespace SS
         public Spreadsheet(string pathToFile, Func<string, bool> isValid, Func<string, string> normalize, string version) :
             this(isValid, normalize, version)
         {
+            
             LoadFile(pathToFile);
         }
 
@@ -257,7 +260,7 @@ namespace SS
                 while (xmlReader.Read())
                 {
                     //keep reading until we see your element
-                    if (xmlReader.Name.Equals("Keyword") && (xmlReader.NodeType == XmlNodeType.Element))
+                    if (xmlReader.Name.Equals("spreadsheet") && (xmlReader.NodeType == XmlNodeType.Element))
                     {
                         // get attribute from the XML element here
                         return xmlReader.GetAttribute("version");
@@ -278,6 +281,33 @@ namespace SS
         /// <exception cref="SpreadsheetReadWriteException">Throw error if any error occurs</exception>
         public override void Save(string filename)
         {
+            XmlWriterSettings settings = new XmlWriterSettings()
+            {
+                Indent = true,
+                IndentChars = "  ",
+                Encoding = Encoding.UTF8
+            };
+            try{
+                using (XmlWriter writer = XmlWriter.Create(filename, settings))
+                {
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("spreadsheet");
+                    writer.WriteAttributeString("version", this.Version);
+                    foreach (KeyValuePair<string, Cell> cell in cells)
+                    {
+                        cell.Value.WriteXml(writer);
+                    }
+                    writer.WriteEndElement();
+                    writer.WriteEndDocument();
+                }
+
+                this.Changed = false;
+            }catch (Exception e)
+            {
+                throw new SpreadsheetReadWriteException(e.Message);
+            }
+
+            return;
 
             try
             {
@@ -292,7 +322,7 @@ namespace SS
                 throw new SpreadsheetReadWriteException(e.Message);
             }
 
-            this.Changed = false;
+            
         }
 
         /// <summary>
@@ -441,12 +471,23 @@ namespace SS
 
         private void LoadFile(string pathToFile)
         {
-            using (StreamReader reader = new StreamReader(pathToFile, true))
-            {
-                string content = reader.ReadToEnd();
-                CreateCellFromXML(content);
+            if (!this.Version.Equals(GetSavedVersion(pathToFile))){
+                throw new SpreadsheetReadWriteException("Version misMatch");
             }
-            
+            try
+            {
+                using (StreamReader reader = new StreamReader(pathToFile, true))
+                {
+                    string content = reader.ReadToEnd();
+                    CreateCellFromXML(content);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new SpreadsheetReadWriteException(e.Message);
+            }
+
+
         }
 
         /// <summary>
@@ -457,12 +498,13 @@ namespace SS
             // Create an XmlReader inside this block, and automatically Dispose() it at the end.
             using (XmlReader reader = XmlReader.Create(new StringReader(XML)))
             {
+                string cellName = "";
+                string content = "";
                 while (reader.Read())
                 {
                     if (reader.IsStartElement())
                     {
-                        string cellName;
-                        object content;
+
                         switch (reader.Name)
                         {
                             case "name":
@@ -472,6 +514,7 @@ namespace SS
                             case "content":
                                 reader.Read();
                                 content = reader.Value;
+                                SetContentsOfCell(cellName, content);
                                 break;
 
                             case "version":
