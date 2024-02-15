@@ -30,10 +30,6 @@
             dependencyGraph = new();
         }
 
-        public DependencyManager(bool allowLoop)
-        {
-            dependencyGraph = new();
-        }
 
         /// <summary>
         /// Add a node pair to dictionary
@@ -49,8 +45,8 @@
             Node child = AddNode(dependent);
 
             bool added = false;
-            added |= parent.AddChild(child);
-            added |= child.AddParent(parent);
+            added |= parent.AddChild(child.Name);
+            added |= child.AddParent(parent.Name);
             return added;
         }
 
@@ -70,8 +66,8 @@
             dependencyGraph.TryGetValue(dependent, out child);
 
             bool removed = false;
-            if (parent != null) { removed |= parent.RemoveChild(child); }
-            if (child != null) { removed |= child.RemoveParent(parent); }
+            if (parent != null) { removed |= parent.RemoveChild(child.Name); }
+            if (child != null) { removed |= child.RemoveParent(parent.Name); }
 
             Clean(dependee);
             Clean(dependent);
@@ -97,11 +93,11 @@
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public List<Node> GetAllDependees(String name)
+        public List<string> GetAllDependees(String name)
         {
             Node node = FindNode(name);
             if (node != null) return node.GetParents();
-            return new List<Node>();
+            return new List<string>();
         }
 
         /// <summary>
@@ -109,27 +105,14 @@
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public List<Node> GetAllDependents(String name)
+        public List<string> GetAllDependents(String name)
         {
             Node node = FindNode(name);
             if (node != null) return node.GetChildren();
-            return new List<Node>();
+            return new List<string>();
         }
 
-        /// <summary>
-        /// Convert a list of node to a list of node's name
-        /// </summary>
-        /// <param name="nodes"></param>
-        /// <returns></returns>
-        public static List<String> NodeToNodeName(List<Node> nodes)
-        {
-            List<String> names = new();
-            foreach (Node node in nodes)
-            {
-                names.Add(node.Name);
-            }
-            return names;
-        }
+
 
         /// <summary>
         /// Add a new node to the dictionary (if it doesn't exist)
@@ -165,8 +148,8 @@
     /// </summary>
     internal class Node
     {
-        private HashSet<Node> children;
-        private HashSet<Node> parents;
+        private HashSet<string> children;
+        private HashSet<string> parents;
         private String name;
 
         /// <summary>
@@ -184,7 +167,7 @@
         /// Add a new parent to this node
         /// </summary>
         /// <param name="parent">reference to it's parent</param>
-        public bool AddParent(Node parent)
+        public bool AddParent(string parent)
         {
             return parents.Add(parent);
         }
@@ -193,7 +176,7 @@
         /// Add a new child to this node
         /// </summary>
         /// <param name="child">reference to it's child</param>
-        public bool AddChild(Node child)
+        public bool AddChild(string child)
         {
             return children.Add(child);
         }
@@ -202,7 +185,7 @@
         /// Remove a parent
         /// </summary>
         /// <param name="parent">reference to it's parent</param>
-        public bool RemoveParent(Node parent)
+        public bool RemoveParent(string parent)
         {
             return parents.Remove(parent);
         }
@@ -211,7 +194,7 @@
         /// Remove a child
         /// </summary>
         /// <param name="child">reference to it's child</param>
-        public bool RemoveChild(Node child)
+        public bool RemoveChild(string child)
         {
             return children.Remove(child);
         }
@@ -220,14 +203,14 @@
         /// Return list of parents
         /// </summary>
         /// <returns></returns>
-        public List<Node> GetParents()
+        public List<string> GetParents()
         { return parents.ToList(); }
 
         /// <summary>
         /// Return list of children
         /// </summary>
         /// <returns></returns>
-        public List<Node> GetChildren()
+        public List<string> GetChildren()
         { return children.ToList(); }
 
         /// <summary>

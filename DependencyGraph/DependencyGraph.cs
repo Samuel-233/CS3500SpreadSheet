@@ -105,7 +105,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public IEnumerable<string> GetDependents(string s)
         {
-            return DependencyManager.NodeToNodeName(dependencyGraph.GetAllDependents(s));
+            return dependencyGraph.GetAllDependents(s);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public IEnumerable<string> GetDependees(string s)
         {
-            return DependencyManager.NodeToNodeName(dependencyGraph.GetAllDependees(s));
+            return dependencyGraph.GetAllDependees(s);
         }
 
         /// <summary>
