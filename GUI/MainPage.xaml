@@ -42,6 +42,8 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.ToolbarItems>
+        <ToolbarItem Text="↑" Priority="0" Order="Primary" Clicked="Up" IsEnabled="True" x:Name="UpBtn"/>
+        <ToolbarItem Text="↓" Priority="0" Order="Primary" Clicked="Down" IsEnabled="True" x:Name="DownBtn"/>
         <ToolbarItem Text="Save" Priority="0" Order="Primary" Clicked="Save" IsEnabled="True" x:Name="SaveBtn"/>
     </ContentPage.ToolbarItems>
 </ContentPage>

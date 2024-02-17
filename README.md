@@ -30,4 +30,4 @@ This is the AS5 branch
     3. Assignment Three: Predicted Hours:          10        Actual Hours:   6     
     4. Assignment Four : Predicted Hours:          7         Actual Hours:   7
     5. Assignment Five : Predicted Hours:          10        Actual Hours:   13         Note: Struggled with read and write XML files
-    6. Assignment Six  : Predicted Hours:          15        Actual Hours:   4         
+    6. Assignment Six  : Predicted Hours:          15        Actual Hours:   6         

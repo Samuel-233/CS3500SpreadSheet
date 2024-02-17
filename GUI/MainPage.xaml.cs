@@ -37,6 +37,10 @@ namespace GUI
         }
 
 
+
+
+
+
         /// <summary>
         /// Initialize the SpreadSheet
         /// </summary>
@@ -45,7 +49,7 @@ namespace GUI
             s = new Spreadsheet(s => true, s => s.ToUpper(), "six");
             sheet = new Dictionary<string, Entry>();
             hightLightDependees = new List<string>();   
-            hightLightDependents = new List<string>();  
+            hightLightDependents = new List<string>();
             CreateCellLable(20);
         }
 
@@ -60,7 +64,7 @@ namespace GUI
             {
                 AddTopLabels(c.ToString());
             }
-            for (int i = 0; i < rowNum; i++)
+            for (int i = 1; i <= rowNum; i++)
             {
                 CreateLeftLabels(i.ToString());
             }
@@ -119,7 +123,7 @@ namespace GUI
         /// <param name="rowNum">Total row number</param>
         private void CreateCellEntries(int rowNum)
         {
-            for (int i = 0; i < rowNum; i++)
+            for (int i = 1; i <= rowNum; i++)
             {
                 var horiz = new HorizontalStackLayout();
                 AddEntryToStack(26, horiz, i);
@@ -166,7 +170,7 @@ namespace GUI
         }
 
 
-        private void Scrolling(object sender, ScrolledEventArgs e)
+        private void Up(object sender, ScrolledEventArgs e)
         {
             double verticalScrollDistance = e.ScrollY;
             double horizontalScrollDistance = e.ScrollX;
@@ -174,7 +178,7 @@ namespace GUI
                 string text = ((Label)border.Content).Text;
                 double number;
                 Double.TryParse(text, out number);
-                ((Label)border.Content).Text = (number + e.ScrollY).ToString();
+                ((Label)border.Content).Text = (number + 20).ToString();
             }
         }
 
@@ -338,9 +342,7 @@ namespace GUI
                 if (result != null && result.Count() > 0) { 
                     s = new Spreadsheet(result+".sprd",s=>true,s=>s.ToUpper(),"six"); 
                     foreach(string cellName in s.GetNamesOfAllNonemptyCells()){
-                        string value = "";
-                        
-                        sheet[cellName].Text = s.GetCellValue(cellName).ToString(); ;
+                        sheet[cellName].Text = s.GetCellValue(cellName).ToString();
                     }
                 }
                 else await DisplayAlert("Alert", "Please Enter a path", "OK");
