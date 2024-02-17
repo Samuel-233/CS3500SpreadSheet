@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GUI.MainPage">
+
+    <VerticalStackLayout x:Name="Entire">
+
+        <!-- A Place to put the currently selected cell "namd" and "value" -->
+        <Border
+            StrokeThickness="2"
+            HeightRequest="40">
+            <HorizontalStackLayout>
+                <Label x:Name="selectedCellName" Text="Selected Cell Name: " WidthRequest="180"/>
+                <Label x:Name="selectedCellValue" Text="Selected Cell Value: " WidthRequest="200"/>
+            </HorizontalStackLayout>
+        </Border>
+
+        <!-- the column headers: A, B, C, ... -->
+        <HorizontalStackLayout x:Name="TopLabels" BackgroundColor="LightBlue"/>
+
+        <!-- the Grid of Spreadsheet GUI Cells -->
+        <ScrollView
+                    x:Name="Table"
+                    Orientation="Neither"
+                    HorizontalOptions="FillAndExpand"
+                    HorizontalScrollBarVisibility="Always"
+                    HeightRequest="1080"
+                    Scrolled="Scrolling">
+            <HorizontalStackLayout>
+                <VerticalStackLayout x:Name="LeftLabels"  BackgroundColor="LightBlue"></VerticalStackLayout>
+                <VerticalStackLayout x:Name="Grid"        BackgroundColor="LightGoldenrodYellow"></VerticalStackLayout>
+            </HorizontalStackLayout>
+        </ScrollView>
+
+    </VerticalStackLayout>
+
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="File">
+            <MenuFlyoutItem Text="New" Clicked="FileMenuNew" />
+            <MenuFlyoutItem Text="Open" Clicked="FileMenuOpenAsync" />
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Save" Priority="0" Order="Primary" Clicked="Save" IsEnabled="True" x:Name="SaveBtn"/>
+    </ContentPage.ToolbarItems>
+</ContentPage>
+

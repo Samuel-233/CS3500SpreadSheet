@@ -117,6 +117,7 @@ namespace SS
             }
             else if (content.Length > 0 && content[0].Equals(Char.Parse("=")))
             {
+                //TODO This might throw an exception, catch it and display in the GUI, then keep the orig content
                 reCalList = SetCellContents(name, new Formula(content.Substring(1), this.Normalize, this.IsValid));
                 UpdateValue(reCalList);
                 return reCalList;
