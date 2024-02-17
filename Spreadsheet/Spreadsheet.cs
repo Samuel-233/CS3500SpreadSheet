@@ -323,20 +323,29 @@ namespace SS
             if (o is Formula)
             {
                 object value;
-                /*                try
-                                {*/
-                value = ((Formula)o).Evaluate(LookUp);
-                /*                }
-                                catch (Exception e)
-                                {
-                                    return new FormulaError(e.Message);
-                                }*/
+                try
+                {
+                    value = ((Formula)o).Evaluate(LookUp);
+                }
+                catch (Exception e)
+                {
+                    return new FormulaError(e.Message);
+                }
                 Cell cell = cells[name];
                 cell.value = value;
                 return value;
             }
             if (o is double) { return (double)o; }
             else return (string)o;
+        }
+
+        /// <summary>
+        /// Return the cell need to re calculate if change the given cell
+        /// </summary>
+        /// <param name="name">cell that might change</param>
+        /// <returns>cells need to recalculate</returns>
+        public IEnumerable<string> GetCellsNeedToReCal(string name){
+            return GetCellsToRecalculate(name);
         }
 
         /// <summary>
@@ -384,7 +393,7 @@ namespace SS
             Cell cell;
             NormalizeName(ref name);
             CheckNameValid(name);
-            if (!cells.TryGetValue(name, out cell)) throw new Exception($"Cell {cell.name} is empty"); ;
+            if (!cells.TryGetValue(name, out cell)) throw new Exception($"Cell {name} is empty"); ;
 
             //If this formula is caled, then return the value, or recursively cal the formula in it.
             if (cell.content is Formula)

@@ -24,3 +24,4 @@ I didn't speak to anyone yet, I will do it if I have time. Most of my problems a
 
 1. Scrolling - https://learn.microsoft.com/en-us/dotnet/maui/user-interface/controls/scrollview?view=net-maui-8.0#detect-scrolling
 2. Int To string - ChatGPT
+3. Display Alert - ChatGPT
