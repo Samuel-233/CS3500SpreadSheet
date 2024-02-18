@@ -24,8 +24,7 @@
                     Orientation="Neither"
                     HorizontalOptions="FillAndExpand"
                     HorizontalScrollBarVisibility="Always"
-                    HeightRequest="1080"
-                    Scrolled="Scrolling">
+                    HeightRequest="1080">
             <HorizontalStackLayout>
                 <VerticalStackLayout x:Name="LeftLabels"  BackgroundColor="LightBlue"></VerticalStackLayout>
                 <VerticalStackLayout x:Name="Grid"        BackgroundColor="LightGoldenrodYellow"></VerticalStackLayout>
@@ -42,7 +41,7 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="↑" Priority="0" Order="Primary" Clicked="Up" IsEnabled="True" x:Name="UpBtn"/>
+        <ToolbarItem Text="↑" Priority="0" Order="Primary" Clicked="Up" IsEnabled="False" x:Name="UpBtn"/>
         <ToolbarItem Text="↓" Priority="0" Order="Primary" Clicked="Down" IsEnabled="True" x:Name="DownBtn"/>
         <ToolbarItem Text="Save" Priority="0" Order="Primary" Clicked="Save" IsEnabled="True" x:Name="SaveBtn"/>
     </ContentPage.ToolbarItems>

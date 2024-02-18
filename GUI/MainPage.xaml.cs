@@ -2,6 +2,7 @@
 using SS;
 using System.Collections;
 using System.Linq;
+using System.Text.RegularExpressions;
 using static System.Net.Mime.MediaTypeNames;
 namespace GUI
 {
@@ -11,6 +12,7 @@ namespace GUI
         Dictionary<string, Entry> sheet;
         List<string> hightLightDependees;
         List<string> hightLightDependents;
+        int currentPage;
 
         public MainPage()
         {
@@ -50,6 +52,7 @@ namespace GUI
             sheet = new Dictionary<string, Entry>();
             hightLightDependees = new List<string>();   
             hightLightDependents = new List<string>();
+            currentPage = 0;
             CreateCellLable(20);
         }
 
@@ -170,18 +173,6 @@ namespace GUI
         }
 
 
-        private void Up(object sender, ScrolledEventArgs e)
-        {
-            double verticalScrollDistance = e.ScrollY;
-            double horizontalScrollDistance = e.ScrollX;
-            foreach (Border border in LeftLabels) {
-                string text = ((Label)border.Content).Text;
-                double number;
-                Double.TryParse(text, out number);
-                ((Label)border.Content).Text = (number + 20).ToString();
-            }
-        }
-
         /// <summary>
         /// When Cell is changed, update the cell content and other cell value that depends on this cell
         /// </summary>
@@ -192,7 +183,7 @@ namespace GUI
             IList<string> cellsNeedToChange = new List<string>();
             try
             {
-                cellsNeedToChange = s.SetContentsOfCell(((Entry)sender).AutomationId, ((Entry)sender).Text);
+                cellsNeedToChange = s.SetContentsOfCell(GetUniversialPos((Entry)sender), ((Entry)sender).Text);
             }
             catch (FormulaFormatException ex)
             {
@@ -208,8 +199,13 @@ namespace GUI
         /// <param name="cells">cells need to change</param>
         private void UpdateCellContentAndValue(IList<string> cells) {
             foreach (string cell in cells) {
-                Entry entry = sheet[cell];
-                entry.Text = s.GetCellValue(cell).ToString();
+                string cellRealtivePos;
+                if (GetRealitivePos(cell, out cellRealtivePos))
+                {
+                    Entry entry = sheet[cellRealtivePos];
+                    entry.Text = s.GetCellValue(cell).ToString();
+                }
+
             }
         }
 
@@ -222,7 +218,7 @@ namespace GUI
         /// <param name="e"></param>
         private void CellFocusedOn(object sender, EventArgs e) {
             ((Entry)sender).Text = GetCellContent(sender);
-            selectedCellName.Text = "Selected Cell Name: " + ((Entry)sender).AutomationId;
+            selectedCellName.Text = "Selected Cell Name: " + GetUniversialPos((Entry)sender);
 
             string value = "";
             
@@ -263,7 +259,7 @@ namespace GUI
         private bool GetCellValue(object sender, out string value)
         {
             value = "";
-            object content = s.GetCellValue(((Entry)sender).AutomationId);
+            object content = s.GetCellValue(GetUniversialPos((Entry)sender));
             if (content is FormulaError)
             {
                 value = ((FormulaError)content).Reason;
@@ -282,18 +278,26 @@ namespace GUI
         private string GetCellContent(object sender)
         {
             string value = "";
-            object content = s.GetCellContents(((Entry)sender).AutomationId);
+            object content = s.GetCellContents(GetUniversialPos((Entry)sender));
             if (content is Formula)
             {
                 value = "=" + content.ToString();
                 foreach (string variable in ((Formula)content).GetVariables()) {
-                    sheet[variable].BackgroundColor = Color.FromRgb(0, 255, 0);
-                    hightLightDependees.Add(variable);
+                    string cellRealtivePos;
+                    if (GetRealitivePos(variable, out cellRealtivePos))
+                    {
+                        sheet[cellRealtivePos].BackgroundColor = Color.FromRgb(0, 255, 0);
+                        hightLightDependees.Add(cellRealtivePos);
+                    }
                 }
 
-                foreach(string variable in s.GetCellsNeedToReCal(((Entry)sender).AutomationId)){
-                    sheet[variable].BackgroundColor = Color.FromRgb(0, 255, 200);
-                    hightLightDependents.Add(variable);
+                foreach(string variable in s.GetCellsNeedToReCal(GetUniversialPos((Entry)sender))){
+                    string cellRealtivePos;
+                    if(GetRealitivePos(variable, out cellRealtivePos)){
+                        sheet[cellRealtivePos].BackgroundColor = Color.FromRgb(0, 255, 200);
+                        hightLightDependents.Add(cellRealtivePos);
+                    }
+
                 }
 
                 return value;
@@ -332,7 +336,7 @@ namespace GUI
             await DisplayAlert("Message", "File Saved Correctly", "OK");
             SaveBtn.IsEnabled = false;
         }
-
+        
 
         private async Task Open()
         {
@@ -355,6 +359,84 @@ namespace GUI
             await DisplayAlert("Message", "File Opened Correctly", "OK");
             SaveBtn.IsEnabled = false;
         }
+
+        private string GetUniversialPos(Entry entry){
+            string cellName = entry.AutomationId;
+
+            Match matchLetter = Regex.Match(cellName, @"^[a-zA-Z]+");
+            string col = matchLetter.Value;
+            Match matchNumber = Regex.Match(cellName, @"\d+$");
+
+            string row = (int.Parse(matchNumber.Value)+currentPage * 20).ToString();
+            return col + row;
+        }
+
+        /// <summary>
+        /// Get Cell position relative to current page
+        /// </summary>
+        /// <param name="cellName"></param>
+        /// <returns>return true if the cell is in current page</returns>
+        private bool GetRealitivePos(string cellName, out string pos)
+        {
+
+            Match matchLetter = Regex.Match(cellName, @"^[a-zA-Z]+");
+            string col = matchLetter.Value;
+            Match matchNumber = Regex.Match(cellName, @"\d+$");
+
+            int row = (int.Parse(matchNumber.Value) - currentPage * 20);
+            pos = col + row;
+
+            if (row < 0 || row > 20) return false;
+            return true;
+
+        }
+
+        private void Down(object sender, EventArgs e)
+        {
+            currentPage++;
+            if(currentPage == 4) { DownBtn.IsEnabled = false; }
+            UpBtn.IsEnabled = true;
+            LeftLabelChange(true);
+            UpdatePage();
+        }
+
+        private void Up(object sender, EventArgs e)
+        {
+            currentPage--;
+            if(currentPage == 0){ UpBtn.IsEnabled = false; }
+            DownBtn.IsEnabled = true;
+            LeftLabelChange(false);
+            UpdatePage();
+
+        }
+
+
+        private void LeftLabelChange(bool positive)
+        {
+            int sign = -1;
+            if (positive) { sign = 1; }
+            foreach (Border border in LeftLabels)
+            {
+                string text = ((Label)border.Content).Text;
+                double number;
+                Double.TryParse(text, out number);
+                ((Label)border.Content).Text = (number + 20 * sign).ToString();
+            }
+        }
+
+
+
+        private void UpdatePage(){
+            for(int row = 1; row<20; row++)
+            {
+                for (char c = 'A'; c <= 'Z'; c++)
+                {
+                    string actualcellName = c.ToString() + (row + currentPage * 20);
+                    sheet[c.ToString()+row].Text = s.GetCellValue(actualcellName).ToString();
+                }
+            }
+        }
+
 
     }
 
