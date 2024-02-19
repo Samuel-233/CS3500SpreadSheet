@@ -13,6 +13,7 @@ namespace GUI
         List<string> hightLightDependees;
         List<string> hightLightDependents;
         int currentPage;
+        string lastTimeSavePos;
 
         public MainPage()
         {
@@ -48,7 +49,7 @@ namespace GUI
         /// </summary>
         private void InitializeSpreadSheet()
         {
-            s = new Spreadsheet(s => true, s => s.ToUpper(), "six");
+            s = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z].*\d$"), s => s.ToUpper(), "six");
             sheet = new Dictionary<string, Entry>();
             hightLightDependees = new List<string>();   
             hightLightDependents = new List<string>();
@@ -74,6 +75,10 @@ namespace GUI
             CreateCellEntries(rowNum);
         }
 
+        /// <summary>
+        /// Add top labels to show which column the cell at
+        /// </summary>
+        /// <param name="text"></param>
         private void AddTopLabels(string text)
         {
             TopLabels.Add(new Border
@@ -87,7 +92,7 @@ namespace GUI
                 new Label
                 {
                     Text = text,
-                    BackgroundColor = Color.FromRgb(200, 200, 250),
+                    BackgroundColor = Color.FromRgb(20, 20, 20),
                     HorizontalTextAlignment = TextAlignment.Center
                 }
             });
@@ -113,7 +118,7 @@ namespace GUI
                     new Label
                     {
                         Text = text,
-                        BackgroundColor = Color.FromRgb(200, 200, 250),
+                        BackgroundColor = Color.FromRgb(20, 20, 20),
                         HorizontalTextAlignment = TextAlignment.Center
                     }
             }
@@ -150,7 +155,7 @@ namespace GUI
                 entry.HorizontalTextAlignment = TextAlignment.Center;
                 entry.VerticalTextAlignment = TextAlignment.Start;
                 entry.Completed += CellContentChanged;
-                entry.BackgroundColor = Color.FromRgb(200, 200, 250);
+                entry.BackgroundColor = Color.FromRgb(20, 20, 20);
                 entry.AutomationId = ((char)(i + 'A')).ToString() + currentRow;
                 entry.Focused += CellFocusedOn;
                 entry.Unfocused += CellNotFocusedOn;
@@ -185,9 +190,10 @@ namespace GUI
             {
                 cellsNeedToChange = s.SetContentsOfCell(GetUniversialPos((Entry)sender), ((Entry)sender).Text);
             }
-            catch (FormulaFormatException ex)
+            catch (Exception ex)
             {
                 await DisplayAlert("Warning", $"The Formula is Invalid, because {ex.Message}", "OK");
+                return;
             }
             UpdateCellContentAndValue(cellsNeedToChange);
             SaveBtn.IsEnabled = true;
@@ -221,8 +227,11 @@ namespace GUI
             selectedCellName.Text = "Selected Cell Name: " + GetUniversialPos((Entry)sender);
 
             string value = "";
-            
-            if (!GetCellValue(sender, out value)) selectedCellValue.Text = "Selected Cell Value Can not Compute Because " + value;
+
+            if (!GetCellValue(sender, out value))
+            {
+                selectedCellValue.Text = "Selected Cell Value Can not Compute Because " + value;
+            }
             else selectedCellValue.Text = "Selected Cell Value: " + value;
 
         }
@@ -234,15 +243,20 @@ namespace GUI
         /// <param name="e"></param>
         private void CellNotFocusedOn(object sender, EventArgs e) {
             string value = "";
-            GetCellValue(sender, out value);
+            if (!GetCellValue(sender, out value)) { 
+               ((Entry)sender).BackgroundColor = Color.FromRgb(255, 200, 200);
+            }
             ((Entry)sender).Text = value;
 
+
             foreach(string cell in hightLightDependees){
-                sheet[cell].BackgroundColor = Color.FromRgb(200, 200, 250);
+                sheet[cell].BackgroundColor = Color.FromRgb(20, 20, 20);
+                if(s.GetCellValue(cell) is FormulaError) sheet[cell].BackgroundColor = Color.FromRgb(255, 200, 200);
             }
             foreach (string cell in hightLightDependents)
             {
-                sheet[cell].BackgroundColor = Color.FromRgb(200, 200, 250);
+                sheet[cell].BackgroundColor = Color.FromRgb(20, 20, 20);
+                if (s.GetCellValue(cell) is FormulaError) sheet[cell].BackgroundColor = Color.FromRgb(255, 200, 200);
             }
             hightLightDependents.Clear();
             hightLightDependees.Clear();
@@ -282,6 +296,7 @@ namespace GUI
             if (content is Formula)
             {
                 value = "=" + content.ToString();
+                //Hight light Dependees
                 foreach (string variable in ((Formula)content).GetVariables()) {
                     string cellRealtivePos;
                     if (GetRealitivePos(variable, out cellRealtivePos))
@@ -290,8 +305,8 @@ namespace GUI
                         hightLightDependees.Add(cellRealtivePos);
                     }
                 }
-
-                foreach(string variable in s.GetCellsNeedToReCal(GetUniversialPos((Entry)sender))){
+                //Hight light Dependents
+                foreach (string variable in s.GetCellsNeedToReCal(GetUniversialPos((Entry)sender))){
                     string cellRealtivePos;
                     if(GetRealitivePos(variable, out cellRealtivePos)){
                         sheet[cellRealtivePos].BackgroundColor = Color.FromRgb(0, 255, 200);
@@ -315,39 +330,46 @@ namespace GUI
 
             bool answer = await DisplayAlert("Warning!", "You are going create a NEW spread sheet,\n which is going to overwrite current spread sheet. \nStill create a new spread sheet?", "Yes", "No");
             if (!answer) return;
-            foreach (string cellName in s.GetNamesOfAllNonemptyCells())
-            {
-                sheet[cellName].Text = "";
-            }
-
-
-            s = new Spreadsheet(s => true, s => s.ToUpper(), "six");
+            s = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z].*\d$"), s => s.ToUpper(), "six");
+            UpdatePage();
         }
 
+        /// <summary>
+        /// Save the file to the new place or place where last time the user saved
+        /// </summary>
+        /// <returns></returns>
         private async Task SaveAs(){
-            string result = await DisplayPromptAsync("Save As", "Please enter the path where you want to save\n(including the file name)\nLeave blank to save default version");
+            string path = await DisplayPromptAsync("Save As", "Please enter the path where you want to save\n(including the file name)\nLeave it blank to save to the place where you last time save");
             try{
-                if (result != null && result.Count() > 0) { s.Save(result + ".sprd"); }
+                if (path != null && path.Count() > 0) 
+                { 
+                    s.Save(path + ".sprd"); 
+                }else if(lastTimeSavePos!=null && lastTimeSavePos.Count()>0)
+                {
+                    s.Save(lastTimeSavePos + ".sprd");
+                }
                 else s.Save("default.sprd");
             }catch(SpreadsheetReadWriteException e){
                 await DisplayAlert("Alert", $"File saved incorrectly, because {e.Message}", "OK");
                 return;
             }
             await DisplayAlert("Message", "File Saved Correctly", "OK");
+            lastTimeSavePos = path;
             SaveBtn.IsEnabled = false;
         }
         
-
+        /// <summary>
+        /// Open the file by given path
+        /// </summary>
+        /// <returns></returns>
         private async Task Open()
         {
-            string result = await DisplayPromptAsync("Opening", "Please fill in the path where you store the file\nInclude the file name");
+            string path = await DisplayPromptAsync("Opening", "Please fill in the path where you store the file\nInclude the file name");
             try
             {
-                if (result != null && result.Count() > 0) { 
-                    s = new Spreadsheet(result+".sprd",s=>true,s=>s.ToUpper(),"six"); 
-                    foreach(string cellName in s.GetNamesOfAllNonemptyCells()){
-                        sheet[cellName].Text = s.GetCellValue(cellName).ToString();
-                    }
+                if (path != null && path.Count() > 0) { 
+                    s = new Spreadsheet(path+".sprd", s => Regex.IsMatch(s, @"^[a-zA-Z].*\d$"), s=>s.ToUpper(),"six");
+                    UpdatePage();
                 }
                 else await DisplayAlert("Alert", "Please Enter a path", "OK");
             }
@@ -358,16 +380,22 @@ namespace GUI
             }
             await DisplayAlert("Message", "File Opened Correctly", "OK");
             SaveBtn.IsEnabled = false;
+            lastTimeSavePos = path;
+            UpdatePage();
         }
 
+        /// <summary>
+        /// Get the cell position in the whole spread sheet
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         private string GetUniversialPos(Entry entry){
             string cellName = entry.AutomationId;
+            string col;
+            int row;
+            SplitColAndRow(cellName, out col, out row);
 
-            Match matchLetter = Regex.Match(cellName, @"^[a-zA-Z]+");
-            string col = matchLetter.Value;
-            Match matchNumber = Regex.Match(cellName, @"\d+$");
-
-            string row = (int.Parse(matchNumber.Value)+currentPage * 20).ToString();
+            row = (row+currentPage * 20);
             return col + row;
         }
 
@@ -379,18 +407,35 @@ namespace GUI
         private bool GetRealitivePos(string cellName, out string pos)
         {
 
-            Match matchLetter = Regex.Match(cellName, @"^[a-zA-Z]+");
-            string col = matchLetter.Value;
-            Match matchNumber = Regex.Match(cellName, @"\d+$");
+            string col;
+            int row;
+            SplitColAndRow(cellName, out col, out row);
 
-            int row = (int.Parse(matchNumber.Value) - currentPage * 20);
+            row = (row - currentPage * 20);
             pos = col + row;
-
             if (row < 0 || row > 20) return false;
             return true;
 
         }
 
+        /// <summary>
+        /// Split a valid cell name in to row and column
+        /// </summary>
+        /// <param name="cellName"></param>
+        /// <param name="col">Col name, A-Z</param>
+        /// <param name="row">Row name</param>
+        private void SplitColAndRow(string cellName, out string col, out int row){
+            Match matchLetter = Regex.Match(cellName, @"^[a-zA-Z]+");
+            col = matchLetter.Value;
+            Match matchNumber = Regex.Match(cellName, @"\d+$");
+            row = (int.Parse(matchNumber.Value));
+        }
+
+        /// <summary>
+        /// Down one page 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Down(object sender, EventArgs e)
         {
             currentPage++;
@@ -400,6 +445,11 @@ namespace GUI
             UpdatePage();
         }
 
+        /// <summary>
+        /// Up one page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Up(object sender, EventArgs e)
         {
             currentPage--;
@@ -410,7 +460,10 @@ namespace GUI
 
         }
 
-
+        /// <summary>
+        /// Change the left label when the user change the page number
+        /// </summary>
+        /// <param name="positive"></param>
         private void LeftLabelChange(bool positive)
         {
             int sign = -1;
@@ -426,13 +479,19 @@ namespace GUI
 
 
 
+        /// <summary>
+        /// Update the page value, if the value is formula error, shade it to pink
+        /// </summary>
         private void UpdatePage(){
             for(int row = 1; row<20; row++)
             {
                 for (char c = 'A'; c <= 'Z'; c++)
                 {
                     string actualcellName = c.ToString() + (row + currentPage * 20);
-                    sheet[c.ToString()+row].Text = s.GetCellValue(actualcellName).ToString();
+                    object cellValue = s.GetCellValue(actualcellName);
+                    if(cellValue is FormulaError) sheet[c.ToString() + row].BackgroundColor = Color.FromRgb(255, 200, 200);
+                    else sheet[c.ToString() + row].BackgroundColor = Color.FromRgb(20, 20, 20);
+                    sheet[c.ToString() + row].Text = cellValue.ToString();
                 }
             }
         }
