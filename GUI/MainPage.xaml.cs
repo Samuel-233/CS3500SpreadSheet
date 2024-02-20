@@ -92,7 +92,7 @@ namespace GUI
                 new Label
                 {
                     Text = text,
-                    BackgroundColor = Color.FromRgb(20, 20, 20),
+                    BackgroundColor = Color.FromRgb(35, 35, 35),
                     HorizontalTextAlignment = TextAlignment.Center
                 }
             });
@@ -118,7 +118,7 @@ namespace GUI
                     new Label
                     {
                         Text = text,
-                        BackgroundColor = Color.FromRgb(20, 20, 20),
+                        BackgroundColor = Color.FromRgb(35, 35, 35),
                         HorizontalTextAlignment = TextAlignment.Center
                     }
             }
@@ -155,7 +155,7 @@ namespace GUI
                 entry.HorizontalTextAlignment = TextAlignment.Center;
                 entry.VerticalTextAlignment = TextAlignment.Start;
                 entry.Completed += CellContentChanged;
-                entry.BackgroundColor = Color.FromRgb(20, 20, 20);
+                entry.BackgroundColor = Color.FromRgb(35, 35, 35);
                 entry.AutomationId = ((char)(i + 'A')).ToString() + currentRow;
                 entry.Focused += CellFocusedOn;
                 entry.Unfocused += CellNotFocusedOn;
@@ -250,12 +250,12 @@ namespace GUI
 
 
             foreach(string cell in hightLightDependees){
-                sheet[cell].BackgroundColor = Color.FromRgb(20, 20, 20);
+                sheet[cell].BackgroundColor = Color.FromRgb(35, 35, 35);
                 if(s.GetCellValue(cell) is FormulaError) sheet[cell].BackgroundColor = Color.FromRgb(255, 200, 200);
             }
             foreach (string cell in hightLightDependents)
             {
-                sheet[cell].BackgroundColor = Color.FromRgb(20, 20, 20);
+                sheet[cell].BackgroundColor = Color.FromRgb(35, 35, 35);
                 if (s.GetCellValue(cell) is FormulaError) sheet[cell].BackgroundColor = Color.FromRgb(255, 200, 200);
             }
             hightLightDependents.Clear();
@@ -301,7 +301,7 @@ namespace GUI
                     string cellRealtivePos;
                     if (GetRealitivePos(variable, out cellRealtivePos))
                     {
-                        sheet[cellRealtivePos].BackgroundColor = Color.FromRgb(0, 255, 0);
+                        sheet[cellRealtivePos].BackgroundColor = Color.FromRgb(0, 100, 128);
                         hightLightDependees.Add(cellRealtivePos);
                     }
                 }
@@ -309,7 +309,7 @@ namespace GUI
                 foreach (string variable in s.GetCellsNeedToReCal(GetUniversialPos((Entry)sender))){
                     string cellRealtivePos;
                     if(GetRealitivePos(variable, out cellRealtivePos)){
-                        sheet[cellRealtivePos].BackgroundColor = Color.FromRgb(0, 255, 200);
+                        sheet[cellRealtivePos].BackgroundColor = Color.FromRgb(0, 128, 100);
                         hightLightDependents.Add(cellRealtivePos);
                     }
 
@@ -490,7 +490,7 @@ namespace GUI
                     string actualcellName = c.ToString() + (row + currentPage * 20);
                     object cellValue = s.GetCellValue(actualcellName);
                     if(cellValue is FormulaError) sheet[c.ToString() + row].BackgroundColor = Color.FromRgb(255, 200, 200);
-                    else sheet[c.ToString() + row].BackgroundColor = Color.FromRgb(20, 20, 20);
+                    else sheet[c.ToString() + row].BackgroundColor = Color.FromRgb(35, 35, 35);
                     sheet[c.ToString() + row].Text = cellValue.ToString();
                 }
             }

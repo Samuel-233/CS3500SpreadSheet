@@ -26,8 +26,8 @@
                     HorizontalScrollBarVisibility="Always"
                     HeightRequest="1080">
             <HorizontalStackLayout>
-                <VerticalStackLayout x:Name="LeftLabels"  BackgroundColor="LightBlue"></VerticalStackLayout>
-                <VerticalStackLayout x:Name="Grid"        BackgroundColor="LightGoldenrodYellow"></VerticalStackLayout>
+                <VerticalStackLayout x:Name="LeftLabels"  BackgroundColor="Black"></VerticalStackLayout>
+                <VerticalStackLayout x:Name="Grid"        BackgroundColor="Black"></VerticalStackLayout>
             </HorizontalStackLayout>
         </ScrollView>
 
