@@ -235,7 +235,6 @@ namespace SS
             try
             {
                 XmlReader xmlReader = XmlReader.Create(filename);
-                string version;
 
                 while (xmlReader.Read())
                 {
@@ -250,7 +249,7 @@ namespace SS
             }
             catch (Exception e)
             {
-                throw new SpreadsheetReadWriteException($"Can not read the file {filename}");
+                throw new SpreadsheetReadWriteException($"Can not read the file {filename}, exception is {e.Message}");
             }
         }
 
