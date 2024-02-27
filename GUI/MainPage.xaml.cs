@@ -8,7 +8,7 @@ using static System.Net.Mime.MediaTypeNames;
 /// <summary>
 /// Author:    Shu Chen
 /// Partner:   Ping-Hsun Hsieh
-/// Date:      2024/2/15
+/// Date:      2024/2/26
 /// Course:    CS 3500, University of Utah, School of Computing
 /// Copyright: CS 3500 and Shu Chen - This work may not
 ///            be copied for use in Academic Coursework.
@@ -67,7 +67,8 @@ namespace GUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Help(object sender, EventArgs e) {
+        private void Help(object sender, EventArgs e)
+        {
             var page = new HelpPage();
             Navigation.PushAsync(page, true);
         }
@@ -82,7 +83,7 @@ namespace GUI
         {
             s = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z].*\d$"), s => s.ToUpper(), "six");
             sheet = new Dictionary<string, Entry>();
-            hightLightDependees = new List<string>();   
+            hightLightDependees = new List<string>();
             hightLightDependents = new List<string>();
             currentPage = 0;
             CreateCellLable(20);
@@ -179,9 +180,11 @@ namespace GUI
         /// <param name="columnNum">the number of entry want to add</param>
         /// <param name="stack">target stack</param>
         /// <param name="currentRow">Current stack's row</param>
-        private void AddEntryToStack(int columnNum, StackBase stack, int currentRow) {
+        private void AddEntryToStack(int columnNum, StackBase stack, int currentRow)
+        {
 
-            for (int i = 0; i < columnNum; i++) {
+            for (int i = 0; i < columnNum; i++)
+            {
                 Entry entry = new Entry();
                 entry.HorizontalTextAlignment = TextAlignment.Center;
                 entry.VerticalTextAlignment = TextAlignment.Start;
@@ -216,18 +219,6 @@ namespace GUI
         /// <param name="e"></param>
         private async void CellContentChanged(object sender, EventArgs e)
         {
-            Entry enventSender = (Entry)sender;
-
-            //If user selected the cell at the top, check where should it be.
-            if(enventSender.AutomationId.Equals("selectedCellContent")) 
-            {
-                enventSender = LastFocusedCell;
-                {
-                    await DisplayAlert("Warning", "You didn't selected a cell before, so you cannot enter value here", "OK");
-                    return;
-                }
-            }
-
             IList<string> cellsNeedToChange = new List<string>();
             try
             {
@@ -243,11 +234,43 @@ namespace GUI
         }
 
         /// <summary>
+        /// When Cell is changed, update the cell content and other cell value that depends on this cell
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void TopCellContentChanged(object sender, EventArgs e)
+        {
+
+            //If user selected the cell at the top, check where should it be.
+            if (LastFocusedCell == null)
+            {
+                await DisplayAlert("Warning", "You didn't selected a cell before, so you cannot enter value here", "OK");
+                return;
+            }
+
+            IList<string> cellsNeedToChange = new List<string>();
+            try
+            {
+                cellsNeedToChange = s.SetContentsOfCell(GetUniversialPos(LastFocusedCell), ((Entry)sender).Text);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Warning", $"The Formula is Invalid, because {ex.Message}", "OK");
+                return;
+            }
+            UpdateCellContentAndValue(cellsNeedToChange);
+            SaveBtn.IsEnabled = true;
+        }
+
+
+        /// <summary>
         /// Update cells content and value by given a list of cells
         /// </summary>
         /// <param name="cells">cells need to change</param>
-        private void UpdateCellContentAndValue(IList<string> cells) {
-            foreach (string cell in cells) {
+        private void UpdateCellContentAndValue(IList<string> cells)
+        {
+            foreach (string cell in cells)
+            {
                 string cellRealtivePos;
                 if (GetRealitivePos(cell, out cellRealtivePos))
                 {
@@ -265,36 +288,53 @@ namespace GUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CellFocusedOn(object sender, EventArgs e) {
-                ((Entry)sender).Text = GetCellContent(sender);
-                selectedCellName.Text = "Selected Cell Name: " + GetUniversialPos((Entry)sender);
+        private void CellFocusedOn(object sender, EventArgs e)
+        {
+            ((Entry)sender).Text = GetCellContent(sender);
+            selectedCellName.Text = "Selected Cell Name: " + GetUniversialPos((Entry)sender);
+            selectedCellContent.Text = GetCellContent(sender);
 
-                string value = "";
+            string value = "";
 
-                if (!GetCellValue(sender, out value))
-                {
-                    selectedCellValue.Text = "Selected Cell Value Can not Compute Because " + value;
-                }
-                else selectedCellValue.Text = "Selected Cell Value: " + value;
-
-                LastFocusedCell = (Entry)sender;
+            if (!GetCellValue(sender, out value))
+            {
+                selectedCellValue.Text = "Selected Cell Value Can not Compute Because " + value;
             }
- 
+            else selectedCellValue.Text = "Selected Cell Value: " + value;
+
+            LastFocusedCell = (Entry)sender;
+        }
+
+        /// <summary>
+        /// This event means user is currently selecting top content cell.
+        /// If the Content is formula, highlight the cells that related to this cell.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TopCellFocusedOn(object sender, EventArgs e)
+        {
+            if (LastFocusedCell == null) return;
+            ((Entry)sender).Text = GetCellContent(LastFocusedCell);
+        }
+
         /// When Cell is not focused by the user, show the cell value
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CellNotFocusedOn(object sender, EventArgs e) {
+        private void CellNotFocusedOn(object sender, EventArgs e)
+        {
             string value = "";
-            if (!GetCellValue(sender, out value)) { 
-               ((Entry)sender).BackgroundColor = Color.FromRgb(255, 200, 200);
+            if (!GetCellValue(sender, out value))
+            {
+                ((Entry)sender).BackgroundColor = Color.FromRgb(255, 200, 200);
             }
             ((Entry)sender).Text = value;
 
 
-            foreach(string cell in hightLightDependees){
+            foreach (string cell in hightLightDependees)
+            {
                 sheet[cell].BackgroundColor = Color.FromRgb(35, 35, 35);
-                if(s.GetCellValue(cell) is FormulaError) sheet[cell].BackgroundColor = Color.FromRgb(255, 200, 200);
+                if (s.GetCellValue(cell) is FormulaError) sheet[cell].BackgroundColor = Color.FromRgb(255, 200, 200);
             }
             foreach (string cell in hightLightDependents)
             {
@@ -303,17 +343,24 @@ namespace GUI
             }
             hightLightDependents.Clear();
             hightLightDependees.Clear();
-
-
         }
 
-        /// <summary>
-        /// Get Cell Value, If Value is a Formula Error, return false, and reason is in value
+        /// When Cell is not focused by the user, show the cell value
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="value">the value of the cell or why cause the error</param>
-        /// <returns>return true if cell does not have formula error</returns>
-        private bool GetCellValue(object sender, out string value)
+        /// <param name="e"></param>
+        private void TopCellNotFocusedOn(object sender, EventArgs e)
+        {
+            if (LastFocusedCell == null) return;
+            CellNotFocusedOn(LastFocusedCell, e);
+        }
+            /// <summary>
+            /// Get Cell Value, If Value is a Formula Error, return false, and reason is in value
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="value">the value of the cell or why cause the error</param>
+            /// <returns>return true if cell does not have formula error</returns>
+            private bool GetCellValue(object sender, out string value)
         {
             value = "";
             object content = s.GetCellValue(GetUniversialPos((Entry)sender));
@@ -340,7 +387,8 @@ namespace GUI
             {
                 value = "=" + content.ToString();
                 //Hight light Dependees
-                foreach (string variable in ((Formula)content).GetVariables()) {
+                foreach (string variable in ((Formula)content).GetVariables())
+                {
                     string cellRealtivePos;
                     if (GetRealitivePos(variable, out cellRealtivePos))
                     {
@@ -349,9 +397,11 @@ namespace GUI
                     }
                 }
                 //Hight light Dependents
-                foreach (string variable in s.GetCellsNeedToReCal(GetUniversialPos((Entry)sender))){
+                foreach (string variable in s.GetCellsNeedToReCal(GetUniversialPos((Entry)sender)))
+                {
                     string cellRealtivePos;
-                    if(GetRealitivePos(variable, out cellRealtivePos)){
+                    if (GetRealitivePos(variable, out cellRealtivePos))
+                    {
                         sheet[cellRealtivePos].BackgroundColor = Color.FromRgb(0, 128, 100);
                         hightLightDependents.Add(cellRealtivePos);
                     }
@@ -361,7 +411,7 @@ namespace GUI
                 return value;
             }
             return content.ToString();
-            
+
         }
 
         /// <summary>
@@ -381,18 +431,23 @@ namespace GUI
         /// Save the file to the new place or place where last time the user saved
         /// </summary>
         /// <returns></returns>
-        private async Task SaveAs(){
+        private async Task SaveAs()
+        {
             string path = await DisplayPromptAsync("Save As", "Please enter the path where you want to save\n(including the file name)\nLeave it blank to save to the place where you last time save");
-            try{
-                if (path != null && path.Count() > 0) 
-                { 
-                    s.Save(path + ".sprd"); 
-                }else if(lastTimeSavePos!=null && lastTimeSavePos.Count()>0)
+            try
+            {
+                if (path != null && path.Count() > 0)
+                {
+                    s.Save(path + ".sprd");
+                }
+                else if (lastTimeSavePos != null && lastTimeSavePos.Count() > 0)
                 {
                     s.Save(lastTimeSavePos + ".sprd");
                 }
                 else s.Save("default.sprd");
-            }catch(SpreadsheetReadWriteException e){
+            }
+            catch (SpreadsheetReadWriteException e)
+            {
                 await DisplayAlert("Alert", $"File saved incorrectly, because {e.Message}", "OK");
                 return;
             }
@@ -400,7 +455,7 @@ namespace GUI
             lastTimeSavePos = path;
             SaveBtn.IsEnabled = false;
         }
-        
+
         /// <summary>
         /// Open the file by given path
         /// </summary>
@@ -410,8 +465,9 @@ namespace GUI
             string path = await DisplayPromptAsync("Opening", "Please fill in the path where you store the file\nInclude the file name");
             try
             {
-                if (path != null && path.Count() > 0) { 
-                    s = new Spreadsheet(path+".sprd", s => Regex.IsMatch(s, @"^[a-zA-Z].*\d$"), s=>s.ToUpper(),"six");
+                if (path != null && path.Count() > 0)
+                {
+                    s = new Spreadsheet(path + ".sprd", s => Regex.IsMatch(s, @"^[a-zA-Z].*\d$"), s => s.ToUpper(), "six");
                     UpdatePage();
                 }
                 else await DisplayAlert("Alert", "Please Enter a path", "OK");
@@ -432,13 +488,14 @@ namespace GUI
         /// </summary>
         /// <param name="entry"></param>
         /// <returns></returns>
-        private string GetUniversialPos(Entry entry){
+        private string GetUniversialPos(Entry entry)
+        {
             string cellName = entry.AutomationId;
             string col;
             int row;
             SplitColAndRow(cellName, out col, out row);
 
-            row = (row+currentPage * 20);
+            row = (row + currentPage * 20);
             return col + row;
         }
 
@@ -467,7 +524,8 @@ namespace GUI
         /// <param name="cellName"></param>
         /// <param name="col">Col name, A-Z</param>
         /// <param name="row">Row name</param>
-        private void SplitColAndRow(string cellName, out string col, out int row){
+        private void SplitColAndRow(string cellName, out string col, out int row)
+        {
             Match matchLetter = Regex.Match(cellName, @"^[a-zA-Z]+");
             col = matchLetter.Value;
             Match matchNumber = Regex.Match(cellName, @"\d+$");
@@ -482,7 +540,7 @@ namespace GUI
         private void Down(object sender, EventArgs e)
         {
             currentPage++;
-            if(currentPage == 4) { DownBtn.IsEnabled = false; }
+            if (currentPage == 4) { DownBtn.IsEnabled = false; }
             UpBtn.IsEnabled = true;
             LeftLabelChange(true);
             UpdatePage();
@@ -496,7 +554,7 @@ namespace GUI
         private void Up(object sender, EventArgs e)
         {
             currentPage--;
-            if(currentPage == 0){ UpBtn.IsEnabled = false; }
+            if (currentPage == 0) { UpBtn.IsEnabled = false; }
             DownBtn.IsEnabled = true;
             LeftLabelChange(false);
             UpdatePage();
@@ -525,14 +583,15 @@ namespace GUI
         /// <summary>
         /// Update the page value, if the value is formula error, shade it to pink
         /// </summary>
-        private void UpdatePage(){
-            for(int row = 1; row<20; row++)
+        private void UpdatePage()
+        {
+            for (int row = 1; row < 20; row++)
             {
                 for (char c = 'A'; c <= 'Z'; c++)
                 {
                     string actualcellName = c.ToString() + (row + currentPage * 20);
                     object cellValue = s.GetCellValue(actualcellName);
-                    if(cellValue is FormulaError) sheet[c.ToString() + row].BackgroundColor = Color.FromRgb(255, 200, 200);
+                    if (cellValue is FormulaError) sheet[c.ToString() + row].BackgroundColor = Color.FromRgb(255, 200, 200);
                     else sheet[c.ToString() + row].BackgroundColor = Color.FromRgb(35, 35, 35);
                     sheet[c.ToString() + row].Text = cellValue.ToString();
                 }

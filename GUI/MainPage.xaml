@@ -29,7 +29,7 @@
             <HorizontalStackLayout>
                 <Label x:Name="selectedCellName" Text="Selected Cell Name: " WidthRequest="180"/>
                 <Label x:Name="selectedCellValue" Text="Selected Cell Value: " WidthRequest="300"/>
-                <Entry x:Name="selectedCellContent" AutomationId="selectedCellContent"  Completed="CellContentChanged"  Text="Selected Cell Value: " WidthRequest="700" />
+                <Entry x:Name="selectedCellContent" AutomationId="selectedCellContent"  Completed="TopCellContentChanged"  Text="Selected Cell Value: " Focused="TopCellFocusedOn" Unfocused="TopCellNotFocusedOn" WidthRequest="700"  Placeholder="Content"/>
             </HorizontalStackLayout>
         </Border>
 
