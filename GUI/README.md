@@ -1,24 +1,27 @@
 ```
 Author:     Shu Chen
-Partner:    None
+Partner:    Ping-Hsun Hsieh
 Course:     CS 3500, University of Utah, School of Computing
 GitHub ID:  Samuel-233
 Repo:       https://github.com/uofu-cs3500-spring24/spreadsheet-Samuel-233
 Date:       20/2/2024
-Project:    SpreadSheet
+Project:    GUI
 Copyright:  CS 3500 and Shu Chen - This work may not be copied for use in Academic Coursework.
 ```
 
 # Comments to Evaluators:
 
-
+For the GitHub version controlling, there is only few update, because we worked together at the same computer in my (Shu Chen) reop.
+Due to unknown reason, sometimes when I run the program, the program will become black forever. Just restart it if meet this problem. Program should not take more than half min to start
 
 # Assignment Specific Topics
 
+# Project content
+This GUI project is to create the app to let user to interact with.
 
 # Consulted Peers:
 
-I didn't speak to anyone yet, I will do it if I have time. Most of my problems are solved by myself.
+Me can Ping code together in the same computer.
 
 # References:
 

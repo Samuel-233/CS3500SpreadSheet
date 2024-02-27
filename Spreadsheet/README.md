@@ -15,6 +15,9 @@ Copyright:  CS 3500 and Shu Chen - This work may not be copied for use in Academ
 
 # Assignment Specific Topics
 
+# Project content
+This if the API for the GUI, by using this class, user can create a spreadsheet to store contents, and calculate value from given content
+
 
 # Consulted Peers:
 

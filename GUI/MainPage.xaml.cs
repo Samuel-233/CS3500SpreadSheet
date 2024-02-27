@@ -3,7 +3,24 @@ using SS;
 using System.Collections;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 using static System.Net.Mime.MediaTypeNames;
+/// <summary>
+/// Author:    Shu Chen
+/// Partner:   Ping-Hsun Hsieh
+/// Date:      2024/2/15
+/// Course:    CS 3500, University of Utah, School of Computing
+/// Copyright: CS 3500 and Shu Chen - This work may not
+///            be copied for use in Academic Coursework.
+///
+/// I, Shu Chen, certify that I wrote this code from scratch and
+/// did not copy it in part or whole from another source.  All
+/// references used in the completion of the assignments are cited
+/// in my README file.
+///
+/// File Contents
+/// This is a class to deal with event that send form main page
+/// </summary>
 namespace GUI
 {
     public partial class MainPage : ContentPage
@@ -14,6 +31,7 @@ namespace GUI
         List<string> hightLightDependents;
         int currentPage;
         string lastTimeSavePos;
+        Entry LastFocusedCell;
 
         public MainPage()
         {
@@ -34,12 +52,25 @@ namespace GUI
             await Open();
         }
 
+        /// <summary>
+        /// Save the file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void Save(object sender, EventArgs e)
         {
             await SaveAs();
         }
 
-
+        /// <summary>
+        /// Call the help page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Help(object sender, EventArgs e) {
+            var page = new HelpPage();
+            Navigation.PushAsync(page, true);
+        }
 
 
 
@@ -185,6 +216,18 @@ namespace GUI
         /// <param name="e"></param>
         private async void CellContentChanged(object sender, EventArgs e)
         {
+            Entry enventSender = (Entry)sender;
+
+            //If user selected the cell at the top, check where should it be.
+            if(enventSender.AutomationId.Equals("selectedCellContent")) 
+            {
+                enventSender = LastFocusedCell;
+                {
+                    await DisplayAlert("Warning", "You didn't selected a cell before, so you cannot enter value here", "OK");
+                    return;
+                }
+            }
+
             IList<string> cellsNeedToChange = new List<string>();
             try
             {
@@ -223,20 +266,20 @@ namespace GUI
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void CellFocusedOn(object sender, EventArgs e) {
-            ((Entry)sender).Text = GetCellContent(sender);
-            selectedCellName.Text = "Selected Cell Name: " + GetUniversialPos((Entry)sender);
+                ((Entry)sender).Text = GetCellContent(sender);
+                selectedCellName.Text = "Selected Cell Name: " + GetUniversialPos((Entry)sender);
 
-            string value = "";
+                string value = "";
 
-            if (!GetCellValue(sender, out value))
-            {
-                selectedCellValue.Text = "Selected Cell Value Can not Compute Because " + value;
+                if (!GetCellValue(sender, out value))
+                {
+                    selectedCellValue.Text = "Selected Cell Value Can not Compute Because " + value;
+                }
+                else selectedCellValue.Text = "Selected Cell Value: " + value;
+
+                LastFocusedCell = (Entry)sender;
             }
-            else selectedCellValue.Text = "Selected Cell Value: " + value;
-
-        }
-
-        /// <summary>
+ 
         /// When Cell is not focused by the user, show the cell value
         /// </summary>
         /// <param name="sender"></param>
@@ -327,7 +370,7 @@ namespace GUI
         /// <returns></returns>
         private async Task CreateNewSpreadSheet()
         {
-
+            LastFocusedCell = null;
             bool answer = await DisplayAlert("Warning!", "You are going create a NEW spread sheet,\n which is going to overwrite current spread sheet. \nStill create a new spread sheet?", "Yes", "No");
             if (!answer) return;
             s = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z].*\d$"), s => s.ToUpper(), "six");

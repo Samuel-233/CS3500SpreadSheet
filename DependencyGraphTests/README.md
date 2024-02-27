@@ -15,6 +15,8 @@ I didn't added too much extra testers, because the given tester is already prett
 
 # Assignment Specific Topics
 
+# Project content
+This is a class to store dependency, so that when code is evaluating formula, it can know what should calculate first. 
 
 
 # Consulted Peers:

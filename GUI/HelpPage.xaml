@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GUI.HelpPage"
+             Title="HelpPage">
+
+    <ScrollView>
+        <StackLayout Padding="10" Spacing="20">
+            <Label Text="Help Page" FontSize="30" FontAttributes="Bold" HorizontalOptions="Center" />
+
+            <Label Text="This page is the help page of the spreadsheet." />
+
+            <Label Text="To load or create a new spread sheet, you can click the file menu on the top left, and enter the path and file name" />
+
+            <Label Text="To save the file, just click Save button on top right, then enter the path and the file name you want to save. After saved for once, you can leave it for empty if you need to update the old file." />
+
+            <Label Text="Clicked the ↑ and ↓ to scroll up and down. Spread sheet have total 100 rows."/>
+
+            <Label Text="You can put text, number, or expression in the cell(start with = ). When you selected a expression, you can see which cells does this expression is using(blue), and which cells does this expression will change(blue). If the Expression have error, the cell will shaded to pink."/>
+
+            <BoxView HeightRequest="1" BackgroundColor="Black" HorizontalOptions="FillAndExpand" Margin="0,10,0,10" />
+
+            <Label Text="Press the back arrow (up top) or return button."/>
+
+            <Button
+            x:Name="ReturnToMainPageButton"
+            Text="Return to Application"
+            Clicked="ReturnToMainPage"
+            HorizontalOptions="Center"/>
+        </StackLayout>
+
+
+    </ScrollView>
+</ContentPage>

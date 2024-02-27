@@ -16,13 +16,9 @@ The Spreadsheet program is currently capable of Evaluate expression, make depend
 It also can create cells with dependency by entering the formula with variables.
 By using SpreadSheet, user can put data in to cells, and do calculations between them. 
 
-Future extensions are a fully function spread sheet
+Using the GUI class can create the APP to let the user interact with.
 
-<<<<<<< HEAD
-This is the main branch
-=======
 This is the AS5 branch
->>>>>>> AS5
 # Time Expenditures:
 
     1. Assignment One:   Predicted Hours:          15        Actual Hours:   17         Note: I spend about 5 more hours to rewrite the code, so it match prof's algorithm.
@@ -30,4 +26,4 @@ This is the AS5 branch
     3. Assignment Three: Predicted Hours:          10        Actual Hours:   6     
     4. Assignment Four : Predicted Hours:          7         Actual Hours:   7
     5. Assignment Five : Predicted Hours:          10        Actual Hours:   13         Note: Struggled with read and write XML files
-    6. Assignment Six  : Predicted Hours:          15        Actual Hours:   6         
+    6. Assignment Five : Predicted Hours:          20        Actual Hours:   15         

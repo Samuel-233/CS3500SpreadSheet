@@ -66,4 +66,10 @@
 	  <ProjectReference Include="..\Spreadsheet\Spreadsheet.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiXaml Update="HelpPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>
