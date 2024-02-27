@@ -1,6 +1,6 @@
 ```
 Author:     Shu Chen
-Partner:    None
+Partner:    Ping-Hsun Hsieh
 Start Date: 10-Jan-2024
 Course:     CS 3500, University of Utah, School of Computing
 GitHub ID:  Samuel-233

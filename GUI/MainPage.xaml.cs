@@ -435,7 +435,7 @@ namespace GUI
         {
             string path = await DisplayPromptAsync("Save As", "Please enter the path where you want to save\n(including the file name)\nLeave it blank to save to the place where you last time save");
             try
-            {
+                {
                 if (path != null && path.Count() > 0)
                 {
                     s.Save(path + ".sprd");
