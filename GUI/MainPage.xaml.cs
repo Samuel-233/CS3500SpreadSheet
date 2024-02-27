@@ -540,9 +540,9 @@ namespace GUI
         private void Down(object sender, EventArgs e)
         {
             currentPage++;
-            if (currentPage == 4) { DownBtn.IsEnabled = false; }
+            if (currentPage == 9) { DownBtn.IsEnabled = false; }
             UpBtn.IsEnabled = true;
-            LeftLabelChange(true);
+            LeftLabelChange();
             UpdatePage();
         }
 
@@ -556,7 +556,7 @@ namespace GUI
             currentPage--;
             if (currentPage == 0) { UpBtn.IsEnabled = false; }
             DownBtn.IsEnabled = true;
-            LeftLabelChange(false);
+            LeftLabelChange();
             UpdatePage();
 
         }
@@ -565,19 +565,39 @@ namespace GUI
         /// Change the left label when the user change the page number
         /// </summary>
         /// <param name="positive"></param>
-        private void LeftLabelChange(bool positive)
+        private void LeftLabelChange()
         {
-            int sign = -1;
-            if (positive) { sign = 1; }
             foreach (Border border in LeftLabels)
             {
                 string text = ((Label)border.Content).Text;
                 double number;
                 Double.TryParse(text, out number);
-                ((Label)border.Content).Text = (number + 20 * sign).ToString();
+                ((Label)border.Content).Text = (number%20 + 20*currentPage).ToString();
             }
         }
 
+
+        /// <summary>
+        /// User can change the pagge from the entry
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void PageChanged(object sender,EventArgs e){
+            int page;
+            if(int.TryParse(((Entry)sender).Text, out page)){
+                if(page<0){
+                    await DisplayAlert("Alert", "Page Number need to be larger or equal than zero", "OK");
+                    UpdatePage();
+                    return;
+                }
+                currentPage = page;
+                UpdatePage();
+                LeftLabelChange();
+                if (currentPage == 0) { UpBtn.IsEnabled = false; }
+                return;
+            }
+            await DisplayAlert("Alert", "Please Enter a number to jump to a page", "OK");
+        }
 
 
         /// <summary>
@@ -585,7 +605,8 @@ namespace GUI
         /// </summary>
         private void UpdatePage()
         {
-            for (int row = 1; row < 20; row++)
+            currentPageEntry.Text = currentPage.ToString();
+            for (int row = 1; row <= 20; row++)
             {
                 for (char c = 'A'; c <= 'Z'; c++)
                 {
