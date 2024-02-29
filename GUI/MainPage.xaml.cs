@@ -540,7 +540,7 @@ namespace GUI
         private void Down(object sender, EventArgs e)
         {
             currentPage++;
-            if (currentPage == 9) { DownBtn.IsEnabled = false; }
+            //if (currentPage == 9) { DownBtn.IsEnabled = false; }
             UpBtn.IsEnabled = true;
             LeftLabelChange();
             UpdatePage();
