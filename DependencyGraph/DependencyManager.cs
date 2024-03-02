@@ -30,7 +30,6 @@
             dependencyGraph = new();
         }
 
-
         /// <summary>
         /// Add a node pair to dictionary
         /// </summary>
@@ -111,8 +110,6 @@
             if (node != null) return node.GetChildren();
             return new List<string>();
         }
-
-
 
         /// <summary>
         /// Add a new node to the dictionary (if it doesn't exist)

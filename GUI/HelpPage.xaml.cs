@@ -1,4 +1,5 @@
 namespace GUI;
+
 /// <summary>
 /// Author:    Shu Chen
 /// Partner:   Ping-Hsun Hsieh
@@ -31,7 +32,7 @@ public partial class HelpPage : ContentPage
     /// </summary>
     /// <param name="sender"> ignored </param>
     /// <param name="e">      ignored </param>
-    async void ReturnToMainPage(object sender, EventArgs e)
+    private async void ReturnToMainPage(object sender, EventArgs e)
     {
         await Navigation.PopAsync(); // This will return to the main page
     }

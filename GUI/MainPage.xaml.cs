@@ -1,10 +1,7 @@
 ﻿using SpreadsheetUtilities;
 using SS;
-using System.Collections;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Xml.Serialization;
-using static System.Net.Mime.MediaTypeNames;
+
 /// <summary>
 /// Author:    Shu Chen
 /// Partner:   Ping-Hsun Hsieh
@@ -25,20 +22,19 @@ namespace GUI
 {
     public partial class MainPage : ContentPage
     {
-        Spreadsheet s;
-        Dictionary<string, Entry> sheet;
-        List<string> hightLightDependees;
-        List<string> hightLightDependents;
-        int currentPage;
-        string lastTimeSavePos;
-        Entry LastFocusedCell;
+        private Spreadsheet s;
+        private Dictionary<string, Entry> sheet;
+        private List<string> hightLightDependees;
+        private List<string> hightLightDependents;
+        private int currentPage;
+        private string lastTimeSavePos;
+        private Entry LastFocusedCell;
 
         public MainPage()
         {
             InitializeComponent();
             InitializeSpreadSheet();
         }
-
 
         private async void FileMenuNew(object sender, EventArgs e)
         {
@@ -72,9 +68,6 @@ namespace GUI
             var page = new HelpPage();
             Navigation.PushAsync(page, true);
         }
-
-
-
 
         /// <summary>
         /// Initialize the SpreadSheet
@@ -131,14 +124,12 @@ namespace GUI
             });
         }
 
-
         /// <summary>
         /// Generate the left label to show the cell at which row
         /// </summary>
         /// <param name="text">Current row number</param>
         private void CreateLeftLabels(string text)
         {
-
             LeftLabels.Add(
             new Border
             {
@@ -170,10 +161,7 @@ namespace GUI
                 AddEntryToStack(26, horiz, i);
                 Grid.Children.Add(horiz);
             }
-
-
         }
-
 
         /// <summary>
         /// Add input Entry to the given HorizontalStackLayout class
@@ -183,7 +171,6 @@ namespace GUI
         /// <param name="currentRow">Current stack's row</param>
         private void AddEntryToStack(int columnNum, StackBase stack, int currentRow)
         {
-
             for (int i = 0; i < columnNum; i++)
             {
                 Entry entry = new Entry();
@@ -211,7 +198,6 @@ namespace GUI
                 });
             }
         }
-
 
         /// <summary>
         /// When Cell is changed, update the cell content and other cell value that depends on this cell
@@ -241,7 +227,6 @@ namespace GUI
         /// <param name="e"></param>
         private async void TopCellContentChanged(object sender, EventArgs e)
         {
-
             //If user selected the cell at the top, check where should it be.
             if (LastFocusedCell == null)
             {
@@ -263,7 +248,6 @@ namespace GUI
             SaveBtn.IsEnabled = true;
         }
 
-
         /// <summary>
         /// Update cells content and value by given a list of cells
         /// </summary>
@@ -278,10 +262,8 @@ namespace GUI
                     Entry entry = sheet[cellRealtivePos];
                     entry.Text = s.GetCellValue(cell).ToString();
                 }
-
             }
         }
-
 
         /// <summary>
         /// When User is focusing on that cell, update the current cell displaying string from value to content
@@ -324,7 +306,6 @@ namespace GUI
         /// <param name="e"></param>
         private void CellNotFocusedOn(object sender, EventArgs e)
         {
-
             foreach (string cell in hightLightDependees)
             {
                 sheet[cell].BackgroundColor = Color.FromRgb(35, 35, 35);
@@ -355,13 +336,14 @@ namespace GUI
             if (LastFocusedCell == null) return;
             CellNotFocusedOn(LastFocusedCell, e);
         }
-            /// <summary>
-            /// Get Cell Value, If Value is a Formula Error, return false, and reason is in value
-            /// </summary>
-            /// <param name="sender"></param>
-            /// <param name="value">the value of the cell or why cause the error</param>
-            /// <returns>return true if cell does not have formula error</returns>
-            private bool GetCellValue(object sender, out string value)
+
+        /// <summary>
+        /// Get Cell Value, If Value is a Formula Error, return false, and reason is in value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="value">the value of the cell or why cause the error</param>
+        /// <returns>return true if cell does not have formula error</returns>
+        private bool GetCellValue(object sender, out string value)
         {
             value = "";
             object content = s.GetCellValue(GetUniversialPos((Entry)sender));
@@ -406,13 +388,11 @@ namespace GUI
                         sheet[cellRealtivePos].BackgroundColor = Color.FromRgb(0, 128, 100);
                         hightLightDependents.Add(cellRealtivePos);
                     }
-
                 }
 
                 return value;
             }
             return content.ToString();
-
         }
 
         /// <summary>
@@ -436,7 +416,7 @@ namespace GUI
         {
             string path = await DisplayPromptAsync("Save As", "Please enter the path where you want to save\n(including the file name)\nLeave it blank to save to the place where you last time save");
             try
-                {
+            {
                 if (path != null && path.Count() > 0)
                 {
                     s.Save(path + ".sprd");
@@ -507,7 +487,6 @@ namespace GUI
         /// <returns>return true if the cell is in current page</returns>
         private bool GetRealitivePos(string cellName, out string pos)
         {
-
             string col;
             int row;
             SplitColAndRow(cellName, out col, out row);
@@ -516,7 +495,6 @@ namespace GUI
             pos = col + row;
             if (row < 0 || row > 20) return false;
             return true;
-
         }
 
         /// <summary>
@@ -534,7 +512,7 @@ namespace GUI
         }
 
         /// <summary>
-        /// Down one page 
+        /// Down one page
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -559,7 +537,6 @@ namespace GUI
             DownBtn.IsEnabled = true;
             LeftLabelChange();
             UpdatePage();
-
         }
 
         /// <summary>
@@ -573,20 +550,22 @@ namespace GUI
                 string text = ((Label)border.Content).Text;
                 double number;
                 Double.TryParse(text, out number);
-                ((Label)border.Content).Text = (number%20 + 20*currentPage).ToString();
+                ((Label)border.Content).Text = (number % 20 + 20 * currentPage).ToString();
             }
         }
-
 
         /// <summary>
         /// User can change the pagge from the entry
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void PageChanged(object sender,EventArgs e){
+        private async void PageChanged(object sender, EventArgs e)
+        {
             int page;
-            if(int.TryParse(((Entry)sender).Text, out page)){
-                if(page<0){
+            if (int.TryParse(((Entry)sender).Text, out page))
+            {
+                if (page < 0)
+                {
                     await DisplayAlert("Alert", "Page Number need to be larger or equal than zero", "OK");
                     UpdatePage();
                     return;
@@ -599,7 +578,6 @@ namespace GUI
             }
             await DisplayAlert("Alert", "Please Enter a number to jump to a page", "OK");
         }
-
 
         /// <summary>
         /// Update the page value, if the value is formula error, shade it to pink
@@ -627,12 +605,8 @@ namespace GUI
             selectedCellName.Text = "Selected Cell Name: " + currentCol + (currentPage * 20 + currentRow % 20);
             selectedCellContent.Text = GetCellContent(sheet[currentCol + (currentRow % 20)]);
             string vaule;
-            GetCellValue(sheet[currentCol + (currentRow % 20)],out vaule);
+            GetCellValue(sheet[currentCol + (currentRow % 20)], out vaule);
             selectedCellValue.Text = vaule;
-
         }
-
-
     }
-
 }

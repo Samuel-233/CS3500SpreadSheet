@@ -32,21 +32,19 @@
 
             <Label Text="To save the file, just click Save button on top right, then enter the path and the file name you want to save (Like D:/path/fileName). After saved for once, you can leave it for empty if you need to update the old file." />
 
-            <Label Text="Clicked the ↑ and ↓ to scroll up and down. Spread sheet have total infinity rows. By change the number under the arrow can jump to that page"/>
+            <Label Text="Clicked the ↑ and ↓ to scroll up and down. Spread sheet have total infinity rows. By change the number under the arrow can jump to that page" />
 
-            <Label Text="You can put text, number, or expression in the cell(start with = ). When you selected a expression, you can see which cells does this expression is using(blue), and which cells does this expression will change(blue). If the Expression have error, the cell will shaded to pink."/>
+            <Label Text="You can put text, number, or expression in the cell(start with = ). When you selected a expression, you can see which cells does this expression is using(blue), and which cells does this expression will change(blue). If the Expression have error, the cell will shaded to pink." />
 
             <BoxView HeightRequest="1" BackgroundColor="Black" HorizontalOptions="FillAndExpand" Margin="0,10,0,10" />
 
-            <Label Text="Press the back arrow (up top) or return button."/>
+            <Label Text="Press the back arrow (up top) or return button." />
 
             <Button
             x:Name="ReturnToMainPageButton"
             Text="Return to Application"
             Clicked="ReturnToMainPage"
-            HorizontalOptions="Center"/>
+            HorizontalOptions="Center" />
         </StackLayout>
-
-
     </ScrollView>
 </ContentPage>

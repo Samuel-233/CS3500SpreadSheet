@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// Author:    Shu Chen
 /// Partner:   Ping-Hsun Hsieh
@@ -31,7 +32,7 @@ namespace GUI
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

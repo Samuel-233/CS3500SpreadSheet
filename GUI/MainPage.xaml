@@ -27,18 +27,18 @@
             StrokeThickness="2"
             HeightRequest="40">
             <HorizontalStackLayout>
-                <Label x:Name="selectedCellName" Text="Selected Cell Name: " WidthRequest="180"/>
-                <Label Text="Selected Cell Value:"/>
-                <Label x:Name="selectedCellValue" Text="Selected Cell Value: " WidthRequest="300"/>
-                <Label Text="Selected Cell Content: "/>
-                <Entry x:Name="selectedCellContent" AutomationId="selectedCellContent"  TranslationY="-10" Completed="TopCellContentChanged"  Text="Selected Cell Value: " Focused="TopCellFocusedOn" Unfocused="TopCellNotFocusedOn" WidthRequest="650"  Placeholder="Content"/>
-                <Label Text="Page Number: "/>
+                <Label x:Name="selectedCellName" Text="Selected Cell Name: " WidthRequest="180" />
+                <Label Text="Selected Cell Value:" />
+                <Label x:Name="selectedCellValue" Text="Selected Cell Value: " WidthRequest="300" />
+                <Label Text="Selected Cell Content: " />
+                <Entry x:Name="selectedCellContent" AutomationId="selectedCellContent"  TranslationY="-10" Completed="TopCellContentChanged"  Text="Selected Cell Value: " Focused="TopCellFocusedOn" Unfocused="TopCellNotFocusedOn" WidthRequest="650"  Placeholder="Content" />
+                <Label Text="Page Number: " />
                 <Entry x:Name="currentPageEntry"  Completed="PageChanged" Placeholder="CurrentPage" TranslationY="-10" Text="" WidthRequest="150" />
             </HorizontalStackLayout>
         </Border>
 
         <!-- the column headers: A, B, C, ... -->
-        <HorizontalStackLayout x:Name="TopLabels" BackgroundColor="LightBlue"/>
+        <HorizontalStackLayout x:Name="TopLabels" BackgroundColor="LightBlue" />
 
         <!-- the Grid of Spreadsheet GUI Cells -->
         <ScrollView
@@ -52,7 +52,6 @@
                 <VerticalStackLayout x:Name="Grid"        BackgroundColor="Black"></VerticalStackLayout>
             </HorizontalStackLayout>
         </ScrollView>
-
     </VerticalStackLayout>
 
     <ContentPage.MenuBarItems>
@@ -66,9 +65,8 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="↑" Priority="0" Order="Primary" Clicked="Up" IsEnabled="False" x:Name="UpBtn"/>
-        <ToolbarItem Text="↓" Priority="0" Order="Primary" Clicked="Down" IsEnabled="True" x:Name="DownBtn"/>
-        <ToolbarItem Text="Save" Priority="0" Order="Primary" Clicked="Save" IsEnabled="True" x:Name="SaveBtn"/>
+        <ToolbarItem Text="↑" Priority="0" Order="Primary" Clicked="Up" IsEnabled="False" x:Name="UpBtn" />
+        <ToolbarItem Text="↓" Priority="0" Order="Primary" Clicked="Down" IsEnabled="True" x:Name="DownBtn" />
+        <ToolbarItem Text="Save" Priority="0" Order="Primary" Clicked="Save" IsEnabled="True" x:Name="SaveBtn" />
     </ContentPage.ToolbarItems>
 </ContentPage>
-

@@ -343,7 +343,8 @@ namespace SS
         /// </summary>
         /// <param name="name">cell that might change</param>
         /// <returns>cells need to recalculate</returns>
-        public IEnumerable<string> GetCellsNeedToReCal(string name){
+        public IEnumerable<string> GetCellsNeedToReCal(string name)
+        {
             return GetCellsToRecalculate(name);
         }
 
