@@ -12,9 +12,14 @@ Copyright:  CS 3500 and Shu Chen - This work may not be copied for use in Academ
 
 # Overview of the Spreadsheet functionality
 
-The Spreadsheet program is currently capable of Evaluate expression, make dependency relationship.
-It also can create cells with dependency by entering the formula with variables.
-By using SpreadSheet, user can put data in to cells, and do calculations between them. 
+TThe Spreadsheet application currently possesses functionalities such as evaluating expressions, establishing dependency
+relationships, and generating cells with dependencies through the input of formulas containing variables. In this context,
+the controller aspect of the Model-View-Controller (MVC) architecture is evident.
+With the Spreadsheet, users can input data into cells and perform calculations among them. The software ensures validation of
+cell inputs and formula names, detecting issues such as incorrect names, values, or circular errors. In such cases, the graphical
+user interface (GUI) provides feedback on the identified problems.
+Additionally, the application allows users to save and load files as needed. The view functionality leverages the GUI
+to enable users to perform actions such as saving, loading, and conducting calculations within the program.
 
 Using the GUI class can create the APP to let the user interact with.
 
