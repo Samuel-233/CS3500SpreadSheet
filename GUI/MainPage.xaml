@@ -28,8 +28,11 @@
             HeightRequest="40">
             <HorizontalStackLayout>
                 <Label x:Name="selectedCellName" Text="Selected Cell Name: " WidthRequest="180"/>
+                <Label Text="Selected Cell Value:"/>
                 <Label x:Name="selectedCellValue" Text="Selected Cell Value: " WidthRequest="300"/>
+                <Label Text="Selected Cell Content: "/>
                 <Entry x:Name="selectedCellContent" AutomationId="selectedCellContent"  TranslationY="-10" Completed="TopCellContentChanged"  Text="Selected Cell Value: " Focused="TopCellFocusedOn" Unfocused="TopCellNotFocusedOn" WidthRequest="650"  Placeholder="Content"/>
+                <Label Text="Page Number: "/>
                 <Entry x:Name="currentPageEntry"  Completed="PageChanged" Placeholder="CurrentPage" TranslationY="-10" Text="" WidthRequest="150" />
             </HorizontalStackLayout>
         </Border>

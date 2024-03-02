@@ -86,6 +86,7 @@ namespace GUI
             hightLightDependees = new List<string>();
             hightLightDependents = new List<string>();
             currentPage = 0;
+            currentPageEntry.Text = currentPage.ToString();
             CreateCellLable(20);
         }
 
@@ -298,9 +299,9 @@ namespace GUI
 
             if (!GetCellValue(sender, out value))
             {
-                selectedCellValue.Text = "Selected Cell Value Can not Compute Because " + value;
+                selectedCellValue.Text = "Can not Compute Because " + value;
             }
-            else selectedCellValue.Text = "Selected Cell Value: " + value;
+            else selectedCellValue.Text = value.ToString();
 
             LastFocusedCell = (Entry)sender;
         }
@@ -323,13 +324,6 @@ namespace GUI
         /// <param name="e"></param>
         private void CellNotFocusedOn(object sender, EventArgs e)
         {
-            string value = "";
-            if (!GetCellValue(sender, out value))
-            {
-                ((Entry)sender).BackgroundColor = Color.FromRgb(255, 200, 200);
-            }
-            ((Entry)sender).Text = value;
-
 
             foreach (string cell in hightLightDependees)
             {
@@ -343,6 +337,13 @@ namespace GUI
             }
             hightLightDependents.Clear();
             hightLightDependees.Clear();
+
+            string value = "";
+            if (!GetCellValue(sender, out value))
+            {
+                ((Entry)sender).BackgroundColor = Color.FromRgb(255, 200, 200);
+            }
+            ((Entry)sender).Text = value;
         }
 
         /// When Cell is not focused by the user, show the cell value
@@ -617,6 +618,18 @@ namespace GUI
                     sheet[c.ToString() + row].Text = cellValue.ToString();
                 }
             }
+            //If user selected cell before, update the label at the top
+            if (LastFocusedCell == null) return;
+            int currentRow;
+            string currentCol;
+            SplitColAndRow(LastFocusedCell.AutomationId, out currentCol, out currentRow);
+
+            selectedCellName.Text = "Selected Cell Name: " + currentCol + (currentPage * 20 + currentRow % 20);
+            selectedCellContent.Text = GetCellContent(sheet[currentCol + (currentRow % 20)]);
+            string vaule;
+            GetCellValue(sheet[currentCol + (currentRow % 20)],out vaule);
+            selectedCellValue.Text = vaule;
+
         }
 
 
